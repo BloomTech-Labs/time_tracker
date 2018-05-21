@@ -62,6 +62,38 @@ vendorRouter.post('/login', (req, res) => {
 	});
 });
 
+//Update
+vendorRouter.put('/:id', (req, res) => {
+	const { id } = req.params;
+	Vendor.findByIdAndUpdate(id, req.body)
+		.then((updatedVendor) => {
+			if (updatedVendor) {
+				res.status(200).json(updatedVendor);
+			} else {
+				res.status(404).json({ message: `Could not find vendor with id ${id}` });
+			}
+		})
+		.catch((err) => {
+			res.status(500).json({ error: `There was an error while updating vendor: ${err}` });
+		});
+});
+
+//Remove
+vendorRouter.delete('/:id', (req, res) => {
+	const { id } = req.params;
+	Vendor.findByIdAndRemove(id)
+		.then((removedVendor) => {
+			if (removedVendor) {
+				res.status(200).json(removedVendor);
+			} else {
+				res.status(404).json({ message: `Could not find vendor with id ${id}` })
+			}
+		})
+		.catch((err) => {
+			res.status(500).json({ error: `There was an error while removing vendor: ${err}` })
+		});
+});
+
 module.exports = vendorRouter;
 
 
