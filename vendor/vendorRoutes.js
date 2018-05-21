@@ -42,6 +42,7 @@ vendorRouter.get('/', (req, res) => {
 		});
 });
 
+//Login
 //TODO Modify password checking after implementing password encryption
 vendorRouter.post('/login', (req, res) => {
 	const { email, password } = req.body;
