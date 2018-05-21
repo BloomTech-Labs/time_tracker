@@ -1,8 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const vendorRouter = require('./vendor/vendorRoutes');
+const clientRouter = require('./client/clientRoutes');
+const bodyParser = require('body-parser');
 
 const server = express();
+server.use(bodyParser.json());
 server.use('/vendor', vendorRouter);
 server.use('/client', clientRouter);
 

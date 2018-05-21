@@ -1,6 +1,6 @@
 const express = require('express');
 const Vendor = require('./vendorSchema');
-const Client = require('./clientSchema');
+const Client = require('../client/clientSchema');
 const vendorRouter = express.Router();
 
 //Create new vendor

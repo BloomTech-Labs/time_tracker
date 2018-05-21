@@ -1,5 +1,5 @@
 const express = require('express');
-const Vendor = require('./vendorSchema');
+const Vendor = require('../vendor/vendorSchema');
 const Client = require('./clientSchema');
 const clientRouter = express.Router();
 
@@ -16,7 +16,7 @@ clientRouter.post('/', (req, res) => {
 		return;
 	}
 	const client = new Client(req.body)
-	Client.save((err, client) => {
+	client.save((err, client) => {
 		if (err) return res.send(err);
 		res.json({ success: 'User saved', client })
 	});
