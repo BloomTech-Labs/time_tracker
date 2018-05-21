@@ -4,6 +4,7 @@ const vendorRouter = require('./vendor/vendorRoutes');
 const clientRouter = require('./client/clientRoutes');
 const bodyParser = require('body-parser');
 const path = require('path');
+const PORT = process.env.PORT || 5000;
 
 const server = express();
 server.use(bodyParser.json());
@@ -19,7 +20,7 @@ server.get('*', (req, res) => {
 mongoose
 .connect('mongodb://admin:temp@ds231090.mlab.com:31090/labs_time_tracker')
 .then(success => {
-  server.listen(5000, () => {
+  server.listen(PORT, () => {
     console.log('Server running on port 5000');
   });
 })
