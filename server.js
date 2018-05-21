@@ -10,7 +10,7 @@ server.use(bodyParser.json());
 server.use('/vendor', vendorRouter);
 server.use('/client', clientRouter);
 
-app.use(express.static(path.join(__dirname, 'frontend/build')));
+server.use(express.static(path.join(__dirname, 'frontend/build')));
 
 
 mongoose
@@ -24,6 +24,6 @@ mongoose
   console.error('ERROR CONNECTING TO MLAB');
 });
 
-app.get('*', (req, res) => {
+server.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/frontend/build/index.html'));
 });
