@@ -10,14 +10,12 @@ vendorRouter.post('/', (req, res) => {
 		name,
 		email,
 		password,
-		paid
 	} = req.body;
-	const vendor = new Vendor({
-		name,
-		email,
-		password,
-		paid
-	})
+	if (!name || !password || !email) {
+		res.status(422).json({ error: 'Missing a required field(name, email, password)' });
+		return;
+	}
+	const vendor = new Vendor(req.body);
 	vendor.save((err, vendor) => {
 		if (err) return res.send(err);
 		res.json({ success: 'Vendor saved', vendor })
