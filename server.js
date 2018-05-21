@@ -12,6 +12,9 @@ server.use('/client', clientRouter);
 
 server.use(express.static(path.join(__dirname, 'frontend/build')));
 
+server.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/frontend/build/index.html'));
+});
 
 mongoose
 .connect('mongodb://admin:temp@ds231090.mlab.com:31090/labs_time_tracker')
@@ -22,8 +25,4 @@ mongoose
 })
 .catch(err => {
   console.error('ERROR CONNECTING TO MLAB');
-});
-
-server.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/frontend/build/index.html'));
 });
