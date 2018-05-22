@@ -20,13 +20,6 @@ VendorSchema.pre('save', function(next) {
   });
 });
 
-// VendorSchema.methods.verify = function(password, cb) {
-//   bcrypt.compare(password, this.password, (err, isMatch) => {
-//     if (err) return cb(err);
-//     cb(null, isMatch);
-//   });
-// };
-
 VendorSchema.methods.comparePass = function(plainText, cb) {
   bcrypt.compare(plainText, this.password, (err, isMatch) => {
     if (err) return err;
