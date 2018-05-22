@@ -5,7 +5,7 @@ export const signUp = ({ name, email, password, type }) => {
   return dispatch => {
     if (type === 'client') {
       axios
-        .post('http://localhost:5000/client', { name, email, password })
+        .post('/client', { name, email, password })
         .then(({ data }) => {
           dispatch({ type: SIGNUP, payload: data });
         })
@@ -14,7 +14,7 @@ export const signUp = ({ name, email, password, type }) => {
         });
     } else {
       axios
-        .post('http://localhost:5000/vendor', { name, email, password })
+        .post('/vendor', { name, email, password })
         .then(({ data }) => {
           dispatch({ type: SIGNUP, payload: data });
         })
