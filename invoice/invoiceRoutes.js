@@ -4,34 +4,6 @@ const Client = require('../client/clientSchema');
 const Invoice = require('./invoiceSchema');
 const invoiceRouter = express.Router();
 
-//Helper function to get client's invoices
-const getClientInv = (clientId) => {
-	Client.findOne({ clientId })
-		.then((client) => {
-			Invoice.find({ clientId }, (err, invoices) => {
-				if (err) return res.send(err);
-				res.send(invoices);
-			});
-		})
-		.catch((err) => {
-			res.status(500).json({ error: `Could not retreive invoices: ${err}` })
-		});
-};
-
-//Helper function to get vendor's invoices
-const getVendorInv = (vendorId) => {
-	Vendor.findOne(vendorId)
-		.then((vendor) => {
-			Invoice.find({ vendorId }, (err, invoices) => {
-				if (err) return res.send(err);
-				res.send(invoices);
-			});
-		})
-		.catch((err) => {
-			res.status(500).json({ error: `Could not retreive invoices: ${err}` })
-		});
-};
-
 //Create new invoice
 invoiceRouter.post('/', (req, res) => {
 	const invoice = new Invoice(req.body)
@@ -41,16 +13,13 @@ invoiceRouter.post('/', (req, res) => {
 	});
 });
 
-//Get all invoices from a vendor or client
+//Get all invoices from a user
 invoiceRouter.get('/', (req, res) => {
-	const { user } = req.userType;
-	if (user === 'client') {
-		getClientInv(user.id);
-	} else if (user === 'vendor') {
-		getVendorInv(user.id);
-	} else {
-		res.status(422).json({ error: 'User needs to be logged in' });
-	}
+	const { id } = req.userId;
+	Invoice.find(id, (err, invoices) => {
+		if (err) return res.send(err);
+			res.send(invoices);
+		});
 });
 
 //Get an invoice by id
