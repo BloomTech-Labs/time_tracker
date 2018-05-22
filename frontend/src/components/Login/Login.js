@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText, Col, Row } from 'reactstrap';
+
+import { Button, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 import { logIn } from '../../store/action/userActions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-
 class Login extends Component {
-
   state = {
     email: '',
     password: '',
