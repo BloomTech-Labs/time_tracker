@@ -21,7 +21,6 @@ export const signUp = ({ name, email, password, type }) => {
         .catch(err => {
           console.log(err);
         });
-      dispatch({ type: SIGNUP });
     }
   };
 };
