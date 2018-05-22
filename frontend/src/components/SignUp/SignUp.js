@@ -1,32 +1,41 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
+import { connect } from 'react-redux';
+import { signUp } from '../../store/action/userActions';
+import { withRouter } from 'react-router-dom';
 
 class SignUp extends Component {
   state = {
     name: '',
     email: '',
     password: '',
-    type: ''
+    type: '',
+    signedUp: false
   };
 
   onSubmitHandler = event => {
     event.preventDefault();
-    console.log('subit');
+    this.props.signUp(this.state);
   };
 
   inputChangeHandler = ({ target }) => {
-    console.log('radio changed');
     this.setState({
       [target.name]: target.value
     });
   };
+
+  componentDidUpdate() {
+    if (this.props.signedUp) {
+      this.props.history.push('/login');
+    }
+  }
 
   render() {
     return (
       <Row>
         <Col md="4" />
         <Col>
-          <Form onSubmit={this.onSubmitHandler}>
+          <Form onSubmit={e => this.onSubmitHandler(e)}>
             <FormGroup>
               <Label for="name">Name</Label>
               <Input
@@ -92,4 +101,10 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+const mapStateToProps = state => {
+  return {
+    signedUp: state.userReducer.signedUp
+  };
+};
+
+export default withRouter(connect(mapStateToProps, { signUp })(SignUp));
