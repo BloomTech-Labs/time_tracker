@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { Button, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 import { logIn } from '../../store/action/userActions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+||||||| merged common ancestors
+=======
+import { Button, Form, FormGroup, Label, Input, FormText, Col, Row } from 'reactstrap';
+import { logIn } from '../../store/action/userActions';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+
+>>>>>>> 8a2d67d367e2e32f412549668d8943db457dd0c3
 
 class Login extends Component {
+<<<<<<< HEAD
   state = {
     email: '',
     password: '',
@@ -29,6 +39,34 @@ class Login extends Component {
     }
   }
 
+||||||| merged common ancestors
+=======
+
+  state = {
+    email: '',
+    password: '',
+    type: '',
+    loggedIn: false
+  };
+
+  onSubmitHandler = event => {
+    event.preventDefault();
+    this.props.logIn(this.state);
+  };
+
+  inputChangeHandler = ({ target }) => {
+    this.setState({
+      [target.name]: target.value
+    });
+  };
+
+  componentDidUpdate() {
+    if (this.props.loggedIn) {
+      this.props.history.push('/');
+    }
+  }
+
+>>>>>>> 8a2d67d367e2e32f412549668d8943db457dd0c3
   render() {
     return (
       <Row>
