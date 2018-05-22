@@ -1,6 +1,4 @@
 const express = require('express');
-const Vendor = require('../vendor/vendorSchema');
-const Client = require('../client/clientSchema');
 const Invoice = require('./invoiceSchema');
 const invoiceRouter = express.Router();
 
@@ -42,7 +40,7 @@ invoiceRouter.put('/:id', (req, res) => {
 			if (updatedInvoice) {
 				res.status(200).json(updatedInvoice);
 			} else {
-				res.status(404).json({ message: `Could not find indvoice with id ${id}` })
+				res.status(404).json({ message: `Could not find invoice with id ${id}` })
 			}
 		})
 		.catch((err) => {
