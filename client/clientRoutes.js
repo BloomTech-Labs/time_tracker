@@ -18,7 +18,7 @@ clientRouter.post('/', (req, res) => {
 	const client = new Client(req.body)
 	client.save((err, client) => {
 		if (err) return res.send(err);
-		res.json({ success: 'User saved', client })
+		res.json({ success: 'User saved'})
 	});
 });
 

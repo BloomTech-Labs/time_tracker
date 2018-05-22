@@ -18,7 +18,7 @@ vendorRouter.post('/', (req, res) => {
 	const vendor = new Vendor(req.body);
 	vendor.save((err, vendor) => {
 		if (err) return res.send(err);
-		res.json({ success: 'Vendor saved', vendor })
+		res.json({ success: 'Vendor saved'})
 	});
 });
 
