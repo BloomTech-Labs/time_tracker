@@ -14,11 +14,24 @@ const VendorSchema = new Schema({
 });
 
 VendorSchema.pre('save', function(next) {
-  bcrypt.hash(this.password, 11, function(err, hash) {
-    if (err) return next(err);
+  bcrypt.hash(this.password, 11).then(hash => {
     this.password = hash;
     next();
   });
 });
+
+// VendorSchema.methods.verify = function(password, cb) {
+//   bcrypt.compare(password, this.password, (err, isMatch) => {
+//     if (err) return cb(err);
+//     cb(null, isMatch);
+//   });
+// };
+
+VendorSchema.methods.comparePass = function(plainText, cb) {
+  bcrypt.compare(plainText, this.password, (err, isMatch) => {
+    if (err) return err;
+    cb(null, isMatch);
+  });
+};
 
 module.exports = mongoose.model('Vendor', VendorSchema);
