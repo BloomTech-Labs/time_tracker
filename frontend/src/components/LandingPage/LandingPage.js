@@ -6,7 +6,8 @@ import {
   CarouselControl,
   CarouselCaption,
   CarouselIndicators,
-  Container
+  Container,
+  Button
 } from 'reactstrap';
 import styled from 'styled-components';
 import pic from '../../assets/river_mountain.jpg';
@@ -27,7 +28,7 @@ class LandingPage extends Component {
             </Blurb>
           </Container>
         </StyledJumbotron>
-        <button>Buy Now</button>
+        <Button>Buy Now</Button>
       </div>
     );
   }
@@ -108,12 +109,12 @@ class CarouselExample extends Component {
   render() {
     const { activeIndex } = this.state;
 
-    const slides = items.map(item => {
+    const slides = items.map((item, i) => {
       return (
         <CarouselItem
           onExiting={this.onExiting}
           onExited={this.onExited}
-          key={item.src}
+          key={i}
         >
           <img src={item.src} alt={item.altText} />
           <CarouselCaption

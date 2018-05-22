@@ -7,7 +7,6 @@ const vendorRouter = express.Router();
 //TODO encrypt password pre save in the vendor schema
 vendorRouter.post('/', (req, res) => {
   const { name, email, password } = req.body;
-
   if (!name || !password || !email) {
     res
       .status(422)
