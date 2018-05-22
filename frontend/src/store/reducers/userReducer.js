@@ -1,15 +1,17 @@
-import { SIGNUP } from '../action/userActions';
+import { SIGNUP, LOGIN } from '../action/userActions';
 
 const initialState = {
   user: '',
-  signedUp: false
+  signedUp: false,
+  loggedIn: false
 };
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case SIGNUP:
-      console.log(action.payload);
       return { ...state, signedUp: true };
+    case LOGIN:
+      return {...state, loggedIn: true, signedUp: false };
     default:
       return state;
   }
