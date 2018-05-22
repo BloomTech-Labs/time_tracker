@@ -25,33 +25,6 @@ export const signUp = ({ name, email, password, type }) => {
     }
   };
 };
-<<<<<<< HEAD
-
-export const logIn = ({ email, password, type }) => {
-  return dispatch => {
-    if (type === 'client') {
-      axios
-        .post('http://localhost:5000/client/login', { email, password })
-        .then(({ data }) => {
-          dispatch({ type: LOGIN, payload: data });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    } else {
-      axios
-        .post('http://localhost:5000/vendor/login', { email, password })
-        .then(({ data }) => {
-          dispatch({ type: LOGIN, payload: data });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  };
-};
-||||||| merged common ancestors
-=======
 
 export const logIn = ({ email, password, type }) => {
   return dispatch => {
@@ -76,4 +49,3 @@ export const logIn = ({ email, password, type }) => {
     }
   };
 };
->>>>>>> 8a2d67d367e2e32f412549668d8943db457dd0c3
