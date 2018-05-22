@@ -6,7 +6,8 @@ import {
   CarouselControl,
   CarouselCaption,
   CarouselIndicators,
-  Container
+  Container,
+  Button
 } from 'reactstrap';
 import styled from 'styled-components';
 import pic from '../../assets/river_mountain.jpg';
@@ -27,7 +28,7 @@ class LandingPage extends Component {
             </Blurb>
           </Container>
         </StyledJumbotron>
-        <button>Buy Now</button>
+        <Button>Buy Now</Button>
       </div>
     );
   }
