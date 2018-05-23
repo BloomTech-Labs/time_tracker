@@ -24,18 +24,10 @@ clientRouter.post('/', (req, res) => {
 //using the vendor's email
 //TODO modify req.body if necessary to get vendor's email
 clientRouter.get('/', (req, res) => {
-  const { email } = req.body;
-  Vendor.findOne({ email })
-    .then(vendor => {
-      const vendorId = vendor.id;
-      Client.find({ vendorId }, (err, clients) => {
-        if (err) return res.send(err);
-        res.send(clients);
-      });
-    })
-    .catch(err => {
-      res.status(500).json({ error: `Could not retreive users: ${err}` });
-    });
+  const { _id } = req.body;
+  Client.findOne({ email })
+    .then()
+    .catch();
 });
 
 //Login
