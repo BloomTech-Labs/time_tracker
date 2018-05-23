@@ -9,6 +9,7 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 class TopBar extends Component {
   constructor(props) {
@@ -37,7 +38,9 @@ class TopBar extends Component {
                 <NavLink href="#">Pricing</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="#">SignUp/Login</NavLink>
+                <NavLink tag={Link} to="/login">
+                  SignUp/Login
+                </NavLink>
               </NavItem>
             </Nav>
           </Collapse>
