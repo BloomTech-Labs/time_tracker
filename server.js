@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const vendorRouter = require('./vendor/vendorRoutes');
 const clientRouter = require('./client/clientRoutes');
+const invoiceRouter = require('./invoice/invoiceRoutes');
+const timestampRouter = require('./timestamp/timestampRoutes');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
@@ -12,6 +14,9 @@ server.use(bodyParser.json());
 server.use(cors());
 server.use('/vendor', vendorRouter);
 server.use('/client', clientRouter);
+server.use('/invoice', invoiceRouter);
+server.use('/timestamp', timestampRouter);
+
 
 server.use(express.static(path.join(__dirname, 'frontend/build')));
 
