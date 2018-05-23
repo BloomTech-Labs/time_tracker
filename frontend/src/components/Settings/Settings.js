@@ -1,20 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Row,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Button
-} from 'reactstrap';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import FaCircle from 'react-icons/lib/fa/plus-circle';
+import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { changePassword } from '../../store/action/userActions';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -50,7 +35,7 @@ class Settings extends Component {
       alert('Changed password successfully.');
       this.props.history.push('/dashboard');
     }
-  };
+  }
 
   render() {
     return (
@@ -101,20 +86,6 @@ class Settings extends Component {
     );
   }
 }
-
-const StyledMenu = styled.div`
-  border: 1px black;
-  border-style: inset;
-  background-color: rgb(242, 242, 243);
-  @media (min-width: 768px) {
-    min-height: 60vh;
-  }
-`;
-
-const AddText = styled.div`
-  padding-top: 15vh;
-  font-size: 4em;
-`;
 
 const mapStateToProps = state => {
   return {

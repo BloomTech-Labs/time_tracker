@@ -4,6 +4,8 @@ export const LOGIN = 'LOGIN';
 export const ADD_CLIENT = 'ADD_CLIENT';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const PASSWORD_CHANGED = 'PASSWORD_CHANGED';
+export const GETTING_USER_INFO = 'GETTING_USER_INFO';
+export const GOT_USER_INFO = 'GOT_USER_INFO';
 
 const backend = process.env.BASE_URL || 'http://localhost:5000';
 
@@ -64,7 +66,7 @@ export const addClient = (email, _id) => {
     axios
       .put(`${backend}/vendor/client/add`, { email, _id })
       .then(({ data }) => {
-        dispatch({ type: ADD_CLIENT });
+        dispatch({ type: ADD_CLIENT, payload: data });
       })
       .catch(err => {
         console.log(err);
@@ -84,7 +86,7 @@ export const changePassword = (password, newPassword, userType, id) => {
         })
         .catch(err => {
           console.log(err);
-        })
+        });
     } else {
       axios
         .put(`${backend}/vendor/settings/${id}`, { password, newPassword })
@@ -95,7 +97,22 @@ export const changePassword = (password, newPassword, userType, id) => {
         })
         .catch(err => {
           console.log(err);
-        })
+        });
     }
-  }
-}
+  };
+};
+
+export const getUserInfo = id => {
+  return dispatch => {
+    dispatch({ type: GETTING_USER_INFO });
+    axios
+      .get(`${backend}/vendor/${id}`)
+      .then(({ data }) => {
+        console.log('user actions: ', data);
+        dispatch({ type: GOT_USER_INFO, payload: data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+};
