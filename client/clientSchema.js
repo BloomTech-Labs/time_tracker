@@ -11,7 +11,7 @@ const ClientSchema = new Schema ({
   contact: { type: String },
   vendors: [{ type: ObjectId, ref: 'Vendor' }],
   invoices: [{ type: ObjectId, ref: 'Invoice' }]
-};
+});
 
 ClientSchema.pre('save', function(next) {
   bcrypt.hash(this.password, 11).then(hash => {
