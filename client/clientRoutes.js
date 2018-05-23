@@ -88,6 +88,39 @@ clientRouter.put('/:id', (req, res) => {
     });
 });
 
+// @TODO: add changing of email and checking new password to not be the same as old
+// @TODO STRETCH: cannot use previous X passwords
+// Update client password and revalidate JWT
+clientRouter.put('/settings/:id', (req, res) => {
+  const { id } = req.params;
+  const { password, newPassword } = req.body;
+  console.log(id);
+  Client.findOne({ _id: id })
+    .then(client => {
+      client.comparePass(password, (err, match) => {
+        if (err) {
+          res.status(422).json({ err });
+        }
+        if (match) {
+          client.password = newPassword;
+          client.save();
+          const payload = {
+            email: client.email,
+            userId: client._id
+          };
+          res
+            .status(200)
+            .json({ token: jwt.sign(payload, secret), _id: client._id });
+        } else {
+          res.status(422).json({ error: 'email or password is not correct' });
+        }
+      });
+    })
+    .catch(err => {
+      res.status(500).json({ err });
+    });
+});
+
 //Remove
 clientRouter.delete('/:id', (req, res) => {
   const { id } = req.params;
