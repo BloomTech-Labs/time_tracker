@@ -8,7 +8,7 @@ const VendorSchema = new Schema({
   email: { type: String, required: true, unique: true, index: true },
   password: { type: String, required: true },
   paid: { type: Boolean, required: true, default: false },
-  hoursLogged: [{ type: ObjectId, ref: 'timestamp' }],
+  hoursLogged: [{ type: ObjectId, ref: 'Timestamp' }],
   clients: [{ type: ObjectId, ref: 'Client' }],
   invoices: [{ type: ObjectId, ref: 'Invoice' }]
 });

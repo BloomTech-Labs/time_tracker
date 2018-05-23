@@ -3,16 +3,37 @@ import TopBar from '../TopBar/TopBar';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Container, Col, Row } from 'reactstrap';
+import axios from 'axios';
 
+const backend = process.env.BASE_URL || 'http://localhost:5000';
 
 class VendorClientPage extends Component {
+	state = {
+		name: '',
+		hoursLogged: [],
+		invoices: []
+	}
+
+	componentDidMount() {
+		const id = this.props.match.params.id;
+		axios.get(`${backend}/vendor/client/${id}`)
+			.then(({ data }) => {
+				this.setState({
+					name: data.name,
+					hoursLogged: data.hoursLogged,
+					invoices: data.invoices
+				})
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	render() {
 		return (
 			<div>
-				{console.log('this.props', this.props)}
 				<Row>
-					<Col><h1>Client Name</h1></Col>
+					<Col><h1>{this.state.name}</h1></Col>
 				</Row>
 				<Row>
 					<Col xs="6"><h4>05/23/18</h4></Col>
@@ -30,5 +51,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps)(VendorClientPage)
+	connect(mapStateToProps, null)(VendorClientPage)
 );

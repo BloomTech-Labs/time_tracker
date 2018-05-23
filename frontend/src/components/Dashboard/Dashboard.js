@@ -10,6 +10,7 @@ import { getUserInfo } from '../../store/action/userActions';
 import CreateClient from '../CreateClient/CreateClient';
 import Settings from '../Settings/Settings';
 import ClientList from '../ClientList/ClientList';
+import VendorClientPage from '../VendorClientPage/VendorClientPage';
 
 class Dashboard extends Component {
   state = {
@@ -54,6 +55,7 @@ class Dashboard extends Component {
           <Col>
             <Switch>
               <Route path={'/dashboard/clients/new'} component={CreateClient} />
+              <Route path={'/dashboard/clients/:id'} component={VendorClientPage} />
               <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/settings'} component={Settings} />
               <Route

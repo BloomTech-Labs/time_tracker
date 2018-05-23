@@ -13,4 +13,4 @@ const timestampSchema = new Schema({
   invoiceNum: { type: ObjectId, ref: 'Invoice' }
 });
 
-module.exports = mongoose.model('timestamp', timestampSchema);
+module.exports = mongoose.model('Timestamp', timestampSchema);

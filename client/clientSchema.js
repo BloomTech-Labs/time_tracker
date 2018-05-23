@@ -9,7 +9,8 @@ const ClientSchema = new Schema({
   password: { type: String },
   contact: { type: String },
   vendors: [{ type: ObjectId, ref: 'Vendor' }],
-  invoices: [{ type: ObjectId, ref: 'Invoice' }]
+  invoices: [{ type: ObjectId, ref: 'Invoice' }],
+  hoursLogged: [{ type: ObjectId, ref: 'Timestamp' }]
 });
 
 ClientSchema.pre('save', function(next) {
