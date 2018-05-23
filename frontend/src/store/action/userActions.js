@@ -1,12 +1,13 @@
 import axios from 'axios';
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
+const backend = process.env.BASE_URL || 'http://localhost:5000';
 
 export const signUp = ({ name, email, password, type }) => {
   return dispatch => {
     if (type === 'client') {
       axios
-        .post('/client', { name, email, password })
+        .post(`${backend}/client`, { name, email, password })
         .then(({ data }) => {
           dispatch({ type: SIGNUP, payload: data });
         })
@@ -15,7 +16,7 @@ export const signUp = ({ name, email, password, type }) => {
         });
     } else {
       axios
-        .post('/vendor', { name, email, password })
+        .post(`${backend}/vendor`, { name, email, password })
         .then(({ data }) => {
           dispatch({ type: SIGNUP, payload: data });
         })
@@ -30,7 +31,7 @@ export const logIn = ({ email, password, type }) => {
   return dispatch => {
     if (type === 'client') {
       axios
-        .post('/client/login', { email, password })
+        .post(`${backend}/client/login`, { email, password })
         .then(({ data }) => {
           dispatch({ type: LOGIN, payload: data });
         })
@@ -39,7 +40,7 @@ export const logIn = ({ email, password, type }) => {
         });
     } else {
       axios
-        .post('/vendor/login', { email, password })
+        .post(`${backend}/vendor/login`, { email, password })
         .then(({ data }) => {
           dispatch({ type: LOGIN, payload: data });
         })

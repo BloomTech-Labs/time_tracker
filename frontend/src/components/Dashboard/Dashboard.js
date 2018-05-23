@@ -7,12 +7,13 @@ import {
   ListGroup,
   ListGroupItem
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
 
 // Components
 import TopBar from '../TopBar/TopBar';
+import CreateClient from '../CreateClient/CreateClient';
 
 class Dashboard extends Component {
   state = {
@@ -44,24 +45,35 @@ class Dashboard extends Component {
             </StyledMenu>
           </Col>
           <Col>
-            <div>
-              {this.state.clients.length ? (
-                <h2>client comp</h2>
-              ) : (
-                <AddText>
-                  <div>New Client</div>
-                  <div>
-                    <FaCircle />
-                  </div>
-                </AddText>
-              )}
-            </div>
+            <Switch>
+              <Route path={'/dashboard/client/new'} component={CreateClient} />
+              <Route
+                path={'/dashboard'}
+                component={mainDash}
+                clients={this.state.clients}
+              />
+            </Switch>
           </Col>
         </Row>
       </div>
     );
   }
 }
+
+const mainDash = props => {
+  return (
+    <div>
+      <AddText>
+        <div>New Client</div>
+        <div>
+          <Link to="dashboard/client/new">
+            <FaCircle />
+          </Link>
+        </div>
+      </AddText>
+    </div>
+  );
+};
 
 const StyledMenu = styled.div`
   border: 1px black;
