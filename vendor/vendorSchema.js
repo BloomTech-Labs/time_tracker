@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -11,5 +12,19 @@ const VendorSchema = new Schema({
   clients: [{ type: ObjectId, ref: 'Client' }],
   invoices: [{ type: ObjectId, ref: 'Invoice' }]
 });
+
+VendorSchema.pre('save', function(next) {
+  bcrypt.hash(this.password, 11).then(hash => {
+    this.password = hash;
+    next();
+  });
+});
+
+VendorSchema.methods.comparePass = function(plainText, cb) {
+  bcrypt.compare(plainText, this.password, (err, isMatch) => {
+    if (err) return err;
+    cb(null, isMatch);
+  });
+};
 
 module.exports = mongoose.model('Vendor', VendorSchema);
