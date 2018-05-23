@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Input, FormText, Row, Col } from 'reactstrap';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { addClient } from '../../store/action/userActions';
 
 class CreateClient extends Component {
   state = {
-    email: ''
+    email: '',
+    user: ''
   };
 
   inputChangeHandler = ({ target }) => {
@@ -16,8 +18,7 @@ class CreateClient extends Component {
 
   onSubmitHandler = event => {
     event.preventDefault();
-    // add redux handler here
-    // this.props.addClient(this.state.email)
+    this.props.addClient(this.state.email, this.props.user);
   };
 
   render() {
@@ -25,7 +26,7 @@ class CreateClient extends Component {
       <Row>
         <Col md="4" />
         <Col>
-          <StyledForm>
+          <StyledForm onSubmit={this.onSubmitHandler}>
             <StyledFormText>Client Name</StyledFormText>
             <FormGroup>
               <Input
@@ -56,4 +57,10 @@ const StyledFormText = styled(FormText)`
   font-size: 2em;
 `;
 
-export default connect(null, null)(CreateClient);
+const mapStateToProps = state => {
+  return {
+    user: state.userReducer.user
+  };
+};
+
+export default connect(mapStateToProps, { addClient })(CreateClient);

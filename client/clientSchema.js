@@ -3,9 +3,9 @@ const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema.Types;
 
 const ClientSchema = {
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  name: { type: String },
+  email: { type: String, required: true, unique: true, index: true },
+  password: { type: String },
   contact: { type: String },
   vendors: [{ type: ObjectId, ref: 'Vendor' }],
   invoices: [{ type: ObjectId, ref: 'Invoice' }]
