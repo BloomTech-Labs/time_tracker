@@ -53,7 +53,7 @@ vendorRouter.post('/login', (req, res) => {
       if (vendor !== null) {
         vendor.comparePass(password, (err, match) => {
           if (err) {
-            res.send(422).json({ err });
+            res.status(422).json({ err });
           }
           if (match) {
             const payload = {
@@ -117,6 +117,37 @@ vendorRouter.put('/client/add', (req, res) => {
     })
     .catch(err => {
       res.status(500).json({ error: 'Error try again' });
+    });
+});
+
+// Update vendor password and revalidate JWT
+vendorRouter.put('/settings/:id', (req, res) => {
+  const { id } = req.params;
+  const { password, newPassword } = req.body;
+  console.log(id);
+  Vendor.findOne({ _id: id })
+    .then(vendor => {
+      vendor.comparePass(password, (err, match) => {
+        if (err) {
+          res.status(422).json({ err });
+        }
+        if (match) {
+          vendor.password = newPassword;
+          vendor.save();
+          const payload = {
+            email: vendor.email,
+            userId: vendor._id
+          };
+          res
+            .status(200)
+            .json({ token: jwt.sign(payload, secret), _id: vendor._id });
+        } else {
+          res.status(422).json({ error: 'email or password is not correct' });
+        }
+      });
+    })
+    .catch(err => {
+      res.status(500).json({ err });
     });
 });
 

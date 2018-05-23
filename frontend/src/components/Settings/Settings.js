@@ -15,21 +15,27 @@ import {
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
-
-// Components
-import TopBar from '../TopBar/TopBar';
+import { changePassword } from '../../store/action/userActions';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 class Settings extends Component {
   state = {
     email: '',
     password: '',
     newPassword: '',
-    type: ''
+    userType: '',
+    user: ''
   };
 
   onSubmitHandler = event => {
     event.preventDefault();
-    this.props.changePassword(this.state);
+    this.props.changePassword(
+      this.state.password,
+      this.state.newPassword,
+      this.props.userType,
+      this.props.user
+    );
   };
 
   inputChangeHandler = ({ target }) => {
@@ -38,31 +44,19 @@ class Settings extends Component {
     });
   };
 
+  // @TODO: change to modal instead of alert
+  componentDidUpdate() {
+    if (this.props.changeSuccess) {
+      alert('Changed password successfully.');
+      this.props.history.push('/dashboard');
+    }
+  };
+
   render() {
     return (
       <div>
-        <TopBar />
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <a href="#">Home</a>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>Clients</BreadcrumbItem>
-        </Breadcrumb>
         <Row>
-          <Col md="2">
-            <StyledMenu>
-              <div>
-                <Link to="#">Clients</Link>
-              </div>
-              <div>
-                <Link to="#">Billing</Link>
-              </div>
-              <div>
-                <Link to="#">Settings</Link>
-              </div>
-            </StyledMenu>
-          </Col>
-          <Col md="2" />
+          <Col md="4" />
           <Col>
             <Form onSubmit={e => this.onSubmitHandler(e)}>
               <FormGroup>
@@ -98,33 +92,10 @@ class Settings extends Component {
                   onChange={this.inputChangeHandler}
                 />
               </FormGroup>
-              <FormGroup tag="fieldset">
-                <legend>Radio Buttons</legend>
-                <FormGroup check>
-                  <Label check>
-                    <Input
-                      type="radio"
-                      name="type"
-                      value="vendor"
-                      onChange={this.inputChangeHandler}
-                    />Vendor
-                  </Label>
-                </FormGroup>
-                <FormGroup check>
-                  <Label check>
-                    <Input
-                      type="radio"
-                      name="type"
-                      value="client"
-                      onChange={this.inputChangeHandler}
-                    />Client
-                  </Label>
-                </FormGroup>
-              </FormGroup>
               <Button>Submit</Button>
             </Form>
           </Col>
-          <Col md="4"/>
+          <Col md="4" />
         </Row>
       </div>
     );
@@ -145,4 +116,14 @@ const AddText = styled.div`
   font-size: 4em;
 `;
 
-export default Settings;
+const mapStateToProps = state => {
+  return {
+    userType: state.userReducer.userType,
+    user: state.userReducer.user,
+    changeSuccess: state.userReducer.changeSuccess
+  };
+};
+
+export default withRouter(
+  connect(mapStateToProps, { changePassword })(Settings)
+);
