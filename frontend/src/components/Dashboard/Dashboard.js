@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Row,
-  Col,
-} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
 import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
+import { connect } from 'react-redux';
+import { getUserInfo } from '../../store/action/userActions';
 
 // Components
 import CreateClient from '../CreateClient/CreateClient';
@@ -15,8 +12,19 @@ import Settings from '../Settings/Settings';
 
 class Dashboard extends Component {
   state = {
-    clients: []
+    user: '',
+    name: '',
+    email: '',
+    clients: [],
+    hoursLogged: [],
+    invoices: []
   };
+
+  componentDidMount() {
+    if (this.props.user) {
+      this.props.getUserInfo(this.props.user);
+    }
+  }
 
   render() {
     return (
@@ -64,7 +72,7 @@ const mainDash = props => {
       <AddText>
         <div>New Client</div>
         <div>
-          <Link to="dashboard/client/new">
+          <Link to="/dashboard/client/new">
             <FaCircle />
           </Link>
         </div>
@@ -87,4 +95,15 @@ const AddText = styled.div`
   font-size: 4em;
 `;
 
-export default Dashboard;
+const mapStateToProps = state => {
+  return {
+    user: state.userReducer.user,
+    name: state.userReducer.name,
+    email: state.userReducer.email,
+    clients: state.userReducer.clients,
+    hoursLogged: state.userReducer.hoursLogged,
+    invoices: state.userReducer.invoices
+  };
+};
+
+export default connect(mapStateToProps, { getUserInfo })(Dashboard);

@@ -29,18 +29,31 @@ vendorRouter.post('/', (req, res) => {
 //Get all vendors from a specific client
 //using the client's email
 //TODO modify req.body if necessary to get client's email
-vendorRouter.get('/', (req, res) => {
-  const { email } = req.body;
-  Client.findOne({ email })
-    .then(client => {
-      const clientId = client.id;
-      Vendor.find({ clientId }, (err, vendors) => {
-        if (err) return res.send(err);
-        res.send(vendors);
-      });
+// vendorRouter.get('/', (req, res) => {
+//   const { email } = req.body;
+//   Client.findOne({ email })
+//     .then(client => {
+//       const clientId = client.id;
+//       Vendor.find({ clientId }, (err, vendors) => {
+//         if (err) return res.send(err);
+//         res.send(vendors);
+//       });
+//     })
+//     .catch(err => {
+//       res.status(500).json({ error: `Could not retreive vendor: ${err}` });
+//     });
+// });
+
+vendorRouter.get('/:id', (req, res) => {
+  const { id } = req.params;
+  Vendor.findOne({ _id: id })
+    .populate('clients', { password: 0, invoices: 0 })
+    .then(vendor => {
+      console.log(vendor);
+      res.status(200).json(vendor);
     })
     .catch(err => {
-      res.status(500).json({ error: `Could not retreive vendor: ${err}` });
+      res.status(500).json(err);
     });
 });
 
@@ -96,24 +109,21 @@ vendorRouter.put('/:id', (req, res) => {
     });
 });
 
+// @TODO send email to new client, and check dups
 // Add client to vendor array
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
   console.log(email);
-  Vendor.findOne({ _id })
-    .then(vendor => {
-      if (vendor) {
-        Client.findOne({ email })
-          .then(client => {
-            vendor.clients.push(client._id);
-            res.status(200).json(vendor);
-          })
-          .catch(err => {
-            res.status(500).json({ error: 'Error try again' });
-          });
-      } else {
-        res.status(422).json({ error: 'user not found' });
-      }
+  Client.findOne({ email })
+    .then(client => {
+      // if client !== null
+      Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
+        .populate('clients', { password: 0, invoices: 0 })
+        .then(vendor => {
+          console.log(vendor);
+          res.status(200).json(vendor);
+        });
+      // else creat client and email
     })
     .catch(err => {
       res.status(500).json({ error: 'Error try again' });
