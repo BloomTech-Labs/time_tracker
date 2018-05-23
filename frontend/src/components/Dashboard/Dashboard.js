@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Row,
-  Col,
-  ListGroup,
-  ListGroupItem
-} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
 import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
 
 // Components
-import TopBar from '../TopBar/TopBar';
 import CreateClient from '../CreateClient/CreateClient';
 
 class Dashboard extends Component {
@@ -23,10 +15,9 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
-        <TopBar />
         <Breadcrumb>
           <BreadcrumbItem>
-            <a href="#">Home</a>
+            <a href="/dashboard">Home</a>
           </BreadcrumbItem>
           <BreadcrumbItem active>Clients</BreadcrumbItem>
         </Breadcrumb>
@@ -34,13 +25,13 @@ class Dashboard extends Component {
           <Col md="2">
             <StyledMenu>
               <div>
-                <Link to="#">Clients</Link>
+                <Link to="/dashboard/client">Clients</Link>
               </div>
               <div>
-                <Link to="#">Billing</Link>
+                <Link to="/dashboard/billing">Billing</Link>
               </div>
               <div>
-                <Link to="#">Settings</Link>
+                <Link to="/dashboard/setting">Settings</Link>
               </div>
             </StyledMenu>
           </Col>

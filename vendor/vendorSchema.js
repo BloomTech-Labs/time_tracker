@@ -5,7 +5,7 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const VendorSchema = new Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, index: true },
   password: { type: String, required: true },
   paid: { type: Boolean, required: true, default: false },
   hoursLogged: [{ type: ObjectId, ref: 'timestamp' }],
