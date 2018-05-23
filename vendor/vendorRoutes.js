@@ -96,6 +96,30 @@ vendorRouter.put('/:id', (req, res) => {
     });
 });
 
+// Add client to vendor array
+vendorRouter.put('/client/add', (req, res) => {
+  const { _id, email } = req.body;
+  console.log(email);
+  Vendor.findOne({ _id })
+    .then(vendor => {
+      if (vendor) {
+        Client.findOne({ email })
+          .then(client => {
+            vendor.clients.push(client._id);
+            res.status(200).json(vendor);
+          })
+          .catch(err => {
+            res.status(500).json({ error: 'Error try again' });
+          });
+      } else {
+        res.status(422).json({ error: 'user not found' });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Error try again' });
+    });
+});
+
 //Remove
 vendorRouter.delete('/:id', (req, res) => {
   const { id } = req.params;

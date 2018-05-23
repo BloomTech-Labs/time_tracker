@@ -2,6 +2,8 @@ const express = require('express');
 const Vendor = require('../vendor/vendorSchema');
 const Client = require('./clientSchema');
 const clientRouter = express.Router();
+const jwt = require('jsonwebtoken');
+const { secret } = require('../config/config');
 
 //Create new client
 //TODO encrypt password pre save in the client schema
@@ -14,10 +16,14 @@ clientRouter.post('/', (req, res) => {
     return;
   }
   const client = new Client(req.body);
-  client.save((err, client) => {
-    if (err) return res.send(err);
-    res.json({ success: 'Client saved' });
-  });
+  client
+    .save()
+    .then(vendor => {
+      res.status(200).json({ success: 'Vendor saved' });
+    })
+    .catch(err => {
+      res.send(err);
+    });
 });
 
 //Get all clients from a specific vendor
@@ -34,21 +40,34 @@ clientRouter.get('/', (req, res) => {
 //TODO Modify password checking after implementing password encryption
 clientRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
-  Client.findOne({ email }, (err, client) => {
-    if (err || !client) {
-      res.status(500).json({ error: 'Invalid username or password' });
-      return;
-    }
-    if (email === null) {
-      res.status(422).json({ error: 'No user with that email in our DB' });
-      return;
-    }
-    if (password === client.password) {
-      res.json({ success: true });
-    } else {
-      res.status(422).json({ error: 'Invalid username or password' });
-    }
-  });
+  console.log(email);
+  Client.findOne({ email })
+    .then(client => {
+      console.log(client);
+      if (client !== null) {
+        client.comparePass(password, (err, match) => {
+          if (err) {
+            res.send(422).json({ err });
+          }
+          if (match) {
+            const payload = {
+              email: client.email,
+              userId: client._id
+            };
+            res
+              .status(200)
+              .json({ token: jwt.sign(payload, secret), _id: client._id });
+          } else {
+            res.status(422).json({ error: 'email or password is not correct' });
+          }
+        });
+      } else {
+        res.status(422).json({ error: 'email or password is not correct' });
+      }
+    })
+    .catch(err => {
+      res.status(500);
+    });
 });
 
 //Update
