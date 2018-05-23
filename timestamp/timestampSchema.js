@@ -3,13 +3,13 @@ const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema.Types;
 
 const timestampSchema = new Schema({
-  startTime: { type: Date, required: true },
+  startTime: { type: Date, default: Date.now(), required: true },
   endTime: { type: Date },
   active: { type: Boolean, default: true },
   vendor: { type: ObjectId, ref: 'Vendor' },
   client: { type: ObjectId, ref: 'Client' },
   comments: { type: String },
-  invoiced: { type: Boolean },
+  invoiced: { type: Boolean, default: false },
   invoiceNum: { type: ObjectId, ref: 'Invoice' }
 });
 

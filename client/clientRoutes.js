@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 
 //Create new client
-//TODO encrypt password pre save in the client schema
+//TODO think about auto adding client when created from vendor.
 clientRouter.post('/', (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !password || !email) {
@@ -30,18 +30,10 @@ clientRouter.post('/', (req, res) => {
 //using the vendor's email
 //TODO modify req.body if necessary to get vendor's email
 clientRouter.get('/', (req, res) => {
-  const { email } = req.body;
-  Vendor.findOne({ email })
-    .then(vendor => {
-      const vendorId = vendor.id;
-      Client.find({ vendorId }, (err, clients) => {
-        if (err) return res.send(err);
-        res.send(clients);
-      });
-    })
-    .catch(err => {
-      res.status(500).json({ error: `Could not retreive users: ${err}` });
-    });
+  const { _id } = req.body;
+  Client.findOne({ email })
+    .then()
+    .catch();
 });
 
 //Login

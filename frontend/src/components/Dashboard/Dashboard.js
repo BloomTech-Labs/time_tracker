@@ -1,22 +1,32 @@
 import React, { Component } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Row,
-  Col,
-} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
 import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
+import { connect } from 'react-redux';
+import { getUserInfo } from '../../store/action/userActions';
 
 // Components
 import CreateClient from '../CreateClient/CreateClient';
 import Settings from '../Settings/Settings';
+import ClientList from '../ClientList/ClientList';
 
 class Dashboard extends Component {
   state = {
-    clients: []
+    user: '',
+    name: '',
+    email: '',
+    clients: [],
+    hoursLogged: [],
+    invoices: []
   };
+
+  componentDidMount() {
+    if (this.props.user) {
+      this.props.getUserInfo(this.props.user);
+      console.log(this.props.clients);
+    }
+  }
 
   render() {
     return (
@@ -31,7 +41,7 @@ class Dashboard extends Component {
           <Col md="2">
             <StyledMenu>
               <div>
-                <Link to="/dashboard/client">Clients</Link>
+                <Link to="/dashboard/clients">Clients</Link>
               </div>
               <div>
                 <Link to="/dashboard/billing">Billing</Link>
@@ -43,7 +53,8 @@ class Dashboard extends Component {
           </Col>
           <Col>
             <Switch>
-              <Route path={'/dashboard/client/new'} component={CreateClient} />
+              <Route path={'/dashboard/clients'} component={ClientList} />
+              <Route path={'/dashboard/clients/new'} component={CreateClient} />
               <Route path={'/dashboard/settings'} component={Settings} />
               <Route
                 path={'/dashboard'}
@@ -64,7 +75,7 @@ const mainDash = props => {
       <AddText>
         <div>New Client</div>
         <div>
-          <Link to="dashboard/client/new">
+          <Link to="/dashboard/clients/new">
             <FaCircle />
           </Link>
         </div>
@@ -87,4 +98,15 @@ const AddText = styled.div`
   font-size: 4em;
 `;
 
-export default Dashboard;
+const mapStateToProps = state => {
+  return {
+    user: state.userReducer.user,
+    name: state.userReducer.name,
+    email: state.userReducer.email,
+    clients: state.userReducer.clients,
+    hoursLogged: state.userReducer.hoursLogged,
+    invoices: state.userReducer.invoices
+  };
+};
+
+export default connect(mapStateToProps, { getUserInfo })(Dashboard);
