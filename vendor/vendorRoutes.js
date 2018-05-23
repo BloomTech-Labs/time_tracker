@@ -120,6 +120,8 @@ vendorRouter.put('/client/add', (req, res) => {
     });
 });
 
+// @TODO: add changing of email and checking new password to not be the same as old
+// @TODO STRETCH: cannot use previous X passwords
 // Update vendor password and revalidate JWT
 vendorRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
