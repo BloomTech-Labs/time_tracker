@@ -2,6 +2,8 @@ const express = require('express');
 const Vendor = require('./vendorSchema');
 const Client = require('../client/clientSchema');
 const vendorRouter = express.Router();
+const jwt = require('jsonwebtoken');
+const { secret } = require('../config/config');
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
@@ -14,10 +16,14 @@ vendorRouter.post('/', (req, res) => {
     return;
   }
   const vendor = new Vendor(req.body);
-  vendor.save((err, vendor) => {
-    if (err) return res.send(err);
-    res.json({ success: 'Vendor saved' });
-  });
+  vendor
+    .save()
+    .then(vendor => {
+      res.status(200).json({ success: 'Vendor saved' });
+    })
+    .catch(err => {
+      res.send(err);
+    });
 });
 
 //Get all vendors from a specific client
@@ -42,21 +48,32 @@ vendorRouter.get('/', (req, res) => {
 //TODO Modify password checking after implementing password encryption
 vendorRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
-  Vendor.findOne({ email }, (err, vendor) => {
-    if (err || !vendor) {
-      res.status(500).json({ error: 'Invalid username or password' });
-      return;
-    }
-    if (email === null) {
-      res.status(422).json({ error: 'No user with that email in our DB' });
-      return;
-    }
-    if (password === vendor.password) {
-      res.json({ success: true });
-    } else {
-      res.status(422).json({ error: 'Invalid username or password' });
-    }
-  });
+  Vendor.findOne({ email })
+    .then(vendor => {
+      if (vendor !== null) {
+        vendor.comparePass(password, (err, match) => {
+          if (err) {
+            res.send(422).json({ err });
+          }
+          if (match) {
+            const payload = {
+              email: vendor.email,
+              userId: vendor._id
+            };
+            res
+              .status(200)
+              .json({ token: jwt.sign(payload, secret), _id: vendor._id });
+          } else {
+            res.status(422).json({ error: 'email or password is not correct' });
+          }
+        });
+      } else {
+        res.status(422).json({ error: 'email or password is not correct' });
+      }
+    })
+    .catch(err => {
+      res.status(500);
+    });
 });
 
 //Update
@@ -76,6 +93,30 @@ vendorRouter.put('/:id', (req, res) => {
       res
         .status(500)
         .json({ error: `There was an error while updating vendor: ${err}` });
+    });
+});
+
+// Add client to vendor array
+vendorRouter.put('/client/add', (req, res) => {
+  const { _id, email } = req.body;
+  console.log(email);
+  Vendor.findOne({ _id })
+    .then(vendor => {
+      if (vendor) {
+        Client.findOne({ email })
+          .then(client => {
+            vendor.clients.push(client._id);
+            res.status(200).json(vendor);
+          })
+          .catch(err => {
+            res.status(500).json({ error: 'Error try again' });
+          });
+      } else {
+        res.status(422).json({ error: 'user not found' });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Error try again' });
     });
 });
 

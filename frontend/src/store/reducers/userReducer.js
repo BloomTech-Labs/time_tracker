@@ -1,4 +1,4 @@
-import { SIGNUP, LOGIN } from '../action/userActions';
+import { SIGNUP, LOGIN, ADD_CLIENT } from '../action/userActions';
 
 const initialState = {
   user: '',
@@ -11,7 +11,14 @@ export const userReducer = (state = initialState, action) => {
     case SIGNUP:
       return { ...state, signedUp: true };
     case LOGIN:
-      return {...state, loggedIn: true, signedUp: false };
+      return {
+        ...state,
+        loggedIn: true,
+        signedUp: false,
+        user: action.payload._id
+      };
+    case ADD_CLIENT:
+      return { ...state };
     default:
       return state;
   }
