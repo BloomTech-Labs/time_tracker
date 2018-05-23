@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Row,
+  Col,
+} from 'reactstrap';
 import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
 
 // Components
 import CreateClient from '../CreateClient/CreateClient';
+import Settings from '../Settings/Settings';
 
 class Dashboard extends Component {
   state = {
@@ -31,13 +37,14 @@ class Dashboard extends Component {
                 <Link to="/dashboard/billing">Billing</Link>
               </div>
               <div>
-                <Link to="/dashboard/setting">Settings</Link>
+                <Link to="/dashboard/settings">Settings</Link>
               </div>
             </StyledMenu>
           </Col>
           <Col>
             <Switch>
               <Route path={'/dashboard/client/new'} component={CreateClient} />
+              <Route path={'/dashboard/settings'} component={Settings} />
               <Route
                 path={'/dashboard'}
                 component={mainDash}

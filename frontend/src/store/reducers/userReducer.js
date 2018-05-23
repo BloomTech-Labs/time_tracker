@@ -1,9 +1,17 @@
-import { SIGNUP, LOGIN, ADD_CLIENT } from '../action/userActions';
+import {
+  SIGNUP,
+  LOGIN,
+  ADD_CLIENT,
+  CHANGE_PASSWORD,
+  PASSWORD_CHANGED
+} from '../action/userActions';
 
 const initialState = {
   user: '',
+  userType: '',
   signedUp: false,
-  loggedIn: false
+  loggedIn: false,
+  changeSuccess: false
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -15,10 +23,15 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         loggedIn: true,
         signedUp: false,
-        user: action.payload._id
+        user: action.payload._id,
+        userType: action.userType
       };
     case ADD_CLIENT:
       return { ...state };
+    case CHANGE_PASSWORD:
+      return { ...state, changeSuccess: true };
+    case PASSWORD_CHANGED:
+      return { ...state, changeSuccess: false };
     default:
       return state;
   }

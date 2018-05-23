@@ -7,6 +7,7 @@ import LandingPage from '../LandingPage/LandingPage';
 import SignUp from '../SignUp/SignUp';
 import Login from '../Login/Login';
 import Dashboard from '../Dashboard/Dashboard';
+import Settings from '../Settings/Settings';
 
 class App extends Component {
   render() {
@@ -17,6 +18,7 @@ class App extends Component {
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/settings" component={Settings} />
             <Route path="/" component={LandingPage} />
           </Switch>
         </div>
