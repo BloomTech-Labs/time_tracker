@@ -1,28 +1,56 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'reactstrap';
-
-import { connect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import {
+  Card,
+  CardImg,
+  CardText,
+  CardBody,
+  CardLink,
+  CardTitle,
+  CardSubtitle
+} from 'reactstrap';
 
 class ClientList extends Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    console.log(this.props.clients);
   }
+
   render() {
     return (
       <Row>
-        {this.props.clients.map(client => {
-          <ClientCard key={client._id} />;
+        {this.props.clients.map((client, i) => {
+          return (
+            <Link to={`/dashboard/clients/${client._id}`} key={i}>
+              <ClientCard name={client.name} />
+            </Link>
+          );
         })}
       </Row>
     );
   }
 }
 
-// const ClientCard = (props) => {
-//   <Col md="6">
-//     <h3>{props.name}</h3>
-//     <p>Comment section</p>
-//   </Col>
-// }
+const ClientCard = props => {
+  return (
+    <Col sm="6">
+      <Card>
+        <CardBody>
+          <CardTitle>{props.name}</CardTitle>
+        </CardBody>
+        <CardBody>
+          <CardText>Add comments or description</CardText>
+        </CardBody>
+      </Card>
+    </Col>
+  );
+};
 
-export default ClientList;
+const mapStateToProps = state => {
+  return {
+    clients: state.userReducer.clients
+  };
+};
+
+export default connect(mapStateToProps, null)(ClientList);

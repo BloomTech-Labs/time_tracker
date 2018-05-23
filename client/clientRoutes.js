@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 
 //Create new client
-//TODO encrypt password pre save in the client schema
+//TODO think about auto adding client when created from vendor.
 clientRouter.post('/', (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !password || !email) {

@@ -26,30 +26,12 @@ vendorRouter.post('/', (req, res) => {
     });
 });
 
-//Get all vendors from a specific client
-//using the client's email
-//TODO modify req.body if necessary to get client's email
-// vendorRouter.get('/', (req, res) => {
-//   const { email } = req.body;
-//   Client.findOne({ email })
-//     .then(client => {
-//       const clientId = client.id;
-//       Vendor.find({ clientId }, (err, vendors) => {
-//         if (err) return res.send(err);
-//         res.send(vendors);
-//       });
-//     })
-//     .catch(err => {
-//       res.status(500).json({ error: `Could not retreive vendor: ${err}` });
-//     });
-// });
-
+// Get all user info using id. populate client array
 vendorRouter.get('/:id', (req, res) => {
   const { id } = req.params;
   Vendor.findOne({ _id: id })
     .populate('clients', { password: 0, invoices: 0 })
     .then(vendor => {
-      console.log(vendor);
       res.status(200).json(vendor);
     })
     .catch(err => {
@@ -58,7 +40,6 @@ vendorRouter.get('/:id', (req, res) => {
 });
 
 //Login
-//TODO Modify password checking after implementing password encryption
 vendorRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
   Vendor.findOne({ email })
@@ -110,17 +91,16 @@ vendorRouter.put('/:id', (req, res) => {
 });
 
 // @TODO send email to new client, and check dups
-// Add client to vendor array
+// Add client to vendor array and populate client info array
+// @TODO should the vendor id also be set into client vendor list.
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
-  console.log(email);
   Client.findOne({ email })
     .then(client => {
       // if client !== null
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
-          console.log(vendor);
           res.status(200).json(vendor);
         });
       // else creat client and email
@@ -136,7 +116,6 @@ vendorRouter.put('/client/add', (req, res) => {
 vendorRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
   const { password, newPassword } = req.body;
-  console.log(id);
   Vendor.findOne({ _id: id })
     .then(vendor => {
       vendor.comparePass(password, (err, match) => {
