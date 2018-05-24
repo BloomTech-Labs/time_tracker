@@ -40,10 +40,10 @@ clientRouter.get('/', (req, res) => {
 //TODO Modify password checking after implementing password encryption
 clientRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
-  console.log(email);
+  console.log('emial', email);
   Client.findOne({ email })
     .then(client => {
-      console.log(client);
+      console.log('client', client);
       if (client !== null) {
         client.comparePass(password, (err, match) => {
           if (err) {
@@ -94,7 +94,7 @@ clientRouter.put('/:id', (req, res) => {
 clientRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
   const { password, newPassword } = req.body;
-  console.log(id);
+  console.log('id', id);
   Client.findOne({ _id: id })
     .then(client => {
       client.comparePass(password, (err, match) => {

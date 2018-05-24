@@ -10,6 +10,7 @@ import { getUserInfo } from '../../store/action/userActions';
 import CreateClient from '../CreateClient/CreateClient';
 import Settings from '../Settings/Settings';
 import ClientList from '../ClientList/ClientList';
+import VendorClientPage from '../VendorClientPage/VendorClientPage';
 
 class Dashboard extends Component {
   state = {
@@ -47,14 +48,15 @@ class Dashboard extends Component {
                 <Link to="/dashboard/billing">Billing</Link>
               </div>
               <div>
-                <Link to="/dashboard/settings">Settings</Link>
+                <Link to="/dashboard/setting">Settings</Link>
               </div>
             </StyledMenu>
           </Col>
           <Col>
             <Switch>
-              <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/clients/new'} component={CreateClient} />
+              <Route path={'/dashboard/clients/:id'} component={VendorClientPage} />
+              <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/settings'} component={Settings} />
               <Route
                 path={'/dashboard'}
