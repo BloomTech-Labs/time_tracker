@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema.Types;
 
 const timestampSchema = new Schema({
-  startTime: { type: Date, default: Date.now(), required: true },
+  startTime: { type: Date, required: true },
   endTime: { type: Date },
   active: { type: Boolean, default: true },
   vendor: { type: ObjectId, ref: 'Vendor' },
