@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Col, Row } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import axios from 'axios';
 import PlayIcon from 'react-icons/lib/fa/play';
 import StopIcon from 'react-icons/lib/fa/stop';
@@ -17,10 +17,10 @@ class VendorClientPage extends Component {
   state = {
     name: '',
     user: '',
-    activeTStamp: '',
     hoursLogged: [],
     invoices: [],
     activeTimer: false,
+    activeTimerId: '',
     timer: ''
   };
 
@@ -28,13 +28,6 @@ class VendorClientPage extends Component {
     this.getClient();
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.activeTimer !== prevProps.activeTimer &&
-      this.props.activeTimer
-    ) {
-    }
-  }
   getClient = () => {
     const id = this.props.match.params.id;
     axios
@@ -51,13 +44,25 @@ class VendorClientPage extends Component {
       });
   };
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.activeTimer !== prevProps.activeTimer &&
+      this.props.activeTimer === true
+    ) {
+      this.tick();
+    }
+  }
+
   startTimer = () => {
     this.props.startNewTimer(this.props.user, this.props.match.params.id);
-    this.setTimer();
   };
 
   stopTimer = () => {
-    this.props.stopActiveTimer();
+    this.props.stopActiveTimer(this.props.activeTimerId);
+  };
+
+  tick = () => {
+    setInterval(() => this.setTimer(), 1000);
   };
 
   setTimer = () => {
@@ -82,7 +87,6 @@ class VendorClientPage extends Component {
       ...this.state,
       timer
     });
-    console.log(this.state.timer);
   };
 
   render() {
@@ -96,8 +100,8 @@ class VendorClientPage extends Component {
         <Row>
           <Col md="4" />
           <Col md="4">
-            {this.state.activeTimer ? <h3>1:23</h3> : null}
-            {this.state.activeTimer ? (
+            {this.props.activeTimer ? <h3>{this.state.timer}</h3> : null}
+            {this.props.activeTimer ? (
               <StyledStop>
                 <StopIcon onClick={this.stopTimer} />
               </StyledStop>

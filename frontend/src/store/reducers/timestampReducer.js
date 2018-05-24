@@ -1,4 +1,4 @@
-import { START_TIMER } from '../action/timestampActions';
+import { START_TIMER, STOP_TIMER } from '../action/timestampActions';
 
 const initialState = {
   activeTimerId: '',
@@ -14,6 +14,13 @@ export const timestampReducer = (state = initialState, action) => {
         activeTimerId: action.payload._id,
         startTime: action.payload.startTime,
         activeTimer: true
+      };
+    case STOP_TIMER:
+      return {
+        ...state,
+        activeTimerId: '',
+        startTime: '',
+        activeTimer: false
       };
     default:
       return state;

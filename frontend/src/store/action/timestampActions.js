@@ -8,12 +8,20 @@ export const startNewTimer = (vendorId, clientId) => {
     axios
       .post(`${backend}/timestamp/start`, { vendorId, clientId })
       .then(({ data }) => {
-        console.log(data);
         dispatch({ type: START_TIMER, payload: data });
       });
   };
 };
 
-export const stopActiveTimer = () => {
-  console.log('stopping timer');
+export const stopActiveTimer = timestampId => {
+  return dispatch => {
+    axios
+      .put(`${backend}/timestamp/stop`, { timestampId })
+      .then(({ data }) => {
+        dispatch({ type: STOP_TIMER, payload: data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 };

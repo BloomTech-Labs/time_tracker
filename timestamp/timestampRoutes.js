@@ -8,24 +8,41 @@ timestampRouter.post('/start', (req, res) => {
   // client id vendor id
   const { vendorId, clientId } = req.body;
   if (vendorId && clientId) {
-    const newTStamp = new Timestamp({ client: clientId, vendor: vendorId });
+    const newTStamp = new Timestamp({
+      client: clientId,
+      vendor: vendorId,
+      startTime: new Date()
+    });
     newTStamp.save();
-    console.log(newTStamp);
     res.status(200).json(newTStamp);
     // push this id to vendor timestamp array
     Vendor.findOneAndUpdate(
       { _id: vendorId },
       { $push: { hoursLogged: newTStamp._id } }
     );
+    Client.findOneAndUpdate(
+      { _id: clientId },
+      { $push: { hoursLogged: newTStamp._id } }
+    );
   } else {
     res.status(422).json({ error: 'must include vendorId and clientId' });
   }
+});
 
-  // push this id to client timestamp array
-  // Client.findOneAndUpdate(
-  //   { _id: clientId },
-  //   { $push: { hoursLogged: newTStamp._id } }
-  // );
+// stop timer using timestamp id and push to clients hourslogged
+timestampRouter.put('/stop', (req, res) => {
+  const { timestampId } = req.body;
+
+  Timestamp.findOneAndUpdate(
+    { _id: timestampId },
+    { endTime: new Date(), active: false }
+  )
+    .then(timestamp => {
+      res.status(200).json(timestamp);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
 });
 
 //Create new timestamp
