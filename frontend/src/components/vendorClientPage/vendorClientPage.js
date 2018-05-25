@@ -81,7 +81,7 @@ class VendorClientPage extends Component {
       duration.get('seconds').toString().length < 2
         ? '0' + duration.get('seconds').toString()
         : duration.get('seconds').toString();
-    const timer = `${hours}:${minutes}:${seconds}`;
+    const timer = moment(duration._data).format('HH:mm:ss');
 
     this.setState({
       ...this.state,
@@ -120,11 +120,42 @@ class VendorClientPage extends Component {
           <Col xs="6">
             <h4>8 hrs</h4>
           </Col>
+          <Col xs="6">
+            <h4>05/23/18</h4>
+          </Col>
+          <Col xs="6">
+            <h4>8 hrs</h4>
+          </Col>
+          {this.props.hoursLogged.map((hour, i) => {
+            const start = moment(hour.startTime);
+            const end = moment(hour.endTime);
+            const duration = moment.duration(end.diff(start));
+            return (
+              <HourLog
+                key={i}
+                date={start.format('MM/DD/YYYY')}
+                totalTime={moment(duration._data).format('HH:mm:ss')}
+              />
+            );
+          })}
         </Row>
       </div>
     );
   }
 }
+
+const HourLog = props => {
+  return (
+    // <div>
+    <Col xs="6">
+      <h4>{props.date}</h4>
+    </Col>
+    // <Col xs="6">
+    //<h4>{props.totalTime}</h4>
+    //</Col>
+    //</div>
+  );
+};
 
 const StyledStart = styled.div`
   font-size: 3em;
@@ -145,7 +176,8 @@ const mapStateToProps = state => {
     user: state.userReducer.user,
     activeTimer: state.timestampReducer.activeTimer,
     activeTimerId: state.timestampReducer.activeTimerId,
-    startTime: state.timestampReducer.startTime
+    startTime: state.timestampReducer.startTime,
+    hoursLogged: state.userReducer.hoursLogged
   };
 };
 
