@@ -159,7 +159,7 @@ const HourLog = props => {
 
 const StyledStart = styled.div`
   font-size: 3em;
-  color: green;
+  color: blue;
 
   :hover {
     cursor: pointer;
