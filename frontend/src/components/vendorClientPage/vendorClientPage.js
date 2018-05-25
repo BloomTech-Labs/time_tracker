@@ -86,7 +86,7 @@ class VendorClientPage extends Component {
       duration.get('seconds').toString().length < 2
         ? '0' + duration.get('seconds').toString()
         : duration.get('seconds').toString();
-    const timer = `${hours}:${minutes}:${seconds}`;
+    const timer = moment(duration._data).format('HH:mm:ss');
 
     this.setState({
       ...this.state,
@@ -119,27 +119,52 @@ class VendorClientPage extends Component {
           <Col md="4" />
         </Row>
         <Row>
-        	{this.state.hoursLogged.map((hour, i) => {
-        		return (
-        			<div key={i}>
-								<Col xs="6">
-			           <h4>{hour.date}</h4>
-			          </Col>
-			          <Col xs="6">
-			           <h4>{hour.hours}</h4>
-			          </Col>
-		          </div>
-	          )
-        	})}
+          <Col xs="6">
+            <h4>05/23/18</h4>
+          </Col>
+          <Col xs="6">
+            <h4>8 hrs</h4>
+          </Col>
+          <Col xs="6">
+            <h4>05/23/18</h4>
+          </Col>
+          <Col xs="6">
+            <h4>8 hrs</h4>
+          </Col>
+          {this.props.hoursLogged.map((hour, i) => {
+            const start = moment(hour.startTime);
+            const end = moment(hour.endTime);
+            const duration = moment.duration(end.diff(start));
+            return (
+              <HourLog
+                key={i}
+                date={start.format('MM/DD/YYYY')}
+                totalTime={moment(duration._data).format('HH:mm:ss')}
+              />
+            );
+          })}
         </Row>
       </div>
     );
   }
 }
 
+const HourLog = props => {
+  return (
+    // <div>
+    <Col xs="6">
+      <h4>{props.date}</h4>
+    </Col>
+    // <Col xs="6">
+    //<h4>{props.totalTime}</h4>
+    //</Col>
+    //</div>
+  );
+};
+
 const StyledStart = styled.div`
   font-size: 3em;
-  color: green;
+  color: blue;
 
   :hover {
     cursor: pointer;
