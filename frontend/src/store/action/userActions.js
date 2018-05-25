@@ -7,7 +7,8 @@ export const PASSWORD_CHANGED = 'PASSWORD_CHANGED';
 export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
 
-const backend = process.env.BASE_URL || 'http://localhost:5000';
+// const backend = process.env.BASE_URL || 'http://localhost:5000';
+const backend = process.env.NODE_ENV === 'production' ? `https://ls-time-tracker.herokuapp.com` : `http://localhost:5000`
 
 export const signUp = ({ name, email, password, type }) => {
   return dispatch => {
