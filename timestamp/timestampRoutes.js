@@ -31,9 +31,6 @@ timestampRouter.post('/start', (req, res) => {
   }
 });
 
-// vendor 5b0731a9cf97f45318036d6d
-// client 5b07318a7451ae9d24c06b60
-
 // stop timer using timestamp id and push to clients hourslogged
 timestampRouter.put('/stop', (req, res) => {
   const { timestampId } = req.body;
@@ -59,19 +56,11 @@ timestampRouter.post('/', (req, res) => {
   });
 });
 
-//Get all timestamps
-timestampRouter.get('/', (req, res) => {
-  const { id } = req.id;
-  Timestamp.find(id, (err, timestamps) => {
-    if (err) return res.send(err);
-    res.send(timestamps);
-  });
-});
-
 //Get an timestamp by id
 timestampRouter.get('/:id', (req, res) => {
   const { id } = req.params;
-  Timestamp.findById(id).populate('client')
+  Timestamp.findById(id)
+    .populate('client')
     .then(timestamp => {
       res.status(200).json(timestamp);
     })
@@ -80,23 +69,26 @@ timestampRouter.get('/:id', (req, res) => {
     });
 });
 
-//Update
+//Update timestamp
 timestampRouter.put('/:id', (req, res) => {
   const { id } = req.params;
-  Timestamp.findByIdAndUpdate(id, req.body)
-    .then(updatedTimestamp => {
-      if (updatedTimestamp) {
-        res.status(200).json(updatedTimestamp);
-      } else {
-        res
-          .status(404)
-          .json({ message: `Could not find timestamp with id ${id}` });
-      }
+  const { newTimestamp } = req.body;
+
+  // moment add hours minutes to start and use that timestamp for endTime
+  console.log(newTimestamp);
+  Timestamp.findOneAndUpdate(
+    { _id: id },
+    {
+      endTime: newTimestamp.endTime,
+      comments: newTimestamp.comments
+    },
+    { new: true }
+  )
+    .then(timestamp => {
+      res.status(200).json(timestamp);
     })
     .catch(err => {
-      res
-        .status(500)
-        .json({ error: `There was an error while updating timestamp: ${err}` });
+      res.status(500).json(err);
     });
 });
 
