@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
-const backend = process.env.BASE_URL || 'http://localhost:5000';
+const backend =
+  process.env.NODE_ENV === 'production'
+    ? `https://ls-time-tracker.herokuapp.com`
+    : `http://localhost:5000`;
 
 class TimestampDetail extends Component {
   state = {
@@ -32,7 +35,7 @@ class TimestampDetail extends Component {
         this.setState({
           duration: moment(duration._data).format('HH:mm:ss'),
           date: start.format('MM/DD/YYYY')
-        })
+        });
       })
       .catch(err => {
         console.log(err);

@@ -13,7 +13,10 @@ import {
 } from '../../store/action/timestampActions';
 import TimestampDetail from '../TimestampDetail/TimestampDetail';
 
-const backend = process.env.BASE_URL || 'http://localhost:5000';
+const backend =
+  process.env.NODE_ENV === 'production'
+    ? `https://ls-time-tracker.herokuapp.com`
+    : `http://localhost:5000`;
 
 class VendorClientPage extends Component {
   state = {
@@ -103,18 +106,20 @@ class VendorClientPage extends Component {
           </Col>
           <Col md="4" />
         </Row>
-          {this.props.hoursLogged.map((hour, i) => {
-            const start = moment(hour.startTime);
-            const end = moment(hour.endTime);
-            const duration = moment.duration(end.diff(start));
-            return (
-              <Link to={`timestamp/${hour._id}`}><HourLog
+        {this.props.hoursLogged.map((hour, i) => {
+          const start = moment(hour.startTime);
+          const end = moment(hour.endTime);
+          const duration = moment.duration(end.diff(start));
+          return (
+            <Link to={`timestamp/${hour._id}`}>
+              <HourLog
                 key={i}
                 date={start.format('MM/DD/YYYY')}
                 totalTime={moment(duration._data).format('HH:mm:ss')}
-              /></Link>
-            );
-          })}
+              />
+            </Link>
+          );
+        })}
       </div>
     );
   }
