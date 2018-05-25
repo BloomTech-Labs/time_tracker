@@ -71,7 +71,7 @@ timestampRouter.get('/', (req, res) => {
 //Get an timestamp by id
 timestampRouter.get('/:id', (req, res) => {
   const { id } = req.params;
-  Timestamp.findById(id)
+  Timestamp.findById(id).populate('client')
     .then(timestamp => {
       res.status(200).json(timestamp);
     })

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import PlayIcon from 'react-icons/lib/fa/play';
 import StopIcon from 'react-icons/lib/fa/stop';
 import styled from 'styled-components';
@@ -10,6 +11,7 @@ import {
   startNewTimer,
   stopActiveTimer
 } from '../../store/action/timestampActions';
+import TimestampDetail from '../TimestampDetail/TimestampDetail';
 
 const backend = process.env.BASE_URL || 'http://localhost:5000';
 
@@ -74,18 +76,6 @@ class VendorClientPage extends Component {
     const formattedStart = moment(this.props.startTime);
     const formattedNow = moment(Date.now());
     const duration = moment.duration(formattedNow.diff(formattedStart));
-    const hours =
-      duration.get('hours').toString().length < 2
-        ? '0' + duration.get('hours').toString()
-        : duration.get('hours').toString();
-    const minutes =
-      duration.get('minutes').toString().length < 2
-        ? '0' + duration.get('minutes').toString()
-        : duration.get('minutes').toString();
-    const seconds =
-      duration.get('seconds').toString().length < 2
-        ? '0' + duration.get('seconds').toString()
-        : duration.get('seconds').toString();
     const timer = moment(duration._data).format('HH:mm:ss');
 
     this.setState({
@@ -118,32 +108,18 @@ class VendorClientPage extends Component {
           </Col>
           <Col md="4" />
         </Row>
-        <Row>
-          <Col xs="6">
-            <h4>05/23/18</h4>
-          </Col>
-          <Col xs="6">
-            <h4>8 hrs</h4>
-          </Col>
-          <Col xs="6">
-            <h4>05/23/18</h4>
-          </Col>
-          <Col xs="6">
-            <h4>8 hrs</h4>
-          </Col>
           {this.props.hoursLogged.map((hour, i) => {
             const start = moment(hour.startTime);
             const end = moment(hour.endTime);
             const duration = moment.duration(end.diff(start));
             return (
-              <HourLog
+              <Link to={`timestamp/${hour._id}`}><HourLog
                 key={i}
                 date={start.format('MM/DD/YYYY')}
                 totalTime={moment(duration._data).format('HH:mm:ss')}
-              />
+              /></Link>
             );
           })}
-        </Row>
       </div>
     );
   }
@@ -151,14 +127,14 @@ class VendorClientPage extends Component {
 
 const HourLog = props => {
   return (
-    // <div>
-    <Col xs="6">
-      <h4>{props.date}</h4>
-    </Col>
-    // <Col xs="6">
-    //<h4>{props.totalTime}</h4>
-    //</Col>
-    //</div>
+    <Row>
+      <Col xs="6">
+        <h4>{props.date}</h4>
+      </Col>
+      <Col xs="6">
+        <h4>{props.totalTime}</h4>
+      </Col>
+    </Row>
   );
 };
 

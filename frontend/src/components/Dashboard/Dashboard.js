@@ -11,6 +11,7 @@ import CreateClient from '../CreateClient/CreateClient';
 import Settings from '../Settings/Settings';
 import ClientList from '../ClientList/ClientList';
 import VendorClientPage from '../VendorClientPage/VendorClientPage';
+import TimestampDetail from '../TimestampDetail/TimestampDetail';
 
 class Dashboard extends Component {
   state = {
@@ -54,6 +55,7 @@ class Dashboard extends Component {
           </Col>
           <Col>
             <Switch>
+              <Route path={'/dashboard/clients/timestamp/:id'} component={TimestampDetail} />
               <Route path={'/dashboard/clients/new'} component={CreateClient} />
               <Route path={'/dashboard/clients/:id'} component={VendorClientPage} />
               <Route path={'/dashboard/clients'} component={ClientList} />

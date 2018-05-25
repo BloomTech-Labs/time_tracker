@@ -4,6 +4,9 @@ const Client = require('../client/clientSchema');
 const vendorRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
@@ -103,6 +106,7 @@ vendorRouter.put('/:id', (req, res) => {
     });
 });
 
+
 // @TODO send email to new client, and check dups
 // Add client to vendor array and populate client info array
 // @TODO should the vendor id also be set into client vendor list.
@@ -114,9 +118,17 @@ vendorRouter.put('/client/add', (req, res) => {
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
+          const msg = { // @TODO Create email template for adding clients
+            to: `${email}`,
+            from: 'cs6timetracker@gmail.com',
+            subject: 'Someone has added you to their client list',
+            text: 'Click the link to sign in or register for an account to see the connection.',
+            html: '<a href="https://ls-time-tracker.herokuapp.com/" />'
+          };
+          sgMail.send(msg);
           res.status(200).json(vendor);
         });
-      // else creat client and email
+      // else create client and email
     })
     .catch(err => {
       res.status(500).json({ error: 'Error try again' });
