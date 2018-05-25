@@ -17,15 +17,20 @@ class VendorClientPage extends Component {
   state = {
     name: '',
     user: '',
-    hoursLogged: [],
+    hoursLogged: [
+		  { date: '05/24/18', hours: '8' },
+		  { date: '05/25/18', hours: '8' },
+		  { date: '05/26/18', hours: '8' }
+    ],
     invoices: [],
     activeTimer: false,
     activeTimerId: '',
-    timer: ''
+    timer: '',
   };
 
   componentDidMount() {
     this.getClient();
+    console.log(this.props.hoursLogged);
   }
 
   getClient = () => {
@@ -100,7 +105,7 @@ class VendorClientPage extends Component {
         <Row>
           <Col md="4" />
           <Col md="4">
-            {this.props.activeTimer ? <h3>{this.state.timer}</h3> : null}
+            {this.props.activeTimer ? this.state.timer === 'NaN:NaN:NaN' ? null : <h3>{this.state.timer}</h3> : null}
             {this.props.activeTimer ? (
               <StyledStop>
                 <StopIcon onClick={this.stopTimer} />
@@ -114,12 +119,18 @@ class VendorClientPage extends Component {
           <Col md="4" />
         </Row>
         <Row>
-          <Col xs="6">
-            <h4>05/23/18</h4>
-          </Col>
-          <Col xs="6">
-            <h4>8 hrs</h4>
-          </Col>
+        	{this.state.hoursLogged.map((hour, i) => {
+        		return (
+        			<div key={i}>
+								<Col xs="6">
+			           <h4>{hour.date}</h4>
+			          </Col>
+			          <Col xs="6">
+			           <h4>{hour.hours}</h4>
+			          </Col>
+		          </div>
+	          )
+        	})}
         </Row>
       </div>
     );
@@ -145,7 +156,8 @@ const mapStateToProps = state => {
     user: state.userReducer.user,
     activeTimer: state.timestampReducer.activeTimer,
     activeTimerId: state.timestampReducer.activeTimerId,
-    startTime: state.timestampReducer.startTime
+    startTime: state.timestampReducer.startTime,
+    hoursLogged: state.userReducer.hoursLogged
   };
 };
 

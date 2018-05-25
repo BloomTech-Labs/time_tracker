@@ -32,6 +32,7 @@ vendorRouter.get('/:id', (req, res) => {
   Vendor.findOne({ _id: id })
     .populate('clients', { password: 0, invoices: 0 })
     .then(vendor => {
+      console.log('vendor =>', vendor);
       res.status(200).json(vendor);
     })
     .catch(err => {
