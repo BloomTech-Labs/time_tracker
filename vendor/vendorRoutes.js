@@ -45,7 +45,8 @@ vendorRouter.get('/:id', (req, res) => {
 
 vendorRouter.get('/client/:id', (req, res) => {
   const { id } = req.params;
-  Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
+  Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1})
+    .populate('hoursLogged')
     .then(client => {
       res.status(200).json(client);
     })

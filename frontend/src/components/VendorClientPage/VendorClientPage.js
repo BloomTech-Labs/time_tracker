@@ -11,7 +11,6 @@ import {
   startNewTimer,
   stopActiveTimer
 } from '../../store/action/timestampActions';
-import TimestampDetail from '../TimestampDetail/TimestampDetail';
 
 const backend =
   process.env.NODE_ENV === 'production'
@@ -106,7 +105,8 @@ class VendorClientPage extends Component {
           </Col>
           <Col md="4" />
         </Row>
-        {this.props.hoursLogged.map((hour, i) => {
+        {this.state.hoursLogged.map((hour, i) => {
+          console.log({ hour });
           const start = moment(hour.startTime);
           const end = moment(hour.endTime);
           const duration = moment.duration(end.diff(start));
@@ -115,7 +115,7 @@ class VendorClientPage extends Component {
               <HourLog
                 key={i}
                 date={start.format('MM/DD/YYYY')}
-                totalTime={moment(duration._data).format('HH:mm:ss')}
+                totalTime={hour.duration || moment(duration._data).format('HH:mm:ss')}
               />
             </Link>
           );

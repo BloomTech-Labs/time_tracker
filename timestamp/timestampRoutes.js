@@ -3,6 +3,7 @@ const Timestamp = require('./timestampSchema');
 const Client = require('../client/clientSchema');
 const Vendor = require('../vendor/vendorSchema');
 const timestampRouter = express.Router();
+const moment = require('moment');
 
 timestampRouter.post('/start', (req, res) => {
   // client id vendor id
@@ -40,6 +41,29 @@ timestampRouter.put('/stop', (req, res) => {
     { endTime: new Date(), active: false }
   )
     .then(timestamp => {
+      const start = moment(timestamp.startTime);
+      const end = moment(timestamp.endTime);
+      const duration = moment.duration(end.diff(start));
+      const formatted = moment(duration._data).format('HH:mm')
+      let mins = Number(formatted.slice(0).split(':')[1]);
+      let hours = 0 || Number(formatted.slice(0).split(':')[0]);
+
+      if (mins <= 7) {
+        mins = '00';
+      } else if (mins > 7 && mins <= 22) {
+        mins = 15;
+      } else if (mins > 22 && mins <= 37) {
+        mins = 30;
+      } else if (mins > 37 && mins <= 52) {
+        mins = 45;
+      } else {
+        mins = '00';
+        hours += 1;
+      }
+
+      const newDuration = `${hours.toString()}:${mins.toString()}`;
+      timestamp.duration = newDuration;
+      timestamp.save();
       res.status(200).json(timestamp);
     })
     .catch(err => {
@@ -72,15 +96,13 @@ timestampRouter.get('/:id', (req, res) => {
 //Update timestamp
 timestampRouter.put('/:id', (req, res) => {
   const { id } = req.params;
-  const { newTimestamp } = req.body;
-
-  // moment add hours minutes to start and use that timestamp for endTime
-  console.log(newTimestamp);
+  const { newTimestamp, endTime, duration } = req.body;
   Timestamp.findOneAndUpdate(
     { _id: id },
     {
-      endTime: newTimestamp.endTime,
-      comments: newTimestamp.comments
+      comments: newTimestamp.comments,
+      endTime,
+      duration
     },
     { new: true }
   )

@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Form, Input, FormGroup, Label, Button, Row, Col } from 'reactstrap';
+import {
+  Form,
+  Input,
+  FormGroup,
+  Label,
+  Button,
+  Row,
+  Col
+} from 'reactstrap';
 
 const backend =
   process.env.NODE_ENV === 'production'
@@ -15,10 +23,13 @@ class TimestampDetail extends Component {
     endTime: '',
     clientName: '',
     duration: '',
-    date: ''
+    date: '',
+    hours: '',
+    minutes: ''
   };
 
   componentDidMount() {
+    console.log(this.props.match)
     axios
       .get(`${backend}/timestamp/${this.props.match.params.id}`)
       .then(({ data }) => {
@@ -26,21 +37,17 @@ class TimestampDetail extends Component {
           comments: data.comments,
           startTime: data.startTime,
           endTime: data.endTime,
-          clientName: data.client.name
+          clientName: data.client.name,
+          duration: data.duration
         });
       })
-      .then(timestamp => {
-        const start = moment(this.state.startTime);
-        const end = moment(this.state.endTime);
-        const duration = moment.duration(end.diff(start));
+      .then(data => {
+        const splitDuration = this.state.duration.slice(0).split(':');
         this.setState({
-          duration: moment(duration._data).format('HH:mm:ss'),
-          date: start.format('MM/DD/YYYY')
+          hours: splitDuration[0],
+          minutes: splitDuration[1]
         });
-        console.log('duration data: ', duration._data);
-      })
-      .then(time => {
-        console.log(this.state.duration);
+        console.log('timestamp: ',this.state)
       })
       .catch(err => {
         console.log(err);
@@ -55,16 +62,25 @@ class TimestampDetail extends Component {
 
   editTimestamp = event => {
     event.preventDefault();
-    console.log('edit timestamp');
+    const newDuration = `${this.state.hours}:${this.state.minutes}`;
+    this.setState({ duration: newDuration });
+    const newEndTime = moment(this.state.startTime)
+      .add(Number(this.state.hours), 'hours')
+      .add(Number(this.state.mins), 'minutes');
+
     axios
       .put(`${backend}/timestamp/${this.props.match.params.id}`, {
-        newTimestamp: this.state
+        newTimestamp: this.state,
+        endTime: newEndTime,
+        duration: newDuration
       })
       .then(updatedTStamp => {
         this.setState({
           comments: updatedTStamp.comments,
-          endTime: updatedTStamp.endTime
+          endTime: updatedTStamp.endTime,
+          duration: updatedTStamp.duration
         });
+
         // add modal when updated successfully.
       })
       .catch(err => {
@@ -72,29 +88,49 @@ class TimestampDetail extends Component {
       });
   };
 
-  // duration editing
-  // hours: minute: seconds
-  // editing time 12hours => 8 hours
-  // take ending time find difference to logged time.
-  // subtract difference from endTime in timestamp.
-
-  // @TODO Adding comments form
-  // @TODO Edit duration
   // @TODO textarea auto expand?
+  // @TODO Formatting forms so hours and minutes side-by-side
   render() {
     return (
       <div>
         <h1>{this.state.clientName}</h1>
         <h3>{this.state.date}</h3>
-        <Form>
-          <Input value={this.state.duration} />
-        </Form>
         <Row>
           <Col md="3" />
           <Col>
             <Form onSubmit={this.editTimestamp}>
               <FormGroup>
-                <Label for="comments">Comments</Label>
+                <Label for="hours">Hours</Label> {/* Edit hours form*/}
+                <Input
+                  name="hours"
+                  id="hours"
+                  value={this.state.hours}
+                  onChange={this.inputChangeHandler}
+                  placeholder={this.state.hours}
+                />
+                {/* <Label for="minutes">Minutes</Label>
+                <Input
+                  name="minutes"
+                  id="minutes"
+                  value={this.state.minutes}
+                  onChange={this.inputChangeHandler}
+                  placeholder={this.state.minutes}
+                /> */}
+                <Label for="minutes">Minutes</Label> {/* Edit minutes select*/}
+                <Input
+                  type="select"
+                  name="minutes"
+                  id="minutes"
+                  placeholder={this.state.minutes}
+                  value={this.state.minutes}
+                  onChange={this.inputChangeHandler}
+                >
+                  <option>00</option>
+                  <option>15</option>
+                  <option>30</option>
+                  <option>45</option>
+                </Input>
+                <Label for="comments">Comments</Label> {/* Edit comments form*/}
                 <Input
                   type="textarea"
                   name="comments"
