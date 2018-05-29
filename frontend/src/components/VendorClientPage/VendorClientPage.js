@@ -22,15 +22,20 @@ class VendorClientPage extends Component {
   state = {
     name: '',
     user: '',
-    hoursLogged: [],
+    hoursLogged: [
+		  { date: '05/24/18', hours: '8' },
+		  { date: '05/25/18', hours: '8' },
+		  { date: '05/26/18', hours: '8' }
+    ],
     invoices: [],
     activeTimer: false,
     activeTimerId: '',
-    timer: ''
+    timer: '',
   };
 
   componentDidMount() {
     this.getClient();
+    console.log(this.props.hoursLogged);
   }
 
   getClient = () => {
@@ -93,7 +98,7 @@ class VendorClientPage extends Component {
         <Row>
           <Col md="4" />
           <Col md="4">
-            {this.props.activeTimer ? <h3>{this.state.timer}</h3> : null}
+            {this.props.activeTimer ? this.state.timer === 'NaN:NaN:NaN' ? null : <h3>{this.state.timer}</h3> : null}
             {this.props.activeTimer ? (
               <StyledStop>
                 <StopIcon onClick={this.stopTimer} />

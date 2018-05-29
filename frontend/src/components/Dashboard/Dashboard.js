@@ -12,6 +12,7 @@ import Settings from '../Settings/Settings';
 import ClientList from '../ClientList/ClientList';
 import VendorClientPage from '../VendorClientPage/VendorClientPage';
 import TimestampDetail from '../TimestampDetail/TimestampDetail';
+import Checkout from '../Checkout/Checkout';
 
 class Dashboard extends Component {
   state = {
@@ -58,6 +59,7 @@ class Dashboard extends Component {
               <Route path={'/dashboard/clients/timestamp/:id'} component={TimestampDetail} />
               <Route path={'/dashboard/clients/new'} component={CreateClient} />
               <Route path={'/dashboard/clients/:id'} component={VendorClientPage} />
+              <Route path={'/dashboard/billing'} component={Checkout} />
               <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/settings'} component={Settings} />
               <Route
