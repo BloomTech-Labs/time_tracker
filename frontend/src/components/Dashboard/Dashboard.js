@@ -12,6 +12,8 @@ import Settings from '../Settings/Settings';
 import ClientList from '../ClientList/ClientList';
 import VendorClientPage from '../VendorClientPage/VendorClientPage';
 import TimestampDetail from '../TimestampDetail/TimestampDetail';
+import Invoice from '../Invoice/Invoice';
+import NewInvoice from '../NewInvoice/NewInvoice';
 
 class Dashboard extends Component {
   state = {
@@ -26,7 +28,6 @@ class Dashboard extends Component {
   componentDidMount() {
     if (this.props.user) {
       this.props.getUserInfo(this.props.user);
-      console.log(this.props.clients);
     }
   }
 
@@ -51,13 +52,30 @@ class Dashboard extends Component {
               <div>
                 <Link to="/dashboard/setting">Settings</Link>
               </div>
+              <div>
+                <Link to="/dashboard/clients/invoices/new">new invoice</Link>
+              </div>
+              <div>
+                <Link to="/dashboard/clients/invoices">Invoices</Link>
+              </div>
             </StyledMenu>
           </Col>
           <Col>
             <Switch>
-              <Route path={'/dashboard/clients/timestamp/:id'} component={TimestampDetail} />
+              <Route
+                path={'/dashboard/clients/invoices/new'}
+                component={NewInvoice}
+              />
+              <Route path={'/dashboard/clients/invoices'} component={Invoice} />
+              <Route
+                path={'/dashboard/clients/timestamp/:id'}
+                component={TimestampDetail}
+              />
               <Route path={'/dashboard/clients/new'} component={CreateClient} />
-              <Route path={'/dashboard/clients/:id'} component={VendorClientPage} />
+              <Route
+                path={'/dashboard/clients/:id'}
+                component={VendorClientPage}
+              />
               <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/settings'} component={Settings} />
               <Route
