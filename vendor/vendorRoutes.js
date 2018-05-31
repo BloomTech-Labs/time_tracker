@@ -114,17 +114,15 @@ vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
   Client.findOne({ email })
     .then(client => {
-      // if client !== null
-      console.log(client);
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
-          const msg = { // @TODO Create email template for adding clients
-            to: `${email}`,
-            from: 'cs6timetracker@gmail.com',
-            templateId: '750dc23a-94f3-4841-8274-8f17891672eb'
-          };
-          sgMail.send(msg);
+          // const msg = { // @TODO Create email template for adding clients
+          //   to: `${email}`,
+          //   from: 'cs6timetracker@gmail.com',
+          //   templateId: '750dc23a-94f3-4841-8274-8f17891672eb'
+          // };
+          // sgMail.send(msg);
           res.status(200).json(vendor);
         });
       // else create client and email
@@ -147,8 +145,10 @@ vendorRouter.put('/settings/:id', (req, res) => {
           res.status(422).json({ err });
         }
         if (match) {
-          if (newPassword !== null && newPassword !== undefined && newPassword !== '') {
+          if (newPassword) {
             vendor.password = newPassword;
+          } else {
+            vendor.password = password;
           }
           if (newEmail) {
             vendor.email = newEmail;

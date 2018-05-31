@@ -94,6 +94,8 @@ clientRouter.put('/settings/:id', (req, res) => {
         if (match) {
           if (newPassword) {
             client.password = newPassword;
+          } else {
+            client.password = password;
           }
           if (newEmail) {
             client.email = newEmail;
