@@ -2,10 +2,11 @@ import axios from 'axios';
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
 export const ADD_CLIENT = 'ADD_CLIENT';
-export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
-export const PASSWORD_CHANGED = 'PASSWORD_CHANGED';
+export const CHANGE_USER = 'CHANGE_USER';
+export const USER_CHANGED = 'USER_CHANGED';
 export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
+
 
 // const backend = process.env.BASE_URL || 'http://localhost:5000';
 const backend =
@@ -77,30 +78,98 @@ export const addClient = (email, _id) => {
   };
 };
 
-export const changePassword = (password, newPassword, userType, id) => {
+export const changeUserDetails = (
+  password,
+  newPassword,
+  newEmail,
+  userType,
+  id
+) => {
   return dispatch => {
     if (userType === 'client') {
-      axios
-        .put(`${backend}/client/settings/${id}`, { password, newPassword })
-        .then(({ data }) => {
-          window.localStorage.setItem('Authorization', data.token);
-          dispatch({ type: CHANGE_PASSWORD, payload: data });
-          dispatch({ type: PASSWORD_CHANGED });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      if (newPassword && !newEmail) {
+        // Just changing password
+        axios
+          .put(`${backend}/client/settings/${id}`, { password, newPassword })
+          .then(({ data }) => {
+            window.localStorage.setItem('Authorization', data.token);
+            dispatch({ type: CHANGE_USER, payload: data });
+            dispatch({ type: USER_CHANGED });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else if (!newPassword && newEmail) {
+        // Just changing email
+        axios
+          .put(`${backend}/client/settings/${id}`, { password, newEmail })
+          .then(({ data }) => {
+            window.localStorage.setItem('Authorization', data.token);
+            dispatch({ type: CHANGE_USER, payload: data });
+            dispatch({ type: USER_CHANGED });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        // Changing both password and email
+        axios
+          .put(`${backend}/client/settings/${id}`, {
+            password,
+            newPassword,
+            newEmail
+          })
+          .then(({ data }) => {
+            window.localStorage.setItem('Authorization', data.token);
+            dispatch({ type: CHANGE_USER, payload: data });
+            dispatch({ type: USER_CHANGED });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     } else {
-      axios
-        .put(`${backend}/vendor/settings/${id}`, { password, newPassword })
-        .then(({ data }) => {
-          window.localStorage.setItem('Authorization', data.token);
-          dispatch({ type: CHANGE_PASSWORD, payload: data });
-          dispatch({ type: PASSWORD_CHANGED });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      if (newPassword && !newEmail) {
+        // Just changing password
+        axios
+          .put(`${backend}/vendor/settings/${id}`, { password, newPassword })
+          .then(({ data }) => {
+            window.localStorage.setItem('Authorization', data.token);
+            dispatch({ type: CHANGE_USER, payload: data });
+            dispatch({ type: USER_CHANGED });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else if (!newPassword && newEmail) {
+        // Just changing email
+        axios
+          .put(`${backend}/vendor/settings/${id}`, { password, newEmail })
+          .then(({ data }) => {
+            window.localStorage.setItem('Authorization', data.token);
+            dispatch({ type: CHANGE_USER, payload: data });
+            dispatch({ type: USER_CHANGED });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        // Changing both password and email
+        axios
+          .put(`${backend}/vendor/settings/${id}`, {
+            password,
+            newPassword,
+            newEmail
+          })
+          .then(({ data }) => {
+            window.localStorage.setItem('Authorization', data.token);
+            dispatch({ type: CHANGE_USER, payload: data });
+            dispatch({ type: USER_CHANGED });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     }
   };
 };

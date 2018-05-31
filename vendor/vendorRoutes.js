@@ -8,6 +8,7 @@ const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
 vendorRouter.post('/', (req, res) => {
@@ -112,24 +113,19 @@ vendorRouter.put('/:id', (req, res) => {
 });
 
 // @TODO send email to new client, and check dups
-// Add client to vendor array and populate client info array
 // @TODO should the vendor id also be set into client vendor list.
+// Add client to vendor array and populate client info array
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
   Client.findOneAndUpdate({ email }, { $push: { vendors: _id } })
     .then(client => {
-      // if client !== null
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
-          // const msg = {
-          //   // @TODO Create email template for adding clients
+          // const msg = { // @TODO Create email template for adding clients
           //   to: `${email}`,
           //   from: 'cs6timetracker@gmail.com',
-          //   subject: 'Someone has added you to their client list',
-          //   text:
-          //     'Click the link to sign in or register for an account to see the connection.',
-          //   html: '<a href="https://ls-time-tracker.herokuapp.com/" />'
+          //   templateId: '750dc23a-94f3-4841-8274-8f17891672eb'
           // };
           // sgMail.send(msg);
           res.status(200).json(vendor);
@@ -141,12 +137,12 @@ vendorRouter.put('/client/add', (req, res) => {
     });
 });
 
-// @TODO: add changing of email and checking new password to not be the same as old
+// @TODO: add checking new password to not be the same as old
 // @TODO STRETCH: cannot use previous X passwords
 // Update vendor password and revalidate JWT
 vendorRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
-  const { password, newPassword } = req.body;
+  const { password, newPassword, newEmail } = req.body;
   Vendor.findOne({ _id: id })
     .then(vendor => {
       vendor.comparePass(password, (err, match) => {
@@ -154,7 +150,14 @@ vendorRouter.put('/settings/:id', (req, res) => {
           res.status(422).json({ err });
         }
         if (match) {
-          vendor.password = newPassword;
+          if (newPassword) {
+            vendor.password = newPassword;
+          } else {
+            vendor.password = password;
+          }
+          if (newEmail) {
+            vendor.email = newEmail;
+          }
           vendor.save();
           const payload = {
             email: vendor.email,

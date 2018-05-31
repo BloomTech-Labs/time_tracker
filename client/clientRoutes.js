@@ -108,7 +108,7 @@ clientRouter.put('/:id', (req, res) => {
     });
 });
 
-// @TODO: add changing of email and checking new password to not be the same as old
+// @TODO: add checking new password to not be the same as old
 // @TODO STRETCH: cannot use previous X passwords
 // Update client password and revalidate JWT
 clientRouter.put('/settings/:id', (req, res) => {
@@ -121,7 +121,14 @@ clientRouter.put('/settings/:id', (req, res) => {
           res.status(422).json({ err });
         }
         if (match) {
-          client.password = newPassword;
+          if (newPassword) {
+            client.password = newPassword;
+          } else {
+            client.password = password;
+          }
+          if (newEmail) {
+            client.email = newEmail;
+          }
           client.save();
           const payload = {
             email: client.email,

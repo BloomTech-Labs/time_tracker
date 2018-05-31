@@ -52,7 +52,7 @@ class Dashboard extends Component {
                 <Link to="/dashboard/billing">Billing</Link>
               </div>
               <div>
-                <Link to="/dashboard/setting">Settings</Link>
+                <Link to="/dashboard/settings">Settings</Link>
               </div>
               <div>
                 <Link to="/dashboard/clients/invoices/new">new invoice</Link>

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { changePassword } from '../../store/action/userActions';
+import { changeUserDetails } from '../../store/action/userActions';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 class Settings extends Component {
   state = {
     email: '',
+    newEmail: '',
     password: '',
     newPassword: '',
     userType: '',
@@ -15,9 +16,10 @@ class Settings extends Component {
 
   onSubmitHandler = event => {
     event.preventDefault();
-    this.props.changePassword(
+    this.props.changeUserDetails(
       this.state.password,
       this.state.newPassword,
+      this.state.newEmail,
       this.props.userType,
       this.props.user
     );
@@ -32,7 +34,7 @@ class Settings extends Component {
   // @TODO: change to modal instead of alert
   componentDidUpdate() {
     if (this.props.changeSuccess) {
-      alert('Changed password successfully.');
+      alert('Changed password/email successfully.');
       this.props.history.push('/dashboard');
     }
   }
@@ -51,6 +53,17 @@ class Settings extends Component {
                   name="email"
                   id="email"
                   value={this.state.email}
+                  placeholder="with a placeholder"
+                  onChange={this.inputChangeHandler}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="newEmail">New Email</Label>
+                <Input
+                  type="email"
+                  name="newEmail"
+                  id="newEmail"
+                  value={this.state.newEmail}
                   placeholder="with a placeholder"
                   onChange={this.inputChangeHandler}
                 />
@@ -96,5 +109,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps, { changePassword })(Settings)
+  connect(mapStateToProps, { changeUserDetails })(Settings)
 );

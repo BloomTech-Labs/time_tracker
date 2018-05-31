@@ -2,10 +2,10 @@ import {
   SIGNUP,
   LOGIN,
   ADD_CLIENT,
-  CHANGE_PASSWORD,
-  PASSWORD_CHANGED,
+  CHANGE_USER,
+  USER_CHANGED,
   GETTING_USER_INFO,
-  GOT_USER_INFO
+  GOT_USER_INFO,
 } from '../action/userActions';
 
 const initialState = {
@@ -39,9 +39,9 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         clients: action.payload.clients
       };
-    case CHANGE_PASSWORD:
+    case CHANGE_USER:
       return { ...state, changeSuccess: true };
-    case PASSWORD_CHANGED:
+    case USER_CHANGED:
       return { ...state, changeSuccess: false };
     case GETTING_USER_INFO:
       return { ...state, loading: true };
