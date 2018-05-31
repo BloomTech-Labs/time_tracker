@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import FileDownload from 'react-file-download';
+import fileDownload from 'js-file-download';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -50,7 +50,9 @@ class NewInvoice extends Component {
         name: this.props.name
       })
       .then(({ data }) => {
-        FileDownload(data, 'invoice.pdf');
+        console.log(data.Title);
+        fileDownload(data, 'invoice.pdf');
+        // window.open(data, '_blank');
       })
       .catch(err => {
         console.log(err);

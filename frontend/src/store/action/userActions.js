@@ -8,7 +8,10 @@ export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
 
 // const backend = process.env.BASE_URL || 'http://localhost:5000';
-const backend = process.env.NODE_ENV === 'production' ? `https://ls-time-tracker.herokuapp.com` : `http://localhost:5000`
+const backend =
+  process.env.NODE_ENV === 'production'
+    ? `https://ls-time-tracker.herokuapp.com`
+    : `http://localhost:5000`;
 
 export const signUp = ({ name, email, password, type }) => {
   return dispatch => {
@@ -41,7 +44,6 @@ export const logIn = ({ email, password, type }) => {
         .post(`${backend}/client/login`, { email, password })
         .then(({ data }) => {
           window.localStorage.setItem('Authorization', data.token);
-          console.log(window.localStorage.getItem('Authorization'));
           dispatch({ type: LOGIN, payload: data, userType: 'client' });
         })
         .catch(err => {
@@ -103,17 +105,38 @@ export const changePassword = (password, newPassword, userType, id) => {
   };
 };
 
-export const getUserInfo = id => {
+export const getUserInfo = (id, type) => {
   return dispatch => {
-    dispatch({ type: GETTING_USER_INFO });
-    axios
-      .get(`${backend}/vendor/${id}`)
-      .then(({ data }) => {
-        console.log('user actions: ', data);
-        dispatch({ type: GOT_USER_INFO, payload: data });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (type === 'client') {
+      dispatch({ type: GETTING_USER_INFO });
+      axios
+        .get(`${backend}/client/${id}`)
+        .then(({ data }) => {
+          console.log('user actions: ', data);
+          dispatch({
+            type: GOT_USER_INFO,
+            payload: data,
+            clients: data.vendors
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      dispatch({ type: GETTING_USER_INFO });
+      axios
+        .get(`${backend}/vendor/${id}`)
+        .then(({ data }) => {
+          console.log('user actions: ', data);
+          dispatch({
+            type: GOT_USER_INFO,
+            payload: data,
+            clients: data.clients
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 };

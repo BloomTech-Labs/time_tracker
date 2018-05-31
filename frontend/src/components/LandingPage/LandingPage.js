@@ -7,7 +7,9 @@ import {
   CarouselCaption,
   CarouselIndicators,
   Container,
-  Button
+  Button,
+  Row,
+  Col
 } from 'reactstrap';
 import styled from 'styled-components';
 import pic from '../../assets/river_mountain.jpg';
@@ -18,9 +20,9 @@ import TopBar from '../TopBar/TopBar';
 class LandingPage extends Component {
   render() {
     return (
-      <div>
+      <StyledHome>
+        <TopBar />
         <StyledJumbotron>
-          <TopBar />
           <Container>
             <CarouselExample />
             <Blurb>
@@ -29,17 +31,27 @@ class LandingPage extends Component {
           </Container>
         </StyledJumbotron>
         <Button>Buy Now</Button>
-      </div>
+      </StyledHome>
     );
   }
 }
 
 const StyledJumbotron = styled(Jumbotron)`
+  ${'' /* background-image: url(${pic});
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 70vh; */};
+  background: none;
+  background-color: transparent !important;
+`;
+
+const StyledHome = styled.div`
   background-image: url(${pic});
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  height: 70vh;
+  height: 95vh;
 `;
 
 const Blurb = styled.h3`
@@ -49,18 +61,18 @@ const Blurb = styled.h3`
 const items = [
   {
     src: invoicePic,
-    altText: 'Slide 1',
-    caption: 'Slide 1'
+    captionText: 'invoicePic',
+    altText: 'Slide 1'
   },
   {
     src: invoicePic,
-    altText: 'Slide 2',
-    caption: 'Slide 2'
+    captionText: 'invoicePic',
+    altText: 'Slide 2'
   },
   {
     src: invoicePic,
-    altText: 'Slide 3',
-    caption: 'Slide 3'
+    captionText: 'invoicePic',
+    altText: 'Slide 3'
   }
 ];
 
@@ -117,10 +129,7 @@ class CarouselExample extends Component {
           key={i}
         >
           <img src={item.src} alt={item.altText} />
-          <CarouselCaption
-            captionText={item.caption}
-            captionHeader={item.caption}
-          />
+          <CarouselCaption captionText={item.captionText} />
         </CarouselItem>
       );
     });

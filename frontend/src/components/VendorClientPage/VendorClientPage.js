@@ -26,7 +26,8 @@ class VendorClientPage extends Component {
     invoices: [],
     activeTimer: false,
     activeTimerId: '',
-    timer: ''
+    timer: '',
+    userType: ''
   };
 
   componentDidMount() {
@@ -35,18 +36,33 @@ class VendorClientPage extends Component {
 
   getClient = () => {
     const id = this.props.match.params.id;
-    axios
-      .get(`${backend}/vendor/client/${id}`)
-      .then(({ data }) => {
-        this.setState({
-          name: data.name,
-          hoursLogged: data.hoursLogged,
-          invoices: data.invoices
+    if (this.props.userType === 'client') {
+      axios
+        .get(`${backend}/client/vendor/${id}`)
+        .then(({ data }) => {
+          this.setState({
+            name: data.name,
+            hoursLogged: data.hoursLogged,
+            invoices: data.invoices
+          });
+        })
+        .catch(err => {
+          console.log(err);
         });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    } else {
+      axios
+        .get(`${backend}/vendor/client/${id}`)
+        .then(({ data }) => {
+          this.setState({
+            name: data.name,
+            hoursLogged: data.hoursLogged,
+            invoices: data.invoices
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -134,7 +150,8 @@ const mapStateToProps = state => {
     activeTimer: state.timestampReducer.activeTimer,
     activeTimerId: state.timestampReducer.activeTimerId,
     startTime: state.timestampReducer.startTime,
-    hoursLogged: state.userReducer.hoursLogged
+    hoursLogged: state.userReducer.hoursLogged,
+    userType: state.userReducer.userType
   };
 };
 

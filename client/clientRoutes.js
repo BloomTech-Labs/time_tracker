@@ -26,24 +26,38 @@ clientRouter.post('/', (req, res) => {
     });
 });
 
-//Get all clients from a specific vendor
-//using the vendor's email
-//TODO modify req.body if necessary to get vendor's email
-clientRouter.get('/', (req, res) => {
-  const { _id } = req.body;
-  Client.findOne({ email })
-    .then()
-    .catch();
+clientRouter.get('/:id', (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  Client.findOne({ _id: id }, { password: 0 })
+    .populate('vendors', { password: 0, invoices: 0 })
+    .populate('hoursLogged')
+    .then(vendor => {
+      res.status(200).json(vendor);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
+clientRouter.get('/vendor/:id', (req, res) => {
+  const { id } = req.params;
+  Vendor.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
+    .populate('hoursLogged')
+    .then(vendor => {
+      res.status(200).json(vendor);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
 });
 
 //Login
 //TODO Modify password checking after implementing password encryption
 clientRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
-  console.log('emial', email);
   Client.findOne({ email })
     .then(client => {
-      console.log('client', client);
       if (client !== null) {
         client.comparePass(password, (err, match) => {
           if (err) {
@@ -94,7 +108,6 @@ clientRouter.put('/:id', (req, res) => {
 clientRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
   const { password, newPassword } = req.body;
-  console.log('id', id);
   Client.findOne({ _id: id })
     .then(client => {
       client.comparePass(password, (err, match) => {

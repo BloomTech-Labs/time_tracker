@@ -6,7 +6,7 @@ const Invoice = require('./invoiceSchema');
 const invoiceRouter = express.Router();
 const moment = require('moment');
 const Client = require('../client/clientSchema');
-
+// invoiced api
 invoiceRouter.post('/new', (req, res) => {
   const { timestamps, hourlyRate, name } = req.body;
   const vendorNum = timestamps[0].vendor;
@@ -75,12 +75,37 @@ invoiceRouter.post('/new', (req, res) => {
       invoice,
       `${newInvoice._id}_invoice.pdf`,
       function() {
+        // const data = fs.readFileSync(
+        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        // );
+        // res.contentType('application/pdf');
+        // res.send(data);
         res.sendFile(
           path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
         );
         console.log(
           path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
         );
+        // deletes after 2 seconds. enough to send up maybe
+        // setTimeout(
+        //   () =>
+        //     fs.unlinkSync(
+        //       path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        //     ),
+        //   2000
+        // );
+
+        // TESTING
+        // var file = fs.createReadStream(
+        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        // );
+        // var stat = fs.statSync(
+        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        // );
+        // res.setHeader('Content-Length', stat.size);
+        // res.setHeader('Content-Type', 'application/pdf');
+        // res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+        // file.pipe(res);
       },
       function(error) {
         console.error(error);

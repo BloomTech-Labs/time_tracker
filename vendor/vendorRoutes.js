@@ -45,7 +45,7 @@ vendorRouter.get('/:id', (req, res) => {
 
 vendorRouter.get('/client/:id', (req, res) => {
   const { id } = req.params;
-  Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1})
+  Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
     .populate('hoursLogged')
     .then(client => {
       res.status(200).json(client);
@@ -106,26 +106,27 @@ vendorRouter.put('/:id', (req, res) => {
     });
 });
 
-
 // @TODO send email to new client, and check dups
 // Add client to vendor array and populate client info array
 // @TODO should the vendor id also be set into client vendor list.
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
-  Client.findOne({ email })
+  Client.findOneAndUpdate({ email }, { $push: { vendors: _id } })
     .then(client => {
       // if client !== null
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
-          const msg = { // @TODO Create email template for adding clients
-            to: `${email}`,
-            from: 'cs6timetracker@gmail.com',
-            subject: 'Someone has added you to their client list',
-            text: 'Click the link to sign in or register for an account to see the connection.',
-            html: '<a href="https://ls-time-tracker.herokuapp.com/" />'
-          };
-          sgMail.send(msg);
+          // const msg = {
+          //   // @TODO Create email template for adding clients
+          //   to: `${email}`,
+          //   from: 'cs6timetracker@gmail.com',
+          //   subject: 'Someone has added you to their client list',
+          //   text:
+          //     'Click the link to sign in or register for an account to see the connection.',
+          //   html: '<a href="https://ls-time-tracker.herokuapp.com/" />'
+          // };
+          // sgMail.send(msg);
           res.status(200).json(vendor);
         });
       // else create client and email

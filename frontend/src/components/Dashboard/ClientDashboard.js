@@ -27,7 +27,6 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.userType);
     if (this.props.user) {
       this.props.getUserInfo(this.props.user, this.props.userType);
     }

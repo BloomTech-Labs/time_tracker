@@ -29,7 +29,7 @@ class TopBar extends Component {
   render() {
     return (
       <div>
-        <StyledNavbar light expand="md">
+        <StyledNavbar dark expand="md">
           <NavbarBrand href="/">Time Tracker</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
@@ -52,7 +52,7 @@ class TopBar extends Component {
 
 const StyledNavbar = styled(Navbar)`
   background: transparent;
-  background-color: gray;
+  background-color: transparent;
   border-color: transparent;
   color: gray;
 `;
