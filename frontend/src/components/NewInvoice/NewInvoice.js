@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
+import FileDownload from 'react-file-download';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -42,12 +43,18 @@ class NewInvoice extends Component {
   };
 
   generatePDF = () => {
-    console.log(this.props.timestamps);
-    axios.post('http://localhost:5000/invoice/new', {
-      timestamps: this.props.timestamps,
-      hourlyRate: this.state.rate,
-      name: this.props.name
-    });
+    axios
+      .post('http://localhost:5000/invoice/new', {
+        timestamps: this.props.timestamps,
+        hourlyRate: this.state.rate,
+        name: this.props.name
+      })
+      .then(({ data }) => {
+        FileDownload(data, 'invoice.pdf');
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
