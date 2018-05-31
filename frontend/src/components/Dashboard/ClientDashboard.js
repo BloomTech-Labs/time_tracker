@@ -27,7 +27,6 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.userType);
     if (this.props.user) {
       this.props.getUserInfo(this.props.user, this.props.userType);
     }
@@ -52,7 +51,7 @@ class Dashboard extends Component {
                 <Link to="/dashboard/billing">Billing</Link>
               </div>
               <div>
-                <Link to="/dashboard/settings">Settings</Link>
+                <Link to="/dashboard/setting">Settings</Link>
               </div>
               <div>
                 <Link to="/dashboard/clients/invoices/new">new invoice</Link>

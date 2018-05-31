@@ -174,17 +174,38 @@ export const changeUserDetails = (
   };
 };
 
-export const getUserInfo = id => {
+export const getUserInfo = (id, type) => {
   return dispatch => {
-    dispatch({ type: GETTING_USER_INFO });
-    axios
-      .get(`${backend}/vendor/${id}`)
-      .then(({ data }) => {
-        console.log('user actions: ', data);
-        dispatch({ type: GOT_USER_INFO, payload: data });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (type === 'client') {
+      dispatch({ type: GETTING_USER_INFO });
+      axios
+        .get(`${backend}/client/${id}`)
+        .then(({ data }) => {
+          console.log('user actions: ', data);
+          dispatch({
+            type: GOT_USER_INFO,
+            payload: data,
+            clients: data.vendors
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      dispatch({ type: GETTING_USER_INFO });
+      axios
+        .get(`${backend}/vendor/${id}`)
+        .then(({ data }) => {
+          console.log('user actions: ', data);
+          dispatch({
+            type: GOT_USER_INFO,
+            payload: data,
+            clients: data.clients
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 };

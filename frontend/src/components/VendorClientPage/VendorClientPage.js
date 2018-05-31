@@ -10,6 +10,7 @@ import {
   startNewTimer,
   stopActiveTimer
 } from '../../store/action/timestampActions';
+import { getUserInfo } from '../../store/action/userActions';
 
 import TimestampList from '../TimestampList/TimestampList';
 
@@ -26,28 +27,13 @@ class VendorClientPage extends Component {
     invoices: [],
     activeTimer: false,
     activeTimerId: '',
-    timer: ''
+    timer: '',
+    userType: ''
   };
 
   componentDidMount() {
     this.getClient();
   }
-
-  getClient = () => {
-    const id = this.props.match.params.id;
-    axios
-      .get(`${backend}/vendor/client/${id}`)
-      .then(({ data }) => {
-        this.setState({
-          name: data.name,
-          hoursLogged: data.hoursLogged,
-          invoices: data.invoices
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
 
   componentDidUpdate(prevProps) {
     if (
@@ -56,7 +42,42 @@ class VendorClientPage extends Component {
     ) {
       this.tick();
     }
+    if (prevProps.activeTimer && !this.props.activeTimer) {
+      this.props.getUserInfo(this.props.user, this.props.userType);
+    }
   }
+
+  getClient = () => {
+    const id = this.props.match.params.id;
+    if (this.props.userType === 'client') {
+      axios
+        .get(`${backend}/client/ts/${this.props.user}/vendor/${id}`)
+        .then(({ data }) => {
+          this.setState({
+            name: data.name,
+            hoursLogged: data.hoursLogged,
+            invoices: data.invoices
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .get(`${backend}/vendor/ts/${this.props.user}/client/${id}`)
+        .then(({ data }) => {
+          console.log(data);
+          this.setState({
+            name: data.name,
+            hoursLogged: data.hoursLogged,
+            invoices: data.invoices
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
 
   startTimer = () => {
     this.props.startNewTimer(this.props.user, this.props.match.params.id);
@@ -134,11 +155,13 @@ const mapStateToProps = state => {
     activeTimer: state.timestampReducer.activeTimer,
     activeTimerId: state.timestampReducer.activeTimerId,
     startTime: state.timestampReducer.startTime,
-    hoursLogged: state.userReducer.hoursLogged
+    hoursLogged: state.userReducer.hoursLogged,
+    userType: state.userReducer.userType
   };
 };
 
 export default connect(mapStateToProps, {
   startNewTimer,
-  stopActiveTimer
+  stopActiveTimer,
+  getUserInfo
 })(VendorClientPage);

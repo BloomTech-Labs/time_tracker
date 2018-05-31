@@ -1,31 +1,34 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
+import fileDownload from 'js-file-download';
 import moment from 'moment';
+import axios from 'axios';
 
 class NewInvoice extends Component {
   state = {
     timestamp: [],
     totalHours: 0,
     totalHours: 0,
-    rate: 0
+    rate: 0,
+    name: ''
   };
 
   componentDidMount() {
     if (this.props.timestamps.length > 0) {
-      let totalHours = this.props.timestamps.reduce((acc, timestamp) => {
+      let totHours = this.props.timestamps.reduce((acc, timestamp) => {
         return acc + Number(timestamp.duration.split(':')[0]);
       }, 0);
       let totalMinutes = this.props.timestamps.reduce((acc, timestamp) => {
         return acc + Number(timestamp.duration.split(':')[1]);
       }, 0);
       if (totalMinutes >= 60) {
-        totalHours += parseInt(totalMinutes / 60);
+        totHours += parseInt(totalMinutes / 60);
         totalMinutes -= parseInt(totalMinutes / 60) * 60;
       }
       this.setState({
         ...this.state,
-        totalHours,
+        totalHours: totHours,
         totalMinutes
       });
     } else {
@@ -37,6 +40,23 @@ class NewInvoice extends Component {
     this.setState({
       rate: target.value
     });
+  };
+
+  generatePDF = () => {
+    axios
+      .post('http://localhost:5000/invoice/new', {
+        timestamps: this.props.timestamps,
+        hourlyRate: this.state.rate,
+        name: this.props.name
+      })
+      .then(({ data }) => {
+        console.log(data.Title);
+        fileDownload(data, 'invoice.pdf');
+        // window.open(data, '_blank');
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -70,6 +90,7 @@ class NewInvoice extends Component {
                 Number(this.state.totalMinutes / 60))}
           </h4>
         </div>
+        <button onClick={this.generatePDF}>Click</button>
       </div>
     );
   }
@@ -77,7 +98,8 @@ class NewInvoice extends Component {
 
 const mapStateToProps = state => {
   return {
-    timestamps: state.invoiceReducer.timestamps
+    timestamps: state.invoiceReducer.timestamps,
+    name: state.userReducer.name
   };
 };
 

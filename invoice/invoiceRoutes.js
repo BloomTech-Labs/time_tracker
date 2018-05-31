@@ -1,75 +1,117 @@
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const Invoice = require('./invoiceSchema');
 const invoiceRouter = express.Router();
+const moment = require('moment');
+const Client = require('../client/clientSchema');
+// invoiced api
+invoiceRouter.post('/new', (req, res) => {
+  const { timestamps, hourlyRate, name } = req.body;
+  const vendorNum = timestamps[0].vendor;
+  const clientNum = timestamps[0].client;
+  Client.findOne({ _id: clientNum }).then(client => {
+    const newInvoice = new Invoice({
+      clientNum,
+      vendorNum
+    });
+    for (let i = 0; i < timestamps.length; i++) {
+      newInvoice.hoursLogged.push(timestamps[i]._id);
+    }
+    newInvoice.save();
 
-//Create new invoice
-invoiceRouter.post('/', (req, res) => {
-	const invoice = new Invoice(req.body)
-	invoice.save((err, invoice) => {
-		if (err) return res.send(err);
-		res.json({ success: 'Invoice saved', invoice })
-	});
-});
+    const generateInvoice = (invoice, filename, success, error) => {
+      var postData = JSON.stringify(invoice);
+      var options = {
+        hostname: 'invoice-generator.com',
+        port: 443,
+        path: '/',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      };
 
-//Get all invoices from a user
-invoiceRouter.get('/', (req, res) => {
-	const { id } = req.userId;
-	Invoice.find(id, (err, invoices) => {
-		if (err) return res.send(err);
-			res.send(invoices);
-		});
-});
+      var file = fs.createWriteStream(filename);
 
-//Get an invoice by id
-invoiceRouter.get('/:id', (req, res) => {
-	const { id } = req.params;
-	Invoice.findById(id)
-		.then((invoice) => {
-			res.status(200).json(invoice);
-		})
-		.catch((err) => {
-			res.status(500).json({ error: `Could not access DB ${err}` });
-		});
-})
+      var req = https.request(options, function(res) {
+        res
+          .on('data', function(chunk) {
+            file.write(chunk);
+          })
+          .on('end', function() {
+            file.end();
 
-//Update
-invoiceRouter.put('/:id', (req, res) => {
-	const { id } = req.params;
-	Invoice.findByIdAndUpdate(id, req.body)
-		.then((updatedInvoice) => {
-			if (updatedInvoice) {
-				res.status(200).json(updatedInvoice);
-			} else {
-				res.status(404).json({ message: `Could not find invoice with id ${id}` })
-			}
-		})
-		.catch((err) => {
-			res.status(500).json({ error: `There was an error while updating invoice: ${err}` });
-		});
-});
+            if (typeof success === 'function') {
+              success();
+            }
+          });
+      });
+      req.write(postData);
+      req.end();
 
-//Remove
-invoiceRouter.delete('/:id', (req, res) => {
-	const { id } = req.params;
-	Invoice.findByIdAndRemove(id)
-		.then((removedInvoice) => {
-			if (removedInvoice) {
-				res.status(200).json(removedInvoice);
-			} else {
-				res.status(404).json({ message: `Could not find invoice with id ${id}` })
-			}
-		})
-		.catch((err) => {
-			res.status(500).json({ error: `There was an error while removing invoice: ${err}` })
-		});
+      if (typeof error === 'function') {
+        req.on('error', error);
+      }
+    };
+    const invoice = {
+      items: timestamps.map(timestamp => {
+        const minutes = timestamp.duration.split(':')[1] / 60 * 100;
+        const quantity = `${timestamp.duration.split(':')[0]}.${minutes}`;
+        return {
+          name: moment(timestamp.startTime).format('MM/DD/YYYY'),
+          quantity,
+          unit_cost: hourlyRate
+        };
+      }),
+      from: name,
+      to: client.name,
+      currency: 'usd',
+      number: newInvoice._id
+    };
+    generateInvoice(
+      invoice,
+      `${newInvoice._id}_invoice.pdf`,
+      function() {
+        // const data = fs.readFileSync(
+        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        // );
+        // res.contentType('application/pdf');
+        // res.send(data);
+        res.sendFile(
+          path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        );
+        console.log(
+          path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        );
+        // deletes after 2 seconds. enough to send up maybe
+        // setTimeout(
+        //   () =>
+        //     fs.unlinkSync(
+        //       path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        //     ),
+        //   2000
+        // );
+
+        // TESTING
+        // var file = fs.createReadStream(
+        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        // );
+        // var stat = fs.statSync(
+        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        // );
+        // res.setHeader('Content-Length', stat.size);
+        // res.setHeader('Content-Type', 'application/pdf');
+        // res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+        // file.pipe(res);
+      },
+      function(error) {
+        console.error(error);
+      }
+    );
+  });
 });
 
 module.exports = invoiceRouter;
-
-
-
-
-
-
-
-

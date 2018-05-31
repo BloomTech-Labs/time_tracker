@@ -44,11 +44,16 @@ vendorRouter.get('/:id', (req, res) => {
     });
 });
 
-vendorRouter.get('/client/:id', (req, res) => {
-  const { id } = req.params;
-  Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1})
-    .populate('hoursLogged')
+// get timstamps for specific vendor where timestamp.client = logged in user id
+vendorRouter.get('/ts/:userId/client/:id', (req, res) => {
+  const { id, userId } = req.params;
+  Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
+    .populate({
+      path: 'hoursLogged',
+      match: { vendor: userId }
+    })
     .then(client => {
+      console.log(client);
       res.status(200).json(client);
     })
     .catch(err => {
@@ -112,7 +117,7 @@ vendorRouter.put('/:id', (req, res) => {
 // Add client to vendor array and populate client info array
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
-  Client.findOne({ email })
+  Client.findOneAndUpdate({ email }, { $push: { vendors: _id } })
     .then(client => {
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })

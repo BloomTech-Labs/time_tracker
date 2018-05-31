@@ -14,18 +14,20 @@ timestampRouter.post('/start', (req, res) => {
       vendor: vendorId,
       startTime: new Date()
     });
+    console.log(newTStamp);
     newTStamp.save();
     Vendor.findOneAndUpdate(
       { _id: vendorId },
       { $push: { hoursLogged: newTStamp._id } },
       { new: true }
     ).then(vendor => {
-      res.status(200).json(newTStamp);
+      Client.findOneAndUpdate(
+        { _id: clientId },
+        { $push: { hoursLogged: newTStamp._id } }
+      ).then(client => {
+        res.status(200).json(newTStamp);
+      });
     });
-    Client.findOneAndUpdate(
-      { _id: clientId },
-      { $push: { hoursLogged: newTStamp._id } }
-    );
     // push this id to vendor timestamp array
   } else {
     res.status(422).json({ error: 'must include vendorId and clientId' });
@@ -44,7 +46,7 @@ timestampRouter.put('/stop', (req, res) => {
       const start = moment(timestamp.startTime);
       const end = moment(timestamp.endTime);
       const duration = moment.duration(end.diff(start));
-      const formatted = moment(duration._data).format('HH:mm')
+      const formatted = moment(duration._data).format('HH:mm');
       let mins = Number(formatted.slice(0).split(':')[1]);
       let hours = 0 || Number(formatted.slice(0).split(':')[0]);
 

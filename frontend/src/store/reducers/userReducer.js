@@ -35,7 +35,10 @@ export const userReducer = (state = initialState, action) => {
         userType: action.userType
       };
     case ADD_CLIENT:
-      return { ...state, clients: action.payload.clients };
+      return {
+        ...state,
+        clients: action.payload.clients
+      };
     case CHANGE_USER:
       return { ...state, changeSuccess: true };
     case USER_CHANGED:
@@ -48,7 +51,7 @@ export const userReducer = (state = initialState, action) => {
         loading: false,
         name: action.payload.name,
         email: action.payload.email,
-        clients: action.payload.clients,
+        clients: action.clients,
         hoursLogged: action.payload.hoursLogged,
         invoices: action.payload.invoices
       };

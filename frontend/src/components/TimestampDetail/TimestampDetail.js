@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import {
-  Form,
-  Input,
-  FormGroup,
-  Label,
-  Button,
-  Row,
-  Col
-} from 'reactstrap';
+import { Form, Input, FormGroup, Label, Button, Row, Col } from 'reactstrap';
+import { withRouter } from 'react-router-dom';
 
 const backend =
   process.env.NODE_ENV === 'production'
@@ -29,7 +22,7 @@ class TimestampDetail extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.match)
+    console.log(this.props.match);
     axios
       .get(`${backend}/timestamp/${this.props.match.params.id}`)
       .then(({ data }) => {
@@ -47,7 +40,7 @@ class TimestampDetail extends Component {
           hours: splitDuration[0],
           minutes: splitDuration[1]
         });
-        console.log('timestamp: ',this.state)
+        console.log('timestamp: ', this.state);
       })
       .catch(err => {
         console.log(err);
@@ -80,7 +73,8 @@ class TimestampDetail extends Component {
           endTime: updatedTStamp.endTime,
           duration: updatedTStamp.duration
         });
-
+        alert('timestamp updated!');
+        this.props.history.goBack();
         // add modal when updated successfully.
       })
       .catch(err => {
@@ -150,4 +144,4 @@ class TimestampDetail extends Component {
   }
 }
 
-export default TimestampDetail;
+export default withRouter(TimestampDetail);
