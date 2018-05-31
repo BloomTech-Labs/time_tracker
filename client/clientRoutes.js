@@ -113,7 +113,7 @@ clientRouter.put('/:id', (req, res) => {
 // Update client password and revalidate JWT
 clientRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
-  const { password, newPassword } = req.body;
+  const { password, newPassword, newEmail } = req.body;
   Client.findOne({ _id: id })
     .then(client => {
       client.comparePass(password, (err, match) => {
