@@ -4,6 +4,8 @@ const Client = require('./clientSchema');
 const clientRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 //Create new client
 //TODO think about auto adding client when created from vendor.
@@ -40,10 +42,14 @@ clientRouter.get('/:id', (req, res) => {
     });
 });
 
-clientRouter.get('/vendor/:id', (req, res) => {
-  const { id } = req.params;
+// get timstamps for specific vendor where timestamp.client = logged in user id
+clientRouter.get('/ts/:userId/vendor/:id', (req, res) => {
+  const { id, userId } = req.params;
   Vendor.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
-    .populate('hoursLogged')
+    .populate({
+      path: 'hoursLogged',
+      match: { client: userId }
+    })
     .then(vendor => {
       res.status(200).json(vendor);
     })

@@ -43,10 +43,14 @@ vendorRouter.get('/:id', (req, res) => {
     });
 });
 
-vendorRouter.get('/client/:id', (req, res) => {
-  const { id } = req.params;
+// get timstamps for specific vendor where timestamp.client = logged in user id
+vendorRouter.get('/ts/:userId/client/:id', (req, res) => {
+  const { id, userId } = req.params;
   Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
-    .populate('hoursLogged')
+    .populate({
+      path: 'hoursLogged',
+      match: { vendor: userId }
+    })
     .then(client => {
       res.status(200).json(client);
     })

@@ -38,7 +38,7 @@ class VendorClientPage extends Component {
     const id = this.props.match.params.id;
     if (this.props.userType === 'client') {
       axios
-        .get(`${backend}/client/vendor/${id}`)
+        .get(`${backend}/client/ts/${this.props.user}/vendor/${id}`)
         .then(({ data }) => {
           this.setState({
             name: data.name,
@@ -51,7 +51,7 @@ class VendorClientPage extends Component {
         });
     } else {
       axios
-        .get(`${backend}/vendor/client/${id}`)
+        .get(`${backend}/vendor/ts/${this.props.user}/client/${id}`)
         .then(({ data }) => {
           this.setState({
             name: data.name,
