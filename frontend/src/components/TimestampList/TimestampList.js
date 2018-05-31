@@ -18,14 +18,17 @@ class TimestampList extends Component {
 
   addToInvoice = () => {
     this.props.addToInvoice(this.props.hour);
-    console.log(moment(this.props.hour.startTime).format('MM/DD/YYYY'));
-    console.log(this.props.hour.duration);
   };
 
   render() {
     return (
       <div>
-        <div onClick={this.toggle}>{this.props.hour.duration}</div>
+        <Row onClick={this.toggle}>
+          <Col md="6">
+            {moment(this.props.hour.startTime).format('MM/DD/YYYY')}
+          </Col>
+          <Col>{this.props.hour.duration}</Col>
+        </Row>
         <Collapse isOpen={this.state.collapse}>
           <Card>
             <CardBody>

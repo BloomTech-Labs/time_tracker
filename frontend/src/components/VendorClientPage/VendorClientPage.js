@@ -10,6 +10,7 @@ import {
   startNewTimer,
   stopActiveTimer
 } from '../../store/action/timestampActions';
+import { getUserInfo } from '../../store/action/userActions';
 
 import TimestampList from '../TimestampList/TimestampList';
 
@@ -34,6 +35,18 @@ class VendorClientPage extends Component {
     this.getClient();
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.activeTimer !== prevProps.activeTimer &&
+      this.props.activeTimer === true
+    ) {
+      this.tick();
+    }
+    if (prevProps.activeTimer && !this.props.activeTimer) {
+      this.props.getUserInfo(this.props.user, this.props.userType);
+    }
+  }
+
   getClient = () => {
     const id = this.props.match.params.id;
     if (this.props.userType === 'client') {
@@ -53,6 +66,7 @@ class VendorClientPage extends Component {
       axios
         .get(`${backend}/vendor/ts/${this.props.user}/client/${id}`)
         .then(({ data }) => {
+          console.log(data);
           this.setState({
             name: data.name,
             hoursLogged: data.hoursLogged,
@@ -64,15 +78,6 @@ class VendorClientPage extends Component {
         });
     }
   };
-
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.activeTimer !== prevProps.activeTimer &&
-      this.props.activeTimer === true
-    ) {
-      this.tick();
-    }
-  }
 
   startTimer = () => {
     this.props.startNewTimer(this.props.user, this.props.match.params.id);
@@ -157,5 +162,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   startNewTimer,
-  stopActiveTimer
+  stopActiveTimer,
+  getUserInfo
 })(VendorClientPage);

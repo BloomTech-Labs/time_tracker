@@ -52,6 +52,7 @@ vendorRouter.get('/ts/:userId/client/:id', (req, res) => {
       match: { vendor: userId }
     })
     .then(client => {
+      console.log(client);
       res.status(200).json(client);
     })
     .catch(err => {

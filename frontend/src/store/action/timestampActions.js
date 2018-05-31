@@ -21,6 +21,7 @@ export const stopActiveTimer = timestampId => {
     axios
       .put(`${backend}/timestamp/stop`, { timestampId })
       .then(({ data }) => {
+        console.log(data);
         dispatch({ type: STOP_TIMER, payload: data });
       })
       .catch(err => {
