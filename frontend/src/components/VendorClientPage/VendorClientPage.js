@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import PlayIcon from 'react-icons/lib/fa/play';
 import StopIcon from 'react-icons/lib/fa/stop';
 import styled from 'styled-components';
@@ -11,6 +10,8 @@ import {
   startNewTimer,
   stopActiveTimer
 } from '../../store/action/timestampActions';
+
+import TimestampList from '../TimestampList/TimestampList';
 
 const backend =
   process.env.NODE_ENV === 'production'
@@ -106,37 +107,12 @@ class VendorClientPage extends Component {
           <Col md="4" />
         </Row>
         {this.state.hoursLogged.map((hour, i) => {
-          console.log({ hour });
-          const start = moment(hour.startTime);
-          const end = moment(hour.endTime);
-          const duration = moment.duration(end.diff(start));
-          return (
-            <Link to={`timestamp/${hour._id}`}>
-              <HourLog
-                key={i}
-                date={start.format('MM/DD/YYYY')}
-                totalTime={hour.duration || moment(duration._data).format('HH:mm:ss')}
-              />
-            </Link>
-          );
+          return <TimestampList key={hour._id} hour={hour} />;
         })}
       </div>
     );
   }
 }
-
-const HourLog = props => {
-  return (
-    <Row>
-      <Col xs="6">
-        <h4>{props.date}</h4>
-      </Col>
-      <Col xs="6">
-        <h4>{props.totalTime}</h4>
-      </Col>
-    </Row>
-  );
-};
 
 const StyledStart = styled.div`
   font-size: 3em;
@@ -162,6 +138,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { startNewTimer, stopActiveTimer })(
-  VendorClientPage
-);
+export default connect(mapStateToProps, {
+  startNewTimer,
+  stopActiveTimer
+})(VendorClientPage);
