@@ -26,21 +26,11 @@ clientRouter.post('/', (req, res) => {
     });
 });
 
-//Get all clients from a specific vendor
-//using the vendor's email
-//TODO modify req.body if necessary to get vendor's email
-clientRouter.get('/', (req, res) => {
-  const { _id } = req.body;
-  Client.findOne({ email })
-    .then()
-    .catch();
-});
-
 //Login
 //TODO Modify password checking after implementing password encryption
 clientRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
-  console.log('emial', email);
+  console.log('email', email);
   Client.findOne({ email })
     .then(client => {
       console.log('client', client);
@@ -88,12 +78,12 @@ clientRouter.put('/:id', (req, res) => {
     });
 });
 
-// @TODO: add changing of email and checking new password to not be the same as old
+// @TODO: add checking new password to not be the same as old
 // @TODO STRETCH: cannot use previous X passwords
 // Update client password and revalidate JWT
 clientRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
-  const { password, newPassword } = req.body;
+  const { password, newPassword, newEmail } = req.body;
   console.log('id', id);
   Client.findOne({ _id: id })
     .then(client => {
@@ -102,7 +92,12 @@ clientRouter.put('/settings/:id', (req, res) => {
           res.status(422).json({ err });
         }
         if (match) {
-          client.password = newPassword;
+          if (newPassword) {
+            client.password = newPassword;
+          }
+          if (newEmail) {
+            client.email = newEmail;
+          }
           client.save();
           const payload = {
             email: client.email,
