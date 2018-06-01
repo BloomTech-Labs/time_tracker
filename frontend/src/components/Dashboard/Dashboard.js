@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
 import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import FaCircle from 'react-icons/lib/fa/plus-circle';
 import { connect } from 'react-redux';
 import { getUserInfo } from '../../store/action/userActions';
 
@@ -27,7 +26,6 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.userType);
     if (this.props.user) {
       this.props.getUserInfo(this.props.user, this.props.userType);
     }
@@ -80,11 +78,6 @@ class Dashboard extends Component {
               />
               <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/settings'} component={Settings} />
-              <Route
-                path={'/dashboard'}
-                component={mainDash}
-                clients={this.state.clients}
-              />
             </Switch>
           </Col>
         </Row>
@@ -93,21 +86,6 @@ class Dashboard extends Component {
   }
 }
 
-const mainDash = props => {
-  return (
-    <div>
-      <AddText>
-        <div>New Client</div>
-        <div>
-          <Link to="/dashboard/clients/new">
-            <FaCircle />
-          </Link>
-        </div>
-      </AddText>
-    </div>
-  );
-};
-
 const StyledMenu = styled.div`
   border: 1px black;
   border-style: inset;
@@ -115,11 +93,6 @@ const StyledMenu = styled.div`
   @media (min-width: 768px) {
     min-height: 60vh;
   }
-`;
-
-const AddText = styled.div`
-  padding-top: 15vh;
-  font-size: 4em;
 `;
 
 const mapStateToProps = state => {

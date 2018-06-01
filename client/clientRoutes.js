@@ -30,7 +30,6 @@ clientRouter.post('/', (req, res) => {
 
 clientRouter.get('/:id', (req, res) => {
   const { id } = req.params;
-  console.log(id);
   Client.findOne({ _id: id }, { password: 0 })
     .populate('vendors', { password: 0, invoices: 0 })
     .populate('hoursLogged')

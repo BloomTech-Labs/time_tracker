@@ -7,9 +7,7 @@ import {
   CarouselCaption,
   CarouselIndicators,
   Container,
-  Button,
-  Row,
-  Col
+  Button
 } from 'reactstrap';
 import styled from 'styled-components';
 import pic from '../../assets/river_mountain.jpg';
