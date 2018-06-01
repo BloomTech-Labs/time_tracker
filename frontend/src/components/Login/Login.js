@@ -59,7 +59,7 @@ class Login extends Component {
               />
             </FormGroup>
             <FormGroup tag="fieldset">
-              <legend>Radio Buttons</legend>
+              <legend>Vendor or Client</legend>
               <FormGroup check>
                 <Label check>
                   <Input
@@ -67,6 +67,7 @@ class Login extends Component {
                     name="type"
                     value="vendor"
                     onChange={this.inputChangeHandler}
+                    defaultChecked
                   />Vendor
                 </Label>
               </FormGroup>
