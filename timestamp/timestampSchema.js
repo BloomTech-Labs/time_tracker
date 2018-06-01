@@ -10,7 +10,8 @@ const timestampSchema = new Schema({
   client: { type: ObjectId, ref: 'Client' },
   comments: { type: String },
   invoiced: { type: Boolean, default: false },
-  invoiceNum: { type: ObjectId, ref: 'Invoice' }
+  invoiceNum: { type: ObjectId, ref: 'Invoice' },
+  duration: { type: String }
 });
 
 module.exports = mongoose.model('Timestamp', timestampSchema);

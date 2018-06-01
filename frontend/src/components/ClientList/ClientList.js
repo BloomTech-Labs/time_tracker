@@ -5,10 +5,6 @@ import { Link } from 'react-router-dom';
 import { Card, CardText, CardBody, CardTitle } from 'reactstrap';
 
 class ClientList extends Component {
-  componentDidMount() {
-    console.log(this.props.clients);
-  }
-
   render() {
     return (
       <Row>

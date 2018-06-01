@@ -4,6 +4,8 @@ const Client = require('./clientSchema');
 const clientRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 //Create new client
 //TODO think about auto adding client when created from vendor.
@@ -26,24 +28,42 @@ clientRouter.post('/', (req, res) => {
     });
 });
 
-//Get all clients from a specific vendor
-//using the vendor's email
-//TODO modify req.body if necessary to get vendor's email
-clientRouter.get('/', (req, res) => {
-  const { _id } = req.body;
-  Client.findOne({ email })
-    .then()
-    .catch();
+clientRouter.get('/:id', (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  Client.findOne({ _id: id }, { password: 0 })
+    .populate('vendors', { password: 0, invoices: 0 })
+    .populate('hoursLogged')
+    .then(vendor => {
+      res.status(200).json(vendor);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
+// get timstamps for specific vendor where timestamp.client = logged in user id
+clientRouter.get('/ts/:userId/vendor/:id', (req, res) => {
+  const { id, userId } = req.params;
+  Vendor.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
+    .populate({
+      path: 'hoursLogged',
+      match: { client: userId }
+    })
+    .then(vendor => {
+      res.status(200).json(vendor);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
 });
 
 //Login
 //TODO Modify password checking after implementing password encryption
 clientRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
-  console.log('emial', email);
   Client.findOne({ email })
     .then(client => {
-      console.log('client', client);
       if (client !== null) {
         client.comparePass(password, (err, match) => {
           if (err) {
@@ -88,13 +108,12 @@ clientRouter.put('/:id', (req, res) => {
     });
 });
 
-// @TODO: add changing of email and checking new password to not be the same as old
+// @TODO: add checking new password to not be the same as old
 // @TODO STRETCH: cannot use previous X passwords
 // Update client password and revalidate JWT
 clientRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
-  const { password, newPassword } = req.body;
-  console.log('id', id);
+  const { password, newPassword, newEmail } = req.body;
   Client.findOne({ _id: id })
     .then(client => {
       client.comparePass(password, (err, match) => {
@@ -102,7 +121,14 @@ clientRouter.put('/settings/:id', (req, res) => {
           res.status(422).json({ err });
         }
         if (match) {
-          client.password = newPassword;
+          if (newPassword) {
+            client.password = newPassword;
+          } else {
+            client.password = password;
+          }
+          if (newEmail) {
+            client.email = newEmail;
+          }
           client.save();
           const payload = {
             email: client.email,

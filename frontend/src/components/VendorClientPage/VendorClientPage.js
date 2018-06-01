@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import PlayIcon from 'react-icons/lib/fa/play';
 import StopIcon from 'react-icons/lib/fa/stop';
 import styled from 'styled-components';
@@ -11,9 +10,14 @@ import {
   startNewTimer,
   stopActiveTimer
 } from '../../store/action/timestampActions';
-import TimestampDetail from '../TimestampDetail/TimestampDetail';
+import { getUserInfo } from '../../store/action/userActions';
 
-const backend = process.env.BASE_URL || 'http://localhost:5000';
+import TimestampList from '../TimestampList/TimestampList';
+
+const backend =
+  process.env.NODE_ENV === 'production'
+    ? `https://ls-time-tracker.herokuapp.com`
+    : `http://localhost:5000`;
 
 class VendorClientPage extends Component {
   state = {
@@ -28,28 +32,13 @@ class VendorClientPage extends Component {
     activeTimer: false,
     activeTimerId: '',
     timer: '',
+    userType: ''
   };
 
   componentDidMount() {
     this.getClient();
     console.log(this.props.hoursLogged);
   }
-
-  getClient = () => {
-    const id = this.props.match.params.id;
-    axios
-      .get(`${backend}/vendor/client/${id}`)
-      .then(({ data }) => {
-        this.setState({
-          name: data.name,
-          hoursLogged: data.hoursLogged,
-          invoices: data.invoices
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
 
   componentDidUpdate(prevProps) {
     if (
@@ -58,7 +47,42 @@ class VendorClientPage extends Component {
     ) {
       this.tick();
     }
+    if (prevProps.activeTimer && !this.props.activeTimer) {
+      this.props.getUserInfo(this.props.user, this.props.userType);
+    }
   }
+
+  getClient = () => {
+    const id = this.props.match.params.id;
+    if (this.props.userType === 'client') {
+      axios
+        .get(`${backend}/client/ts/${this.props.user}/vendor/${id}`)
+        .then(({ data }) => {
+          this.setState({
+            name: data.name,
+            hoursLogged: data.hoursLogged,
+            invoices: data.invoices
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .get(`${backend}/vendor/ts/${this.props.user}/client/${id}`)
+        .then(({ data }) => {
+          console.log(data);
+          this.setState({
+            name: data.name,
+            hoursLogged: data.hoursLogged,
+            invoices: data.invoices
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
 
   startTimer = () => {
     this.props.startNewTimer(this.props.user, this.props.match.params.id);
@@ -108,35 +132,13 @@ class VendorClientPage extends Component {
           </Col>
           <Col md="4" />
         </Row>
-          {this.props.hoursLogged.map((hour, i) => {
-            const start = moment(hour.startTime);
-            const end = moment(hour.endTime);
-            const duration = moment.duration(end.diff(start));
-            return (
-              <Link to={`timestamp/${hour._id}`}><HourLog
-                key={i}
-                date={start.format('MM/DD/YYYY')}
-                totalTime={moment(duration._data).format('HH:mm:ss')}
-              /></Link>
-            );
-          })}
+        {this.state.hoursLogged.map((hour, i) => {
+          return <TimestampList key={hour._id} hour={hour} />;
+        })}
       </div>
     );
   }
 }
-
-const HourLog = props => {
-  return (
-    <Row>
-      <Col xs="6">
-        <h4>{props.date}</h4>
-      </Col>
-      <Col xs="6">
-        <h4>{props.totalTime}</h4>
-      </Col>
-    </Row>
-  );
-};
 
 const StyledStart = styled.div`
   font-size: 3em;
@@ -158,10 +160,13 @@ const mapStateToProps = state => {
     activeTimer: state.timestampReducer.activeTimer,
     activeTimerId: state.timestampReducer.activeTimerId,
     startTime: state.timestampReducer.startTime,
-    hoursLogged: state.userReducer.hoursLogged
+    hoursLogged: state.userReducer.hoursLogged,
+    userType: state.userReducer.userType
   };
 };
 
-export default connect(mapStateToProps, { startNewTimer, stopActiveTimer })(
-  VendorClientPage
-);
+export default connect(mapStateToProps, {
+  startNewTimer,
+  stopActiveTimer,
+  getUserInfo
+})(VendorClientPage);

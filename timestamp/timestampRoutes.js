@@ -3,6 +3,7 @@ const Timestamp = require('./timestampSchema');
 const Client = require('../client/clientSchema');
 const Vendor = require('../vendor/vendorSchema');
 const timestampRouter = express.Router();
+const moment = require('moment');
 
 timestampRouter.post('/start', (req, res) => {
   // client id vendor id
@@ -13,26 +14,25 @@ timestampRouter.post('/start', (req, res) => {
       vendor: vendorId,
       startTime: new Date()
     });
+    console.log(newTStamp);
     newTStamp.save();
     Vendor.findOneAndUpdate(
       { _id: vendorId },
       { $push: { hoursLogged: newTStamp._id } },
       { new: true }
     ).then(vendor => {
-      res.status(200).json(newTStamp);
+      Client.findOneAndUpdate(
+        { _id: clientId },
+        { $push: { hoursLogged: newTStamp._id } }
+      ).then(client => {
+        res.status(200).json(newTStamp);
+      });
     });
-    Client.findOneAndUpdate(
-      { _id: clientId },
-      { $push: { hoursLogged: newTStamp._id } }
-    );
     // push this id to vendor timestamp array
   } else {
     res.status(422).json({ error: 'must include vendorId and clientId' });
   }
 });
-
-// vendor 5b0731a9cf97f45318036d6d
-// client 5b07318a7451ae9d24c06b60
 
 // stop timer using timestamp id and push to clients hourslogged
 timestampRouter.put('/stop', (req, res) => {
@@ -43,6 +43,29 @@ timestampRouter.put('/stop', (req, res) => {
     { endTime: new Date(), active: false }
   )
     .then(timestamp => {
+      const start = moment(timestamp.startTime);
+      const end = moment(timestamp.endTime);
+      const duration = moment.duration(end.diff(start));
+      const formatted = moment(duration._data).format('HH:mm');
+      let mins = Number(formatted.slice(0).split(':')[1]);
+      let hours = 0 || Number(formatted.slice(0).split(':')[0]);
+
+      if (mins <= 7) {
+        mins = '00';
+      } else if (mins > 7 && mins <= 22) {
+        mins = 15;
+      } else if (mins > 22 && mins <= 37) {
+        mins = 30;
+      } else if (mins > 37 && mins <= 52) {
+        mins = 45;
+      } else {
+        mins = '00';
+        hours += 1;
+      }
+
+      const newDuration = `${hours.toString()}:${mins.toString()}`;
+      timestamp.duration = newDuration;
+      timestamp.save();
       res.status(200).json(timestamp);
     })
     .catch(err => {
@@ -59,19 +82,11 @@ timestampRouter.post('/', (req, res) => {
   });
 });
 
-//Get all timestamps
-timestampRouter.get('/', (req, res) => {
-  const { id } = req.id;
-  Timestamp.find(id, (err, timestamps) => {
-    if (err) return res.send(err);
-    res.send(timestamps);
-  });
-});
-
 //Get an timestamp by id
 timestampRouter.get('/:id', (req, res) => {
   const { id } = req.params;
-  Timestamp.findById(id).populate('client')
+  Timestamp.findById(id)
+    .populate('client')
     .then(timestamp => {
       res.status(200).json(timestamp);
     })
@@ -80,23 +95,24 @@ timestampRouter.get('/:id', (req, res) => {
     });
 });
 
-//Update
+//Update timestamp
 timestampRouter.put('/:id', (req, res) => {
   const { id } = req.params;
-  Timestamp.findByIdAndUpdate(id, req.body)
-    .then(updatedTimestamp => {
-      if (updatedTimestamp) {
-        res.status(200).json(updatedTimestamp);
-      } else {
-        res
-          .status(404)
-          .json({ message: `Could not find timestamp with id ${id}` });
-      }
+  const { newTimestamp, endTime, duration } = req.body;
+  Timestamp.findOneAndUpdate(
+    { _id: id },
+    {
+      comments: newTimestamp.comments,
+      endTime,
+      duration
+    },
+    { new: true }
+  )
+    .then(timestamp => {
+      res.status(200).json(timestamp);
     })
     .catch(err => {
-      res
-        .status(500)
-        .json({ error: `There was an error while updating timestamp: ${err}` });
+      res.status(500).json(err);
     });
 });
 
