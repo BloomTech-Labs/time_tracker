@@ -22,7 +22,6 @@ class TimestampDetail extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.match);
     axios
       .get(`${backend}/timestamp/${this.props.match.params.id}`)
       .then(({ data }) => {
@@ -40,7 +39,6 @@ class TimestampDetail extends Component {
           hours: splitDuration[0],
           minutes: splitDuration[1]
         });
-        console.log('timestamp: ', this.state);
       })
       .catch(err => {
         console.log(err);
