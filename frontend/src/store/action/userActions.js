@@ -7,7 +7,6 @@ export const USER_CHANGED = 'USER_CHANGED';
 export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
 
-
 // const backend = process.env.BASE_URL || 'http://localhost:5000';
 const backend =
   process.env.NODE_ENV === 'production'
@@ -45,6 +44,7 @@ export const logIn = ({ email, password, type }) => {
         .post(`${backend}/client/login`, { email, password })
         .then(({ data }) => {
           window.localStorage.setItem('Authorization', data.token);
+          window.localStorage.setItem('UserType', 'client');
           dispatch({ type: LOGIN, payload: data, userType: 'client' });
         })
         .catch(err => {
@@ -55,6 +55,7 @@ export const logIn = ({ email, password, type }) => {
         .post(`${backend}/vendor/login`, { email, password })
         .then(({ data }) => {
           window.localStorage.setItem('Authorization', data.token);
+          window.localStorage.setItem('UserType', 'vendor');
           dispatch({ type: LOGIN, payload: data, userType: 'vendor' });
         })
         .catch(err => {
@@ -64,9 +65,24 @@ export const logIn = ({ email, password, type }) => {
   };
 };
 
+export const authenticate = (token, userType, history) => {
+  return dispatch => {
+    axios
+      .post(`${backend}/${userType}/authenticate`, { token })
+      .then(({ data }) => {
+        dispatch({ type: LOGIN, payload: data, userType: userType });
+      })
+      .catch(err => {
+        window.localStorage.removeItem('Authorization');
+        window.localStorage.removeItem('UserType');
+        history.push('/login');
+      });
+    dispatch({ type: '' });
+  };
+};
+
 export const addClient = (email, _id) => {
   return dispatch => {
-    console.log({ email });
     axios
       .put(`${backend}/vendor/client/add`, { email, _id })
       .then(({ data }) => {
