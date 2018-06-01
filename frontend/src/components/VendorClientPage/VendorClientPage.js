@@ -33,7 +33,6 @@ class VendorClientPage extends Component {
 
   componentDidMount() {
     this.getClient();
-    console.log(this.props.hoursLogged);
   }
 
   componentDidUpdate(prevProps) {
