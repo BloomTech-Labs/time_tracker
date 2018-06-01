@@ -4,7 +4,8 @@ import TopBar from '../TopBar/TopBar';
 import img from '../../assets/Mountains.jpg';
 import github from '../../assets/github_logo.png';
 import jacobG from '../../assets/JacobG.jpg';
-import {Row, Col} from 'reactstrap';
+import troyw from '../../assets/TroyW.jpg';
+import { Row, Col } from 'reactstrap';
 
 class TeamPage extends Component {
   render() {
@@ -16,23 +17,29 @@ class TeamPage extends Component {
           <Col sm="1" />
           <StyledCol>
             <StyledNames>Troy Williams</StyledNames>
-            <StyledPic src={jacobG} />
+            <StyledPic src={troyw} />
             <StyledBody>This is my description</StyledBody>
-            <a href="https://github.com/tdwilliams7"><StyledLogo src={github} /></a>
+            <a href="https://github.com/tdwilliams7">
+              <StyledLogo src={github} />
+            </a>
           </StyledCol>
           <Col sm="1" />
           <StyledCol>
             <StyledNames>Jacob Gakstatter</StyledNames>
             <StyledPic src={jacobG} />
             <StyledBody>This is my description</StyledBody>
-            <a href="https://github.com/gakko1"><StyledLogo src={github} /></a>
+            <a href="https://github.com/gakko1">
+              <StyledLogo src={github} />
+            </a>
           </StyledCol>
           <Col sm="1" />
           <StyledCol>
             <StyledNames>Guelmis Cortina</StyledNames>
             <StyledPic src={jacobG} />
             <StyledBody>This is my description</StyledBody>
-            <a href="https://github.com/gcode101"><StyledLogo src={github} /></a>
+            <a href="https://github.com/gcode101">
+              <StyledLogo src={github} />
+            </a>
           </StyledCol>
           <Col sm="1" />
         </Row>
@@ -83,6 +90,6 @@ const StyledLogo = styled.img`
   :hover {
     cursor: pointer;
   }
-`
+`;
 
 export default TeamPage;
