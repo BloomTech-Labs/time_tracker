@@ -1,8 +1,22 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Form, Input, FormGroup, Label, Button, Row, Col } from 'reactstrap';
+import {
+  Form,
+  Input,
+  FormGroup,
+  Label,
+  Button,
+  Row,
+  Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from 'reactstrap';
 import { withRouter } from 'react-router-dom';
+import TextareaAutosize from 'react-autosize-textarea';
+import styled from 'styled-components';
 
 const backend =
   process.env.NODE_ENV === 'production'
@@ -18,7 +32,9 @@ class TimestampDetail extends Component {
     duration: '',
     date: '',
     hours: '',
-    minutes: ''
+    minutes: '',
+    deleteModal: false,
+    successModal: false
   };
 
   componentDidMount() {
@@ -71,9 +87,36 @@ class TimestampDetail extends Component {
           endTime: updatedTStamp.endTime,
           duration: updatedTStamp.duration
         });
-        alert('timestamp updated!');
-        this.props.history.goBack();
-        // add modal when updated successfully.
+        this.setState({
+          successModal: true
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  toggleDelete = () => {
+    this.setState({
+      ...this.state,
+      deleteModal: !this.state.deleteModal
+    });
+  };
+
+  toggleSuccess = () => {
+    this.setState({
+      ...this.state,
+      successModal: !this.state.successModal
+    });
+  };
+
+  deleteTimestamp = () => {
+    axios
+      .delete(`${backend}/timestamp/${this.props.match.params.id}`)
+      .then(success => {
+        this.setState({
+          successModal: true
+        });
       })
       .catch(err => {
         console.log(err);
@@ -81,12 +124,11 @@ class TimestampDetail extends Component {
   };
 
   // @TODO textarea auto expand?
-  // @TODO Formatting forms so hours and minutes side-by-side
   render() {
     return (
       <div>
         <h1>{this.state.clientName}</h1>
-        <h3>{this.state.date}</h3>
+        <h3>{moment(this.state.startTime).format('MM/DD/YYYY')}</h3>
         <Row>
           <Col md="3" />
           <Col>
@@ -100,14 +142,6 @@ class TimestampDetail extends Component {
                   onChange={this.inputChangeHandler}
                   placeholder={this.state.hours}
                 />
-                {/* <Label for="minutes">Minutes</Label>
-                <Input
-                  name="minutes"
-                  id="minutes"
-                  value={this.state.minutes}
-                  onChange={this.inputChangeHandler}
-                  placeholder={this.state.minutes}
-                /> */}
                 <Label for="minutes">Minutes</Label> {/* Edit minutes select*/}
                 <Input
                   type="select"
@@ -123,17 +157,53 @@ class TimestampDetail extends Component {
                   <option>45</option>
                 </Input>
                 <Label for="comments">Comments</Label> {/* Edit comments form*/}
-                <Input
-                  type="textarea"
+                <StyledTextArea
                   name="comments"
                   id="comments"
                   placeholder="Type here.."
                   value={this.state.comments}
                   onChange={this.inputChangeHandler}
+                  rows={3}
                 />
               </FormGroup>
               <Button>Submit</Button>
+              <Modal
+                isOpen={this.state.successModal}
+                toggle={this.toggleSuccess}
+                onClosed={() => this.props.history.goBack()}
+              >
+                <ModalHeader toggle={this.toggleSuccess}>
+                  Modal title
+                </ModalHeader>
+                <ModalBody>Changed Successfully</ModalBody>
+                <ModalFooter>
+                  <Button color="primary" onClick={this.toggleSuccess}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </Modal>
             </Form>
+            <br />
+            {/* <br /> @TODO margin this */}
+            <Button onClick={this.toggleDelete}>Delete Timestamp</Button>
+            <Modal
+              isOpen={this.state.deleteModal}
+              toggle={this.toggleDelete}
+              className={this.props.className}
+            >
+              <ModalHeader toggle={this.toggleDelete}>Modal title</ModalHeader>
+              <ModalBody>
+                Are you sure you want to delete this timestamp?
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onClick={this.deleteTimestamp}>
+                  Delete
+                </Button>{' '}
+                <Button color="secondary" onClick={this.toggleDelete}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </Modal>
           </Col>
           <Col md="3" />
         </Row>
@@ -141,5 +211,12 @@ class TimestampDetail extends Component {
     );
   }
 }
+
+const StyledTextArea = styled(TextareaAutosize)`
+  min-width: 100%;
+  border: 1px lightgray;
+  border-style: solid;
+  border-radius: 4px;
+`;
 
 export default withRouter(TimestampDetail);

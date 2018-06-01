@@ -32,7 +32,7 @@ class TimestampList extends Component {
         <Collapse isOpen={this.state.collapse}>
           <Card>
             <CardBody>
-              {this.props.comments ? (
+              {this.props.hour.comments ? (
                 <p>{this.props.hour.comments}</p>
               ) : (
                 <p>No comments to show</p>
