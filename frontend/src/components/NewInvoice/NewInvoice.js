@@ -9,7 +9,6 @@ class NewInvoice extends Component {
   state = {
     timestamp: [],
     totalHours: 0,
-    totalHours: 0,
     rate: 0,
     name: ''
   };
