@@ -37,7 +37,6 @@ vendorRouter.get('/:id', (req, res) => {
     .populate('clients', { password: 0, invoices: 0 })
     .populate('hoursLogged')
     .then(vendor => {
-      console.log('vendor =>', vendor);
       res.status(200).json(vendor);
     })
     .catch(err => {
