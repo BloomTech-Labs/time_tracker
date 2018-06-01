@@ -28,7 +28,7 @@ class SuccessModal extends React.Component {
           toggle={this.toggle}
           className={this.props.className}
         >
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+          <ModalHeader toggle={this.toggle}>Changes Saved</ModalHeader>
           <ModalBody>Changed Successfully</ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.toggle}>

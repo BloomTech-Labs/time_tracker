@@ -22,8 +22,8 @@ class NewInvoice extends Component {
         return acc + Number(timestamp.duration.split(':')[1]);
       }, 0);
       if (totalMinutes >= 60) {
-        totHours += parseInt(totalMinutes / 60);
-        totalMinutes -= parseInt(totalMinutes / 60) * 60;
+        totHours += parseInt(totalMinutes / 60, 10);
+        totalMinutes -= parseInt(totalMinutes / 60, 10) * 60;
       }
       this.setState({
         ...this.state,

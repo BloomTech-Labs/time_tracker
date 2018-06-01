@@ -66,7 +66,6 @@ class VendorClientPage extends Component {
       axios
         .get(`${backend}/vendor/ts/${this.props.user}/client/${id}`)
         .then(({ data }) => {
-          console.log(data);
           this.setState({
             name: data.name,
             hoursLogged: data.hoursLogged,
@@ -85,6 +84,7 @@ class VendorClientPage extends Component {
 
   stopTimer = () => {
     this.props.stopActiveTimer(this.props.activeTimerId);
+    setTimeout(() => this.getClient(), 1000);
   };
 
   tick = () => {

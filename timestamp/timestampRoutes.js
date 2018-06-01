@@ -14,7 +14,6 @@ timestampRouter.post('/start', (req, res) => {
       vendor: vendorId,
       startTime: new Date()
     });
-    console.log(newTStamp);
     newTStamp.save();
     Vendor.findOneAndUpdate(
       { _id: vendorId },
