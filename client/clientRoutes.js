@@ -85,8 +85,24 @@ clientRouter.post('/login', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500);
+      res.status(500).json(err);
     });
+});
+
+// authenticate using a token
+clientRouter.post('/authenticate', (req, res) => {
+  const { token } = req.body;
+  jwt.verify(token, secret, (err, decoded) => {
+    if (err) return res.status(422).json(err);
+
+    Client.findOne({ _id: decoded.userId })
+      .then(user => {
+        res.status(200).json(user);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
+  });
 });
 
 //Update

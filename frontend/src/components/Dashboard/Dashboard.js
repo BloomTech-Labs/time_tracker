@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link, Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { getUserInfo } from '../../store/action/userActions';
@@ -14,6 +14,7 @@ import TimestampDetail from '../TimestampDetail/TimestampDetail';
 import Invoice from '../Invoice/Invoice';
 import NewInvoice from '../NewInvoice/NewInvoice';
 import Subscription from '../Subscription/Subscription';
+import HOCAuth from '../HOC/HOCAuth';
 
 class Dashboard extends Component {
   state = {
@@ -77,9 +78,24 @@ class Dashboard extends Component {
                 path={'/dashboard/clients/:id'}
                 component={VendorClientPage}
               />
+
               <Route path={'/dashboard/billing'} component={Subscription} />
-              <Route path={'/dashboard/clients'} component={ClientList} />
+
+              <Route
+                path={'/dashboard/clients'}
+                component={HOCAuth(ClientList)}
+              />
+
               <Route path={'/dashboard/settings'} component={Settings} />
+              <Route
+                exact
+                path={'/dashboard'}
+                render={() => <Redirect to="/dashboard/clients" />}
+              />
+              <Route
+                path={''}
+                render={() => <Redirect to="/dashboard/clients" />}
+              />
             </Switch>
           </Col>
         </Row>
@@ -109,4 +125,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { getUserInfo })(Dashboard);
+export default withRouter(connect(mapStateToProps, { getUserInfo })(Dashboard));

@@ -44,6 +44,7 @@ export const logIn = ({ email, password, type }) => {
         .post(`${backend}/client/login`, { email, password })
         .then(({ data }) => {
           window.localStorage.setItem('Authorization', data.token);
+          window.localStorage.setItem('UserType', 'client');
           dispatch({ type: LOGIN, payload: data, userType: 'client' });
         })
         .catch(err => {
@@ -54,12 +55,29 @@ export const logIn = ({ email, password, type }) => {
         .post(`${backend}/vendor/login`, { email, password })
         .then(({ data }) => {
           window.localStorage.setItem('Authorization', data.token);
+          window.localStorage.setItem('UserType', 'vendor');
           dispatch({ type: LOGIN, payload: data, userType: 'vendor' });
         })
         .catch(err => {
           console.log(err);
         });
     }
+  };
+};
+
+export const authenticate = (token, userType, history) => {
+  return dispatch => {
+    axios
+      .post(`${backend}/${userType}/authenticate`, { token })
+      .then(({ data }) => {
+        dispatch({ type: LOGIN, payload: data, userType: userType });
+      })
+      .catch(err => {
+        window.localStorage.removeItem('Authorization');
+        window.localStorage.removeItem('UserType');
+        history.push('/login');
+      });
+    dispatch({ type: '' });
   };
 };
 
