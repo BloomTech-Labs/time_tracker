@@ -9,10 +9,16 @@ import { withRouter } from 'react-router-dom';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
 
 class ClientList extends Component {
+  componentDidMount() {
+    console.log(this.props);
+  }
   render() {
     if (this.props.loading) {
       return <div> Loading... </div>;
     } else {
+      if (!this.props.paid) {
+        this.props.history.push('/dashboard/billing');
+      }
       if (this.props.clients.length) {
         return (
           <div>
@@ -88,7 +94,8 @@ const AddText = styled.div`
 const mapStateToProps = state => {
   return {
     clients: state.userReducer.clients,
-    loading: state.userReducer.loading
+    loading: state.userReducer.loading,
+    paid: state.userReducer.paid
   };
 };
 

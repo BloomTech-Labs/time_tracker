@@ -13,6 +13,7 @@ import VendorClientPage from '../VendorClientPage/VendorClientPage';
 import TimestampDetail from '../TimestampDetail/TimestampDetail';
 import Invoice from '../Invoice/Invoice';
 import NewInvoice from '../NewInvoice/NewInvoice';
+import Subscription from '../Subscription/Subscription';
 import HOCAuth from '../HOC/HOCAuth';
 
 class Dashboard extends Component {
@@ -77,10 +78,14 @@ class Dashboard extends Component {
                 path={'/dashboard/clients/:id'}
                 component={VendorClientPage}
               />
+
+              <Route path={'/dashboard/billing'} component={Subscription} />
+
               <Route
                 path={'/dashboard/clients'}
                 component={HOCAuth(ClientList)}
               />
+
               <Route path={'/dashboard/settings'} component={Settings} />
               <Route
                 exact
