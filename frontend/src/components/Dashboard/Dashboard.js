@@ -13,6 +13,7 @@ import VendorClientPage from '../VendorClientPage/VendorClientPage';
 import TimestampDetail from '../TimestampDetail/TimestampDetail';
 import Invoice from '../Invoice/Invoice';
 import NewInvoice from '../NewInvoice/NewInvoice';
+import Subscription from '../Subscription/Subscription';
 
 class Dashboard extends Component {
   state = {
@@ -76,6 +77,7 @@ class Dashboard extends Component {
                 path={'/dashboard/clients/:id'}
                 component={VendorClientPage}
               />
+              <Route path={'/dashboard/billing'} component={Subscription} />
               <Route path={'/dashboard/clients'} component={ClientList} />
               <Route path={'/dashboard/settings'} component={Settings} />
             </Switch>

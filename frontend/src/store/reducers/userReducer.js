@@ -5,7 +5,7 @@ import {
   CHANGE_USER,
   USER_CHANGED,
   GETTING_USER_INFO,
-  GOT_USER_INFO,
+  GOT_USER_INFO
 } from '../action/userActions';
 
 const initialState = {
@@ -16,6 +16,7 @@ const initialState = {
   hoursLogged: [],
   invoices: [],
   clients: [],
+  paid: true,
   signedUp: false,
   loggedIn: false,
   changeSuccess: false,
@@ -53,7 +54,8 @@ export const userReducer = (state = initialState, action) => {
         email: action.payload.email,
         clients: action.clients,
         hoursLogged: action.payload.hoursLogged,
-        invoices: action.payload.invoices
+        invoices: action.payload.invoices,
+        paid: action.payload.paid
       };
     default:
       return state;

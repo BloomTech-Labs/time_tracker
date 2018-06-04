@@ -7,7 +7,6 @@ export const USER_CHANGED = 'USER_CHANGED';
 export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
 
-
 // const backend = process.env.BASE_URL || 'http://localhost:5000';
 const backend =
   process.env.NODE_ENV === 'production'
@@ -66,7 +65,6 @@ export const logIn = ({ email, password, type }) => {
 
 export const addClient = (email, _id) => {
   return dispatch => {
-    console.log({ email });
     axios
       .put(`${backend}/vendor/client/add`, { email, _id })
       .then(({ data }) => {
