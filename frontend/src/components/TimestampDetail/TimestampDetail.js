@@ -173,7 +173,7 @@ class TimestampDetail extends Component {
                 onClosed={() => this.props.history.goBack()}
               >
                 <ModalHeader toggle={this.toggleSuccess}>
-                  Modal title
+                  Changes Saved
                 </ModalHeader>
                 <ModalBody>Changed Successfully</ModalBody>
                 <ModalFooter>
@@ -182,6 +182,7 @@ class TimestampDetail extends Component {
                   </Button>
                 </ModalFooter>
               </Modal>
+              {/* <SuccesModal open={this.state.successModal} /> */}
             </Form>
             <br />
             {/* <br /> @TODO margin this */}

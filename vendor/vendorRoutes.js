@@ -5,8 +5,10 @@ const vendorRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 const sgMail = require('@sendgrid/mail');
+
 const { SENDGRID_API_KEY } = require('../sgconfig');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || SENDGRID_API_KEY);
+
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
@@ -87,8 +89,24 @@ vendorRouter.post('/login', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500);
+      res.status(500).json(err);
     });
+});
+
+// login with token
+vendorRouter.post('/authenticate', (req, res) => {
+  const { token } = req.body;
+  jwt.verify(token, secret, (err, decoded) => {
+    if (err) return res.status(422).json(err);
+
+    Vendor.findOne({ _id: decoded.userId })
+      .then(user => {
+        res.status(200).json(user);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
+  });
 });
 
 //Update
