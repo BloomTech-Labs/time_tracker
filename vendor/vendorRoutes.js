@@ -5,9 +5,8 @@ const vendorRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 const sgMail = require('@sendgrid/mail');
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+const { SENDGRID_API_KEY } = require('../sgconfig');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY || SENDGRID_API_KEY);
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
@@ -122,12 +121,15 @@ vendorRouter.put('/client/add', (req, res) => {
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
-          // const msg = { // @TODO Create email template for adding clients
-          //   to: `${email}`,
-          //   from: 'cs6timetracker@gmail.com',
-          //   templateId: '750dc23a-94f3-4841-8274-8f17891672eb'
-          // };
-          // sgMail.send(msg);
+          const msg = {
+            // @TODO Create email template for adding clients
+            to: `${email}`,
+            from: 'cs6timetracker@gmail.com',
+            templateId: '750dc23a-94f3-4841-8274-8f17891672eb'
+            // text: 'Hi Troy',
+            // subject: 'from sendgrid'
+          };
+          sgMail.send(msg);
           res.status(200).json(vendor);
         });
       // else create client and email
