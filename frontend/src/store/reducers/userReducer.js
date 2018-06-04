@@ -5,7 +5,8 @@ import {
   CHANGE_USER,
   USER_CHANGED,
   GETTING_USER_INFO,
-  GOT_USER_INFO
+  GOT_USER_INFO,
+  PAYMENT_SUCCESS
 } from '../action/userActions';
 
 const initialState = {
@@ -57,6 +58,8 @@ export const userReducer = (state = initialState, action) => {
         invoices: action.payload.invoices,
         paid: action.payload.paid
       };
+    case PAYMENT_SUCCESS:
+      return { ...state, paid: true };
     default:
       return state;
   }
