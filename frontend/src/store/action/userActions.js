@@ -6,6 +6,7 @@ export const CHANGE_USER = 'CHANGE_USER';
 export const USER_CHANGED = 'USER_CHANGED';
 export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
+export const PAYMENT_SUCCESS = 'PAYMENT_SUCCESS';
 
 // const backend = process.env.BASE_URL || 'http://localhost:5000';
 const backend =
@@ -197,7 +198,6 @@ export const getUserInfo = (id, type) => {
       axios
         .get(`${backend}/client/${id}`)
         .then(({ data }) => {
-          console.log('user actions: ', data);
           dispatch({
             type: GOT_USER_INFO,
             payload: data,
@@ -212,7 +212,6 @@ export const getUserInfo = (id, type) => {
       axios
         .get(`${backend}/vendor/${id}`)
         .then(({ data }) => {
-          console.log('user actions: ', data);
           dispatch({
             type: GOT_USER_INFO,
             payload: data,
@@ -223,5 +222,11 @@ export const getUserInfo = (id, type) => {
           console.log(err);
         });
     }
+  };
+};
+
+export const paymentSuccess = () => {
+  return dispatch => {
+    dispatch({ type: PAYMENT_SUCCESS });
   };
 };

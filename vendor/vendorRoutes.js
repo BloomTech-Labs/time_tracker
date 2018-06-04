@@ -5,10 +5,10 @@ const vendorRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 const sgMail = require('@sendgrid/mail');
+const stripe = require('stripe')('sk_test_BVZDGnQFiI1u0yPwvGXpOfEZ');
 
 const { SENDGRID_API_KEY } = require('../sgconfig');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || SENDGRID_API_KEY);
-
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
@@ -214,6 +214,31 @@ vendorRouter.delete('/:id', (req, res) => {
         .status(500)
         .json({ error: `There was an error while removing vendor: ${err}` });
     });
+});
+
+// stripe
+vendorRouter.post('/checkout', (req, res) => {
+  const { token, amount, vendorId } = req.body;
+  const charge = stripe.charges.create(
+    {
+      amount: 500,
+      currency: 'usd',
+      description: 'Example charge',
+      source: token
+    },
+    (err, charge) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      // find vendor update paid to true.
+      // send back.
+      Vendor.findOneAndUpdate({ _id: vendorId }, { paid: true }, { new: true })
+        .then(vendor => {
+          res.status(200).json(vendor);
+        })
+        .catch(err => res.status(500).json(err));
+    }
+  );
 });
 
 module.exports = vendorRouter;
