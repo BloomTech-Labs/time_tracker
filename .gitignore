@@ -4,3 +4,7 @@
 # misc
 .DS_Store
 sendgrid.env
+
+.env
+
+sgconfig.js
