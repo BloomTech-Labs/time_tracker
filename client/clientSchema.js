@@ -10,7 +10,8 @@ const ClientSchema = new Schema({
   contact: { type: String },
   vendors: [{ type: ObjectId, ref: 'Vendor' }],
   invoices: [{ type: ObjectId, ref: 'Invoice' }],
-  hoursLogged: [{ type: ObjectId, ref: 'Timestamp' }]
+  hoursLogged: [{ type: ObjectId, ref: 'Timestamp' }],
+  paid: { type: Boolean, default: true }
 });
 
 ClientSchema.pre('save', function(next) {

@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
 import { Link, Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { getUserInfo } from '../../store/action/userActions';
+import { getUserInfo, logOut } from '../../store/action/userActions';
 
 // Components
 import CreateClient from '../CreateClient/CreateClient';
@@ -36,21 +36,35 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <a href="/dashboard">Home</a>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>Clients</BreadcrumbItem>
-        </Breadcrumb>
+        <Row>
+          <Col md="9">
+            <Breadcrumb>
+              <BreadcrumbItem>
+                <a href="/dashboard">Home</a>
+              </BreadcrumbItem>
+              <BreadcrumbItem active>Clients</BreadcrumbItem>
+            </Breadcrumb>
+          </Col>
+          <Col md="3">
+            <div onClick={() => this.props.logOut(this.props.history)}>
+              Sign out
+            </div>
+          </Col>
+        </Row>
+
         <Row>
           <Col md="2">
             <StyledMenu>
-              <div>
+              {this.props.userType === 'client' ? (
+                <Link to="/dashboard/clients">Vendors</Link>
+              ) : (
                 <Link to="/dashboard/clients">Clients</Link>
-              </div>
-              <div>
-                <Link to="/dashboard/billing">Billing</Link>
-              </div>
+              )}
+              {this.props.userType === 'client' ? null : (
+                <div>
+                  <Link to="/dashboard/billing">Billing</Link>
+                </div>
+              )}
               <div>
                 <Link to="/dashboard/settings">Settings</Link>
               </div>
@@ -125,4 +139,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, { getUserInfo })(Dashboard));
+export default withRouter(
+  connect(mapStateToProps, { getUserInfo, logOut })(Dashboard)
+);

@@ -1,4 +1,5 @@
 import { START_TIMER, STOP_TIMER } from '../action/timestampActions';
+import { LOGOUT } from '../action/userActions';
 
 const initialState = {
   activeTimerId: '',
@@ -18,6 +19,12 @@ export const timestampReducer = (state = initialState, action) => {
     case STOP_TIMER:
       return {
         ...state,
+        activeTimerId: '',
+        startTime: '',
+        activeTimer: false
+      };
+    case LOGOUT:
+      return {
         activeTimerId: '',
         startTime: '',
         activeTimer: false
