@@ -6,7 +6,8 @@ import {
   USER_CHANGED,
   GETTING_USER_INFO,
   GOT_USER_INFO,
-  PAYMENT_SUCCESS
+  PAYMENT_SUCCESS,
+  LOGOUT
 } from '../action/userActions';
 
 const initialState = {
@@ -60,6 +61,21 @@ export const userReducer = (state = initialState, action) => {
       };
     case PAYMENT_SUCCESS:
       return { ...state, paid: true };
+    case LOGOUT:
+      return {
+        user: '',
+        userType: '',
+        name: '',
+        email: '',
+        hoursLogged: [],
+        invoices: [],
+        clients: [],
+        paid: true,
+        signedUp: false,
+        loggedIn: false,
+        changeSuccess: false,
+        loading: false
+      };
     default:
       return state;
   }

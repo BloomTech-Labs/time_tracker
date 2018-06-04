@@ -4,6 +4,7 @@ import { Row, Col } from 'reactstrap';
 import fileDownload from 'js-file-download';
 import moment from 'moment';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
 class NewInvoice extends Component {
   state = {
@@ -59,6 +60,9 @@ class NewInvoice extends Component {
   };
 
   render() {
+    if (!this.props.user) {
+      this.props.history.push('/dashboard/billing');
+    }
     return (
       <div>
         {this.props.timestamps ? (
@@ -98,8 +102,9 @@ class NewInvoice extends Component {
 const mapStateToProps = state => {
   return {
     timestamps: state.invoiceReducer.timestamps,
-    name: state.userReducer.name
+    name: state.userReducer.name,
+    paid: state.userReducer.user
   };
 };
 
-export default connect(mapStateToProps, null)(NewInvoice);
+export default withRouter(connect(mapStateToProps, null)(NewInvoice));
