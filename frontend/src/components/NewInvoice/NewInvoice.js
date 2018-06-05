@@ -50,8 +50,7 @@ class NewInvoice extends Component {
         name: this.props.name
       })
       .then(({ data }) => {
-        console.log(data.Title);
-        fileDownload(data, 'invoice.pdf');
+        console.log(data);
         // window.open(data, '_blank');
       })
       .catch(err => {
@@ -60,7 +59,7 @@ class NewInvoice extends Component {
   };
 
   render() {
-    if (!this.props.user) {
+    if (!this.props.paid) {
       this.props.history.push('/dashboard/billing');
     }
     return (

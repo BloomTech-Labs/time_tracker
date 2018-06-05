@@ -213,6 +213,7 @@ export const getUserInfo = (id, type) => {
       axios
         .get(`${backend}/vendor/${id}`)
         .then(({ data }) => {
+          console.log(data);
           dispatch({
             type: GOT_USER_INFO,
             payload: data,

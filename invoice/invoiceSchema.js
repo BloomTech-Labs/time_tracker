@@ -8,7 +8,9 @@ const InvoiceSchema = new Schema({
   confirmation: { type: String },
   invoiceNum: { type: String },
   clientNum: { type: ObjectId, ref: 'Client' },
-  vendorNum: { type: ObjectId, ref: 'Vendor' }
+  vendorNum: { type: ObjectId, ref: 'Vendor' },
+  url: { type: String },
+  dateCreated: { type: Date, default: Date.now() }
 });
 
 module.exports = mongoose.model('Invoice', InvoiceSchema);
