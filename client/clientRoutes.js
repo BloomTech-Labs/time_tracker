@@ -10,7 +10,7 @@ const authenticate = require('../utils/middlewares');
 
 //Create new client
 //TODO think about auto adding client when created from vendor.
-clientRouter.post('/', (req, res) => {
+clientRouter.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !password || !email) {
     res
@@ -30,12 +30,17 @@ clientRouter.post('/', (req, res) => {
 });
 
 clientRouter.get('/:id', (req, res) => {
+  console.log('trying to get info');
   const { id } = req.params;
   Client.findOne({ _id: id }, { password: 0 })
     .populate('vendors', { password: 0, invoices: 0 })
     .populate('hoursLogged')
-    .then(vendor => {
-      res.status(200).json(vendor);
+    .then(client => {
+      if (client) {
+        res.status(200).json(client);
+      } else {
+        res.status(404).json({ error: "can't find client" });
+      }
     })
     .catch(err => {
       res.status(500).json(err);
@@ -61,6 +66,7 @@ clientRouter.get('/ts/:userId/vendor/:id', (req, res) => {
 //Login
 //TODO Modify password checking after implementing password encryption
 clientRouter.post('/login', (req, res) => {
+  console.log('login route');
   const { email, password } = req.body;
   Client.findOne({ email })
     .then(client => {

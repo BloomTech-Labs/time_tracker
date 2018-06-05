@@ -1,5 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import {
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from 'reactstrap';
 import { changeUserDetails } from '../../store/action/userActions';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -11,7 +23,8 @@ class Settings extends Component {
     password: '',
     newPassword: '',
     userType: '',
-    user: ''
+    user: '',
+    successModal: false
   };
 
   onSubmitHandler = event => {
@@ -38,6 +51,12 @@ class Settings extends Component {
       this.props.history.push('/dashboard');
     }
   }
+
+  toggleSuccess = () => {
+    this.setState({
+      successModal: !this.state.successModal
+    });
+  };
 
   render() {
     return (
@@ -95,6 +114,21 @@ class Settings extends Component {
           </Col>
           <Col md="4" />
         </Row>
+        <Modal
+          isOpen={this.state.successModal}
+          toggle={this.toggleSuccess}
+          onClosed={() =>
+            this.props.history.push('/dashboard/clients/invoices')
+          }
+        >
+          <ModalHeader toggle={this.toggleSuccess}>Changes Saved</ModalHeader>
+          <ModalBody>Changed Successfully</ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.toggleSuccess}>
+              Close
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }

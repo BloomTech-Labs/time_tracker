@@ -7,7 +7,10 @@ import {
   GETTING_USER_INFO,
   GOT_USER_INFO,
   PAYMENT_SUCCESS,
-  LOGOUT
+  LOGOUT,
+  LOGIN_ERROR,
+  ADD_CLIENT_ERR,
+  ADDED_CLIENT
 } from '../action/userActions';
 
 const initialState = {
@@ -22,7 +25,10 @@ const initialState = {
   signedUp: false,
   loggedIn: false,
   changeSuccess: false,
-  loading: false
+  loading: false,
+  loginError: false,
+  addedClient: false,
+  addClientErr: false
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -35,12 +41,14 @@ export const userReducer = (state = initialState, action) => {
         loggedIn: true,
         signedUp: false,
         user: action.payload._id,
-        userType: action.userType
+        userType: action.userType,
+        loginError: false
       };
     case ADD_CLIENT:
       return {
         ...state,
-        clients: action.payload.clients
+        clients: action.payload.clients,
+        addedClient: true
       };
     case CHANGE_USER:
       return { ...state, changeSuccess: true };
@@ -76,6 +84,12 @@ export const userReducer = (state = initialState, action) => {
         changeSuccess: false,
         loading: false
       };
+    case LOGIN_ERROR:
+      return { ...state, loginError: true };
+    case ADD_CLIENT_ERR:
+      return { ...state, addClientErr: true };
+    // case RESET_CLIENT:
+    //   return { ...state, addedClient: false, addClientErr: false };
     default:
       return state;
   }

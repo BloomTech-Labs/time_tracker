@@ -83,6 +83,9 @@ class Login extends Component {
                   </Label>
                 </FormGroup>
               </FormGroup>
+              {this.props.loginError ? (
+                <div>Username, password, or Type not correct, Try again.</div>
+              ) : null}
               <Button>Submit</Button>
             </Form>
           </Col>
@@ -105,7 +108,8 @@ class Login extends Component {
 
 const mapStateToProps = state => {
   return {
-    loggedIn: state.userReducer.loggedIn
+    loggedIn: state.userReducer.loggedIn,
+    loginError: state.userReducer.loginError
   };
 };
 

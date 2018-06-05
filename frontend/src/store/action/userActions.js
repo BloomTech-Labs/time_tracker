@@ -8,6 +8,9 @@ export const GETTING_USER_INFO = 'GETTING_USER_INFO';
 export const GOT_USER_INFO = 'GOT_USER_INFO';
 export const PAYMENT_SUCCESS = 'PAYMENT_SUCCESS';
 export const LOGOUT = 'LOGOUT';
+export const LOGIN_ERROR = 'LOGIN_ERROR';
+export const ADD_CLIENT_ERR = 'ADD_CLIENT_ERR';
+export const ADDED_CLIENT = 'ADDED_CLIENT';
 
 // const backend = process.env.BASE_URL || 'http://localhost:5000';
 const backend =
@@ -19,7 +22,7 @@ export const signUp = ({ name, email, password, type }) => {
   return dispatch => {
     if (type === 'client') {
       axios
-        .post(`${backend}/client`, { name, email, password })
+        .post(`${backend}/client/signup`, { name, email, password })
         .then(({ data }) => {
           dispatch({ type: SIGNUP, payload: data });
         })
@@ -28,7 +31,7 @@ export const signUp = ({ name, email, password, type }) => {
         });
     } else {
       axios
-        .post(`${backend}/vendor`, { name, email, password })
+        .post(`${backend}/vendor/signup`, { name, email, password })
         .then(({ data }) => {
           dispatch({ type: SIGNUP, payload: data });
         })
@@ -50,6 +53,7 @@ export const logIn = ({ email, password, type }) => {
           dispatch({ type: LOGIN, payload: data, userType: 'client' });
         })
         .catch(err => {
+          dispatch({ type: LOGIN_ERROR });
           console.log(err);
         });
     } else {
@@ -61,6 +65,7 @@ export const logIn = ({ email, password, type }) => {
           dispatch({ type: LOGIN, payload: data, userType: 'vendor' });
         })
         .catch(err => {
+          dispatch({ type: LOGIN_ERROR });
           console.log(err);
         });
     }
@@ -109,6 +114,7 @@ export const addClient = (email, _id) => {
         dispatch({ type: ADD_CLIENT, payload: data });
       })
       .catch(err => {
+        dispatch({ type: ADD_CLIENT_ERR });
         console.log(err);
       });
   };

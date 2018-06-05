@@ -60,18 +60,22 @@ const ClientCard = props => {
 };
 
 const MainDash = props => {
-  return (
-    <div>
-      <AddText>
-        <div>New Client</div>
-        <div>
-          <Link to="/dashboard/clients/new">
-            <FaCircle />
-          </Link>
-        </div>
-      </AddText>
-    </div>
-  );
+  if (window.localStorage.getItem('UserType') === 'client') {
+    return <div>Have a vendor add you as a client to get started.</div>;
+  } else {
+    return (
+      <div>
+        <AddText>
+          <div>New Client</div>
+          <div>
+            <Link to="/dashboard/clients/new">
+              <FaCircle />
+            </Link>
+          </div>
+        </AddText>
+      </div>
+    );
+  }
 };
 
 const StyledButton = styled(Button)`
@@ -95,7 +99,8 @@ const mapStateToProps = state => {
   return {
     clients: state.userReducer.clients,
     loading: state.userReducer.loading,
-    paid: state.userReducer.paid
+    paid: state.userReducer.paid,
+    userType: state.userReducer.userType
   };
 };
 
