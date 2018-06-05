@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 const sgMail = require('@sendgrid/mail');
 const stripe = require('stripe')('sk_test_BVZDGnQFiI1u0yPwvGXpOfEZ');
+const authenticate = require('../utils/middlewares');
 
 const { SENDGRID_API_KEY } = require('../sgconfig');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || SENDGRID_API_KEY);
@@ -58,7 +59,6 @@ vendorRouter.get('/ts/:userId/client/:id', (req, res) => {
       match: { vendor: userId }
     })
     .then(client => {
-      console.log(client);
       res.status(200).json(client);
     })
     .catch(err => {

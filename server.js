@@ -8,15 +8,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
+const authenticate = require('./utils/middlewares');
 
 const server = express();
 server.use(bodyParser.json());
 server.use(cors());
-server.use('/vendor', vendorRouter);
-server.use('/client', clientRouter);
-server.use('/invoice', invoiceRouter);
-server.use('/timestamp', timestampRouter);
-
+server.use('/vendor', authenticate, vendorRouter);
+server.use('/client', authenticate, clientRouter);
+server.use('/invoice', authenticate, invoiceRouter);
+server.use('/timestamp', authenticate, timestampRouter);
 
 server.use(express.static(path.join(__dirname, 'frontend/build')));
 

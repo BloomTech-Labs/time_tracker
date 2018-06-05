@@ -5,6 +5,10 @@ import fileDownload from 'js-file-download';
 import moment from 'moment';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
+const backend =
+  process.env.NODE_ENV === 'production'
+    ? `https://ls-time-tracker.herokuapp.com`
+    : `http://localhost:5000`;
 
 class NewInvoice extends Component {
   state = {
@@ -48,12 +52,21 @@ class NewInvoice extends Component {
 
   generatePDF = () => {
     axios
-      .post('http://localhost:5000/invoice/new', {
-        timestamps: this.props.timestamps,
-        hourlyRate: this.state.rate,
-        name: this.props.name,
-        total: this.state.total
-      })
+      .post(
+        `${backend}/invoice/new`,
+        {
+          timestamps: this.props.timestamps,
+          hourlyRate: this.state.rate,
+          name: this.props.name,
+          total: this.state.total
+        },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(({ data }) => {
         console.log(data);
         // window.open(data, '_blank');

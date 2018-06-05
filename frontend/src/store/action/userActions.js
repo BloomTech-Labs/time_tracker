@@ -70,7 +70,16 @@ export const logIn = ({ email, password, type }) => {
 export const authenticate = (token, userType, history) => {
   return dispatch => {
     axios
-      .post(`${backend}/${userType}/authenticate`, { token })
+      .post(
+        `${backend}/${userType}/authenticate`,
+        { token },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(({ data }) => {
         dispatch({ type: LOGIN, payload: data, userType: userType });
       })
@@ -86,7 +95,16 @@ export const authenticate = (token, userType, history) => {
 export const addClient = (email, _id) => {
   return dispatch => {
     axios
-      .put(`${backend}/vendor/client/add`, { email, _id })
+      .put(
+        `${backend}/vendor/client/add`,
+        { email, _id },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(({ data }) => {
         dispatch({ type: ADD_CLIENT, payload: data });
       })
@@ -108,7 +126,16 @@ export const changeUserDetails = (
       if (newPassword && !newEmail) {
         // Just changing password
         axios
-          .put(`${backend}/client/settings/${id}`, { password, newPassword })
+          .put(
+            `${backend}/client/settings/${id}`,
+            { password, newPassword },
+            {
+              headers: {
+                token: window.localStorage.getItem('Authorization'),
+                userType: window.localStorage.getItem('UserType')
+              }
+            }
+          )
           .then(({ data }) => {
             window.localStorage.setItem('Authorization', data.token);
             dispatch({ type: CHANGE_USER, payload: data });
@@ -120,7 +147,16 @@ export const changeUserDetails = (
       } else if (!newPassword && newEmail) {
         // Just changing email
         axios
-          .put(`${backend}/client/settings/${id}`, { password, newEmail })
+          .put(
+            `${backend}/client/settings/${id}`,
+            { password, newEmail },
+            {
+              headers: {
+                token: window.localStorage.getItem('Authorization'),
+                userType: window.localStorage.getItem('UserType')
+              }
+            }
+          )
           .then(({ data }) => {
             window.localStorage.setItem('Authorization', data.token);
             dispatch({ type: CHANGE_USER, payload: data });
@@ -132,11 +168,20 @@ export const changeUserDetails = (
       } else {
         // Changing both password and email
         axios
-          .put(`${backend}/client/settings/${id}`, {
-            password,
-            newPassword,
-            newEmail
-          })
+          .put(
+            `${backend}/client/settings/${id}`,
+            {
+              password,
+              newPassword,
+              newEmail
+            },
+            {
+              headers: {
+                token: window.localStorage.getItem('Authorization'),
+                userType: window.localStorage.getItem('UserType')
+              }
+            }
+          )
           .then(({ data }) => {
             window.localStorage.setItem('Authorization', data.token);
             dispatch({ type: CHANGE_USER, payload: data });
@@ -150,7 +195,16 @@ export const changeUserDetails = (
       if (newPassword && !newEmail) {
         // Just changing password
         axios
-          .put(`${backend}/vendor/settings/${id}`, { password, newPassword })
+          .put(
+            `${backend}/vendor/settings/${id}`,
+            { password, newPassword },
+            {
+              headers: {
+                token: window.localStorage.getItem('Authorization'),
+                userType: window.localStorage.getItem('UserType')
+              }
+            }
+          )
           .then(({ data }) => {
             window.localStorage.setItem('Authorization', data.token);
             dispatch({ type: CHANGE_USER, payload: data });
@@ -162,7 +216,16 @@ export const changeUserDetails = (
       } else if (!newPassword && newEmail) {
         // Just changing email
         axios
-          .put(`${backend}/vendor/settings/${id}`, { password, newEmail })
+          .put(
+            `${backend}/vendor/settings/${id}`,
+            { password, newEmail },
+            {
+              headers: {
+                token: window.localStorage.getItem('Authorization'),
+                userType: window.localStorage.getItem('UserType')
+              }
+            }
+          )
           .then(({ data }) => {
             window.localStorage.setItem('Authorization', data.token);
             dispatch({ type: CHANGE_USER, payload: data });
@@ -174,11 +237,20 @@ export const changeUserDetails = (
       } else {
         // Changing both password and email
         axios
-          .put(`${backend}/vendor/settings/${id}`, {
-            password,
-            newPassword,
-            newEmail
-          })
+          .put(
+            `${backend}/vendor/settings/${id}`,
+            {
+              password,
+              newPassword,
+              newEmail
+            },
+            {
+              headers: {
+                token: window.localStorage.getItem('Authorization'),
+                userType: window.localStorage.getItem('UserType')
+              }
+            }
+          )
           .then(({ data }) => {
             window.localStorage.setItem('Authorization', data.token);
             dispatch({ type: CHANGE_USER, payload: data });
@@ -197,7 +269,12 @@ export const getUserInfo = (id, type) => {
     if (type === 'client') {
       dispatch({ type: GETTING_USER_INFO });
       axios
-        .get(`${backend}/client/${id}`)
+        .get(`${backend}/client/${id}`, {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        })
         .then(({ data }) => {
           dispatch({
             type: GOT_USER_INFO,
@@ -211,7 +288,12 @@ export const getUserInfo = (id, type) => {
     } else {
       dispatch({ type: GETTING_USER_INFO });
       axios
-        .get(`${backend}/vendor/${id}`)
+        .get(`${backend}/vendor/${id}`, {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        })
         .then(({ data }) => {
           console.log(data);
           dispatch({

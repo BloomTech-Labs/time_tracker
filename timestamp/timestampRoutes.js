@@ -4,6 +4,7 @@ const Client = require('../client/clientSchema');
 const Vendor = require('../vendor/vendorSchema');
 const timestampRouter = express.Router();
 const moment = require('moment');
+const authenticate = require('../utils/middlewares');
 
 timestampRouter.post('/start', (req, res) => {
   // client id vendor id

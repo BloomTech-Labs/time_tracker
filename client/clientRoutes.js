@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const authenticate = require('../utils/middlewares');
 
 //Create new client
 //TODO think about auto adding client when created from vendor.
