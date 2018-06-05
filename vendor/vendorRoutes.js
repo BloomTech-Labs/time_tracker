@@ -33,7 +33,7 @@ vendorRouter.post('/', (req, res) => {
 });
 
 // Get all user info using id. populate client array
-vendorRouter.get('/:id', authenticate, (req, res) => {
+vendorRouter.get('/:id', (req, res) => {
   const { id } = req.params;
   Vendor.findOne({ _id: id })
     .populate('clients', { password: 0, invoices: 0 })
@@ -51,7 +51,7 @@ vendorRouter.get('/:id', authenticate, (req, res) => {
 });
 
 // get timstamps for specific vendor where timestamp.client = logged in user id
-vendorRouter.get('/ts/:userId/client/:id', authenticate, (req, res) => {
+vendorRouter.get('/ts/:userId/client/:id', (req, res) => {
   const { id, userId } = req.params;
   Client.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
     .populate({
@@ -59,7 +59,6 @@ vendorRouter.get('/ts/:userId/client/:id', authenticate, (req, res) => {
       match: { vendor: userId }
     })
     .then(client => {
-      console.log(client);
       res.status(200).json(client);
     })
     .catch(err => {
@@ -115,7 +114,7 @@ vendorRouter.post('/authenticate', (req, res) => {
 });
 
 //Update
-vendorRouter.put('/:id', authenticate, (req, res) => {
+vendorRouter.put('/:id', (req, res) => {
   const { id } = req.params;
   Vendor.findByIdAndUpdate(id, req.body)
     .then(updatedVendor => {
@@ -137,7 +136,7 @@ vendorRouter.put('/:id', authenticate, (req, res) => {
 // @TODO send email to new client, and check dups
 // @TODO should the vendor id also be set into client vendor list.
 // Add client to vendor array and populate client info array
-vendorRouter.put('/client/add', authenticate, (req, res) => {
+vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
   Client.findOneAndUpdate({ email }, { $push: { vendors: _id } })
     .then(client => {
@@ -165,7 +164,7 @@ vendorRouter.put('/client/add', authenticate, (req, res) => {
 // @TODO: add checking new password to not be the same as old
 // @TODO STRETCH: cannot use previous X passwords
 // Update vendor password and revalidate JWT
-vendorRouter.put('/settings/:id', authenticate, (req, res) => {
+vendorRouter.put('/settings/:id', (req, res) => {
   const { id } = req.params;
   const { password, newPassword, newEmail } = req.body;
   Vendor.findOne({ _id: id })
@@ -202,7 +201,7 @@ vendorRouter.put('/settings/:id', authenticate, (req, res) => {
 });
 
 //Remove
-vendorRouter.delete('/:id', authenticate, (req, res) => {
+vendorRouter.delete('/:id', (req, res) => {
   const { id } = req.params;
   Vendor.findByIdAndRemove(id)
     .then(removedVendor => {
@@ -222,7 +221,7 @@ vendorRouter.delete('/:id', authenticate, (req, res) => {
 });
 
 // stripe
-vendorRouter.post('/checkout', authenticate, (req, res) => {
+vendorRouter.post('/checkout', (req, res) => {
   const { token, amount, vendorId } = req.body;
   const charge = stripe.charges.create(
     {

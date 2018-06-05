@@ -39,7 +39,12 @@ class TimestampDetail extends Component {
 
   componentDidMount() {
     axios
-      .get(`${backend}/timestamp/${this.props.match.params.id}`)
+      .get(`${backend}/timestamp/${this.props.match.params.id}`, {
+        headers: {
+          token: window.localStorage.getItem('Authorization'),
+          userType: window.localStorage.getItem('UserType')
+        }
+      })
       .then(({ data }) => {
         this.setState({
           comments: data.comments,
@@ -76,11 +81,20 @@ class TimestampDetail extends Component {
       .add(Number(this.state.mins), 'minutes');
 
     axios
-      .put(`${backend}/timestamp/${this.props.match.params.id}`, {
-        newTimestamp: this.state,
-        endTime: newEndTime,
-        duration: newDuration
-      })
+      .put(
+        `${backend}/timestamp/${this.props.match.params.id}`,
+        {
+          newTimestamp: this.state,
+          endTime: newEndTime,
+          duration: newDuration
+        },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(updatedTStamp => {
         this.setState({
           comments: updatedTStamp.comments,
@@ -112,7 +126,12 @@ class TimestampDetail extends Component {
 
   deleteTimestamp = () => {
     axios
-      .delete(`${backend}/timestamp/${this.props.match.params.id}`)
+      .delete(`${backend}/timestamp/${this.props.match.params.id}`, {
+        headers: {
+          token: window.localStorage.getItem('Authorization'),
+          userType: window.localStorage.getItem('UserType')
+        }
+      })
       .then(success => {
         this.setState({
           successModal: true
@@ -123,7 +142,6 @@ class TimestampDetail extends Component {
       });
   };
 
-  // @TODO textarea auto expand?
   render() {
     return (
       <div>

@@ -9,7 +9,16 @@ const backend =
 export const startNewTimer = (vendorId, clientId) => {
   return dispatch => {
     axios
-      .post(`${backend}/timestamp/start`, { vendorId, clientId })
+      .post(
+        `${backend}/timestamp/start`,
+        { vendorId, clientId },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(({ data }) => {
         dispatch({ type: START_TIMER, payload: data });
       });
@@ -19,7 +28,16 @@ export const startNewTimer = (vendorId, clientId) => {
 export const stopActiveTimer = timestampId => {
   return dispatch => {
     axios
-      .put(`${backend}/timestamp/stop`, { timestampId })
+      .put(
+        `${backend}/timestamp/stop`,
+        { timestampId },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(({ data }) => {
         console.log(data);
         dispatch({ type: STOP_TIMER, payload: data });

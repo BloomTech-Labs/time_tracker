@@ -18,7 +18,7 @@ cloudinary.config({
 });
 
 // invoiced api
-invoiceRouter.post('/new', authenticate, (req, res) => {
+invoiceRouter.post('/new', (req, res) => {
   const { timestamps, hourlyRate, name, total } = req.body;
   const vendorNum = timestamps[0].vendor;
   const clientNum = timestamps[0].client;

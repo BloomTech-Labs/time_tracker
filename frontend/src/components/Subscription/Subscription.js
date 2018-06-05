@@ -18,11 +18,20 @@ class Subscription extends Component {
 
   onToken = token => {
     axios
-      .post(`${backend}/vendor/checkout`, {
-        token: token.id,
-        amount: 500,
-        vendorId: this.props.user
-      })
+      .post(
+        `${backend}/vendor/checkout`,
+        {
+          token: token.id,
+          amount: 500,
+          vendorId: this.props.user
+        },
+        {
+          headers: {
+            token: window.localStorage.getItem('Authorization'),
+            userType: window.localStorage.getItem('UserType')
+          }
+        }
+      )
       .then(({ data }) => {
         this.props.paymentSuccess();
         this.setState({ successModal: true });
