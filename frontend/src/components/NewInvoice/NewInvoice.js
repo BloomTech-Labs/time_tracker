@@ -5,6 +5,9 @@ import fileDownload from 'js-file-download';
 import moment from 'moment';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { getUserInfo } from '../../store/action/userActions';
+
 const backend =
   process.env.NODE_ENV === 'production'
     ? `https://ls-time-tracker.herokuapp.com`
@@ -16,7 +19,8 @@ class NewInvoice extends Component {
     totalHours: 0,
     rate: 0,
     name: '',
-    total: 0
+    total: 0,
+    loadingModal: false
   };
 
   componentDidMount() {
@@ -51,6 +55,10 @@ class NewInvoice extends Component {
   };
 
   generatePDF = () => {
+    this.setState({
+      ...this.state,
+      loadingModal: true
+    });
     axios
       .post(
         `${backend}/invoice/new`,
@@ -68,12 +76,18 @@ class NewInvoice extends Component {
         }
       )
       .then(({ data }) => {
-        console.log(data);
-        // window.open(data, '_blank');
+        this.props.getUserInfo(this.props.user, this.props.userType);
+        setTimeout(() => this.setState({ loadingModal: false }), 1500);
       })
       .catch(err => {
         console.log(err);
       });
+  };
+
+  toggleSuccess = () => {
+    this.setState({
+      loadingModal: !this.state.loadingModal
+    });
   };
 
   render() {
@@ -106,6 +120,21 @@ class NewInvoice extends Component {
           <h4>total: {this.state.total}</h4>
         </div>
         <button onClick={this.generatePDF}>Click</button>
+        <Modal
+          isOpen={this.state.loadingModal}
+          toggle={this.toggleSuccess}
+          onClosed={() =>
+            this.props.history.push('/dashboard/clients/invoices')
+          }
+        >
+          <ModalHeader toggle={this.toggleSuccess}>Changes Saved</ModalHeader>
+          <ModalBody>Changed Successfully</ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.toggleSuccess}>
+              Close
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
@@ -115,8 +144,12 @@ const mapStateToProps = state => {
   return {
     timestamps: state.invoiceReducer.timestamps,
     name: state.userReducer.name,
-    paid: state.userReducer.user
+    paid: state.userReducer.user,
+    user: state.userReducer.user,
+    userType: state.userReducer.userType
   };
 };
 
-export default withRouter(connect(mapStateToProps, null)(NewInvoice));
+export default withRouter(
+  connect(mapStateToProps, { getUserInfo })(NewInvoice)
+);

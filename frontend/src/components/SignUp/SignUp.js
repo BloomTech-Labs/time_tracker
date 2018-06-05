@@ -78,6 +78,7 @@ class SignUp extends Component {
                     name="type"
                     value="vendor"
                     onChange={this.inputChangeHandler}
+                    defaultChecked
                   />Vendor
                 </Label>
               </FormGroup>

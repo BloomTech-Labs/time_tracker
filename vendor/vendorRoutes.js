@@ -13,7 +13,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY || SENDGRID_API_KEY);
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
-vendorRouter.post('/', (req, res) => {
+vendorRouter.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !password || !email) {
     res
@@ -73,9 +73,6 @@ vendorRouter.post('/login', (req, res) => {
     .then(vendor => {
       if (vendor !== null) {
         vendor.comparePass(password, (err, match) => {
-          if (err) {
-            res.status(422).json({ err });
-          }
           if (match) {
             const payload = {
               email: vendor.email,
@@ -138,8 +135,10 @@ vendorRouter.put('/:id', (req, res) => {
 // Add client to vendor array and populate client info array
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
+  console.log({ email, _id });
   Client.findOneAndUpdate({ email }, { $push: { vendors: _id } })
     .then(client => {
+      // if (client) {
       Vendor.findOneAndUpdate({ _id }, { $push: { clients: client._id } })
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
@@ -154,6 +153,13 @@ vendorRouter.put('/client/add', (req, res) => {
           sgMail.send(msg);
           res.status(200).json(vendor);
         });
+      // @TODO: create client and send the client an email to make password
+      // } else {
+      //   const newClient = new Client({ email, vendors: {$push: _id}});
+      //   newClient.save();
+      //   res.status(200).json(newClient)
+      // }
+
       // else create client and email
     })
     .catch(err => {
