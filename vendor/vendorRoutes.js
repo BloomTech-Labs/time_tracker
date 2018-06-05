@@ -37,6 +37,10 @@ vendorRouter.get('/:id', (req, res) => {
   Vendor.findOne({ _id: id })
     .populate('clients', { password: 0, invoices: 0 })
     .populate('hoursLogged')
+    .populate({
+      path: 'invoices',
+      populate: { path: 'clientNum', select: 'name' }
+    })
     .then(vendor => {
       res.status(200).json(vendor);
     })

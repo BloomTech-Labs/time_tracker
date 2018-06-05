@@ -22,20 +22,11 @@ invoiceRouter.get('/', (req, res) => {
 
 // invoiced api
 invoiceRouter.post('/new', (req, res) => {
-  const { timestamps, hourlyRate, name } = req.body;
+  const { timestamps, hourlyRate, name, total } = req.body;
   const vendorNum = timestamps[0].vendor;
   const clientNum = timestamps[0].client;
   const invoiceNum = moment(Date.now()).format('MMDDYYYY-HHMM');
   Client.findOne({ _id: clientNum }).then(client => {
-    // const newInvoice = new Invoice({
-    //   clientNum,
-    //   vendorNum
-    // });
-    // for (let i = 0; i < timestamps.length; i++) {
-    //   newInvoice.hoursLogged.push(timestamps[i]._id);
-    // }
-    // newInvoice.save();
-
     const generateInvoice = (invoice, filename, success, error) => {
       var postData = JSON.stringify(invoice);
       var options = {
@@ -104,6 +95,7 @@ invoiceRouter.post('/new', (req, res) => {
             invoiceNum,
             clientNum,
             vendorNum,
+            total,
             url: result.secure_url
           });
           // push each timestamp into invoice and should update to invoiced
@@ -120,7 +112,7 @@ invoiceRouter.post('/new', (req, res) => {
               client.invoices.push(newInvoice._id);
               client.save();
               newInvoice.save();
-              res.status(200).json({ vendor });
+              res.status(200).json({ result });
             })
             .catch(err => {
               res.status(500).json(err);
