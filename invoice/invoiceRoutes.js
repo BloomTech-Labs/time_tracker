@@ -6,21 +6,27 @@ const Invoice = require('./invoiceSchema');
 const invoiceRouter = express.Router();
 const moment = require('moment');
 const Client = require('../client/clientSchema');
+const Vendor = require('../vendor/vendorSchema');
+const cloudinary = require('cloudinary');
+const { cloud_name, api_key, api_secret } = require('../config/config');
+
+cloudinary.config({
+  cloud_name,
+  api_key,
+  api_secret
+});
+
+invoiceRouter.get('/', (req, res) => {
+  res.send(moment(Date.now()).format('MMDDYYYY-HHMM'));
+});
+
 // invoiced api
 invoiceRouter.post('/new', (req, res) => {
-  const { timestamps, hourlyRate, name } = req.body;
+  const { timestamps, hourlyRate, name, total } = req.body;
   const vendorNum = timestamps[0].vendor;
   const clientNum = timestamps[0].client;
+  const invoiceNum = moment(Date.now()).format('MMDDYYYY-HHMM');
   Client.findOne({ _id: clientNum }).then(client => {
-    const newInvoice = new Invoice({
-      clientNum,
-      vendorNum
-    });
-    for (let i = 0; i < timestamps.length; i++) {
-      newInvoice.hoursLogged.push(timestamps[i]._id);
-    }
-    newInvoice.save();
-
     const generateInvoice = (invoice, filename, success, error) => {
       var postData = JSON.stringify(invoice);
       var options = {
@@ -69,43 +75,49 @@ invoiceRouter.post('/new', (req, res) => {
       from: name,
       to: client.name,
       currency: 'usd',
-      number: newInvoice._id
+      number: invoiceNum
     };
     generateInvoice(
       invoice,
-      `${newInvoice._id}_invoice.pdf`,
+      `${invoiceNum}_invoice.pdf`,
       function() {
-        // const data = fs.readFileSync(
-        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
-        // );
-        // res.contentType('application/pdf');
-        // res.send(data);
-        res.sendFile(
-          path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
+        const filePath = path.join(
+          __dirname,
+          '../',
+          `${invoiceNum}_invoice.pdf`
         );
-        console.log(
-          path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
-        );
-        // deletes after 2 seconds. enough to send up maybe
-        // setTimeout(
-        //   () =>
-        //     fs.unlinkSync(
-        //       path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
-        //     ),
-        //   2000
-        // );
+        cloudinary.uploader.upload(filePath, function(result) {
+          fs.unlinkSync(
+            path.join(__dirname, '../', `${invoiceNum}_invoice.pdf`)
+          );
+          // generate invoice with pic url
+          const newInvoice = new Invoice({
+            invoiceNum,
+            clientNum,
+            vendorNum,
+            total,
+            url: result.secure_url
+          });
+          // push each timestamp into invoice and should update to invoiced
+          for (let i = 0; i < timestamps.length; i++) {
+            newInvoice.hoursLogged.push(timestamps[i]._id);
+          }
 
-        // TESTING
-        // var file = fs.createReadStream(
-        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
-        // );
-        // var stat = fs.statSync(
-        //   path.join(__dirname, '../', `${newInvoice._id}_invoice.pdf`)
-        // );
-        // res.setHeader('Content-Length', stat.size);
-        // res.setHeader('Content-Type', 'application/pdf');
-        // res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
-        // file.pipe(res);
+          Vendor.findOneAndUpdate(
+            { _id: vendorNum },
+            { $push: { invoices: newInvoice._id } },
+            { new: true }
+          )
+            .then(vendor => {
+              client.invoices.push(newInvoice._id);
+              client.save();
+              newInvoice.save();
+              res.status(200).json({ result });
+            })
+            .catch(err => {
+              res.status(500).json(err);
+            });
+        });
       },
       function(error) {
         console.error(error);

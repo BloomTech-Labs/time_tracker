@@ -11,7 +11,8 @@ class NewInvoice extends Component {
     timestamp: [],
     totalHours: 0,
     rate: 0,
-    name: ''
+    name: '',
+    total: 0
   };
 
   componentDidMount() {
@@ -38,7 +39,10 @@ class NewInvoice extends Component {
 
   setRate = ({ target }) => {
     this.setState({
-      rate: target.value
+      rate: target.value,
+      total:
+        target.value *
+        (Number(this.state.totalHours) + Number(this.state.totalMinutes / 60))
     });
   };
 
@@ -47,11 +51,11 @@ class NewInvoice extends Component {
       .post('http://localhost:5000/invoice/new', {
         timestamps: this.props.timestamps,
         hourlyRate: this.state.rate,
-        name: this.props.name
+        name: this.props.name,
+        total: this.state.total
       })
       .then(({ data }) => {
-        console.log(data.Title);
-        fileDownload(data, 'invoice.pdf');
+        console.log(data);
         // window.open(data, '_blank');
       })
       .catch(err => {
@@ -60,7 +64,7 @@ class NewInvoice extends Component {
   };
 
   render() {
-    if (!this.props.user) {
+    if (!this.props.paid) {
       this.props.history.push('/dashboard/billing');
     }
     return (
@@ -86,12 +90,7 @@ class NewInvoice extends Component {
         <div>Hourly rate</div>
         <input type="number" onChange={this.setRate} value={this.state.rate} />
         <div>
-          <h4>
-            total:
-            {this.state.rate *
-              (Number(this.state.totalHours) +
-                Number(this.state.totalMinutes / 60))}
-          </h4>
+          <h4>total: {this.state.total}</h4>
         </div>
         <button onClick={this.generatePDF}>Click</button>
       </div>
