@@ -9,6 +9,7 @@ const Client = require('../client/clientSchema');
 const Vendor = require('../vendor/vendorSchema');
 const cloudinary = require('cloudinary');
 const { cloud_name, api_key, api_secret } = require('../config/config');
+const authenticate = require('../utils/middlewares');
 
 cloudinary.config({
   cloud_name,
@@ -16,12 +17,8 @@ cloudinary.config({
   api_secret
 });
 
-invoiceRouter.get('/', (req, res) => {
-  res.send(moment(Date.now()).format('MMDDYYYY-HHMM'));
-});
-
 // invoiced api
-invoiceRouter.post('/new', (req, res) => {
+invoiceRouter.post('/new', authenticate, (req, res) => {
   const { timestamps, hourlyRate, name, total } = req.body;
   const vendorNum = timestamps[0].vendor;
   const clientNum = timestamps[0].client;

@@ -4,8 +4,9 @@ const Client = require('../client/clientSchema');
 const Vendor = require('../vendor/vendorSchema');
 const timestampRouter = express.Router();
 const moment = require('moment');
+const authenticate = require('../utils/middlewares');
 
-timestampRouter.post('/start', (req, res) => {
+timestampRouter.post('/start', authenticate, (req, res) => {
   // client id vendor id
   const { vendorId, clientId } = req.body;
   if (vendorId && clientId) {
@@ -34,7 +35,7 @@ timestampRouter.post('/start', (req, res) => {
 });
 
 // stop timer using timestamp id and push to clients hourslogged
-timestampRouter.put('/stop', (req, res) => {
+timestampRouter.put('/stop', authenticate, (req, res) => {
   const { timestampId } = req.body;
 
   Timestamp.findOneAndUpdate(
@@ -73,7 +74,7 @@ timestampRouter.put('/stop', (req, res) => {
 });
 
 //Create new timestamp
-timestampRouter.post('/', (req, res) => {
+timestampRouter.post('/', authenticate, (req, res) => {
   const timestamp = new Timestamp(req.body);
   timestamp.save((err, timestamp) => {
     if (err) return res.send(err);
@@ -82,7 +83,7 @@ timestampRouter.post('/', (req, res) => {
 });
 
 //Get an timestamp by id
-timestampRouter.get('/:id', (req, res) => {
+timestampRouter.get('/:id', authenticate, (req, res) => {
   const { id } = req.params;
   Timestamp.findById(id)
     .populate('client')
@@ -95,7 +96,7 @@ timestampRouter.get('/:id', (req, res) => {
 });
 
 //Update timestamp
-timestampRouter.put('/:id', (req, res) => {
+timestampRouter.put('/:id', authenticate, (req, res) => {
   const { id } = req.params;
   const { newTimestamp, endTime, duration } = req.body;
   Timestamp.findOneAndUpdate(
@@ -116,7 +117,7 @@ timestampRouter.put('/:id', (req, res) => {
 });
 
 //Remove
-timestampRouter.delete('/:id', (req, res) => {
+timestampRouter.delete('/:id', authenticate, (req, res) => {
   const { id } = req.params;
   Timestamp.findByIdAndRemove(id)
     .then(removedTimestamp => {

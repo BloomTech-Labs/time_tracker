@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const authenticate = require('../utils/middlewares');
 
 //Create new client
 //TODO think about auto adding client when created from vendor.
@@ -28,7 +29,7 @@ clientRouter.post('/', (req, res) => {
     });
 });
 
-clientRouter.get('/:id', (req, res) => {
+clientRouter.get('/:id', authenticate, (req, res) => {
   const { id } = req.params;
   Client.findOne({ _id: id }, { password: 0 })
     .populate('vendors', { password: 0, invoices: 0 })
@@ -42,7 +43,7 @@ clientRouter.get('/:id', (req, res) => {
 });
 
 // get timstamps for specific vendor where timestamp.client = logged in user id
-clientRouter.get('/ts/:userId/vendor/:id', (req, res) => {
+clientRouter.get('/ts/:userId/vendor/:id', authenticate, (req, res) => {
   const { id, userId } = req.params;
   Vendor.findOne({ _id: id }, { name: 1, hoursLogged: 1, invoices: 1 })
     .populate({
@@ -106,7 +107,7 @@ clientRouter.post('/authenticate', (req, res) => {
 });
 
 //Update
-clientRouter.put('/:id', (req, res) => {
+clientRouter.put('/:id', authenticate, (req, res) => {
   const { id } = req.params;
   Client.findByIdAndUpdate(id, req.body)
     .then(updatedClient => {
@@ -126,7 +127,7 @@ clientRouter.put('/:id', (req, res) => {
 // @TODO: add checking new password to not be the same as old
 // @TODO STRETCH: cannot use previous X passwords
 // Update client password and revalidate JWT
-clientRouter.put('/settings/:id', (req, res) => {
+clientRouter.put('/settings/:id', authenticate, (req, res) => {
   const { id } = req.params;
   const { password, newPassword, newEmail } = req.body;
   Client.findOne({ _id: id })
@@ -163,7 +164,7 @@ clientRouter.put('/settings/:id', (req, res) => {
 });
 
 //Remove
-clientRouter.delete('/:id', (req, res) => {
+clientRouter.delete('/:id', authenticate, (req, res) => {
   const { id } = req.params;
   Client.findByIdAndRemove(id)
     .then(removedClient => {
