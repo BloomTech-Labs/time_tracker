@@ -30,9 +30,9 @@ class ClientList extends Component {
             <Row>
               {this.props.clients.map((client, i) => {
                 return (
-                  <Link to={`/dashboard/clients/${client._id}`} key={i}>
-                    <ClientCard name={client.name} />
-                  </Link>
+                  // <Link to={`/dashboard/clients/${client._id}`} key={i}>
+                  <ClientCard tag={Link} id={client._id} name={client.name} />
+                  // {/* </Link> */}
                 );
               })}
             </Row>
@@ -46,15 +46,20 @@ class ClientList extends Component {
 
 const ClientCard = props => {
   return (
-    <Col sm="6">
-      <Card>
-        <CardBody>
-          <CardTitle>{props.name}</CardTitle>
-        </CardBody>
-        <CardBody>
-          <CardText>Add comments or description</CardText>
-        </CardBody>
-      </Card>
+    <Col sm="6" key={props.id}>
+      <Link
+        to={`/dashboard/clients/${props.id}`}
+        style={{ textDecoration: 'none' }}
+      >
+        <StyledCard>
+          <CardBody>
+            <CardTitle>{props.name}</CardTitle>
+          </CardBody>
+          <CardBody>
+            <CardText>Add comments or description</CardText>
+          </CardBody>
+        </StyledCard>
+      </Link>
     </Col>
   );
 };
@@ -83,6 +88,8 @@ const StyledButton = styled(Button)`
   justify-content: space-between;
   min-width: 20vw;
   align-items: center;
+  margin-bottom: 2vh;
+  background-color: #4c4b63 !important;
 `;
 
 const StyledIcon = styled(FaPlus)`
@@ -93,6 +100,12 @@ const StyledIcon = styled(FaPlus)`
 const AddText = styled.div`
   padding-top: 15vh;
   font-size: 4em;
+`;
+
+const StyledCard = styled(Card)`
+  background-color: white;
+  color: #4c4b63;
+  margin-bottom: 3vh;
 `;
 
 const mapStateToProps = state => {

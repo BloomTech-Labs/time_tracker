@@ -7,9 +7,16 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink
+  NavLink,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { logOut } from '../../store/action/userActions';
+import { withRouter } from 'react-router-dom';
 
 class TopBar extends Component {
   constructor(props) {
@@ -27,6 +34,56 @@ class TopBar extends Component {
   }
 
   render() {
+    if (this.props.loggedIn) {
+      return (
+        <div>
+          <StyledNavbar dark expand="md">
+            <NavbarBrand href="/">loggedin</NavbarBrand>
+            <NavbarToggler onClick={this.toggle} />
+            <Collapse isOpen={this.state.isOpen} navbar>
+              <Nav className="ml-auto" navbar>
+                <NavItem>
+                  <Dropdown isOpen={this.state.isOpen} toggle={this.toggle}>
+                    <StyledToggle caret>clients</StyledToggle>
+                    <DropdownMenu>
+                      {this.props.clients.map(client => {
+                        return <DropdownItem>{client.name}</DropdownItem>;
+                      })}
+                    </DropdownMenu>
+                  </Dropdown>
+                  {/* <NavLink tag={Link} to="/dashboard/clients">
+                    clients
+                  </NavLink> */}
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/dashboard/clients/invoices">
+                    invoices
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/dashboard/billing">
+                    billing
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/aboutus">
+                    about us
+                  </NavLink>
+                </NavItem>
+
+                <NavItem>
+                  <NavLink
+                    onClick={() => this.props.logOut(this.props.history)}
+                  >
+                    log out
+                  </NavLink>
+                </NavItem>
+              </Nav>
+            </Collapse>
+          </StyledNavbar>
+        </div>
+      );
+    }
     return (
       <div>
         <StyledNavbar dark expand="md">
@@ -56,10 +113,20 @@ class TopBar extends Component {
 }
 
 const StyledNavbar = styled(Navbar)`
-  background: transparent;
-  background-color: transparent;
+  background: #e3170a;
+  background-color: #e3170a;
   border-color: transparent;
-  color: gray;
 `;
 
-export default TopBar;
+const StyledToggle = styled(DropdownToggle)`
+  background-color: transparent;
+`;
+
+const mapStateToProps = state => {
+  return {
+    loggedIn: state.userReducer.loggedIn,
+    clients: state.userReducer.clients
+  };
+};
+
+export default withRouter(connect(mapStateToProps, { logOut })(TopBar));

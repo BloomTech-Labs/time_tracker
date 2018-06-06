@@ -15,6 +15,7 @@ import Invoice from '../Invoice/Invoice';
 import NewInvoice from '../NewInvoice/NewInvoice';
 import Subscription from '../Subscription/Subscription';
 import HOCAuth from '../HOC/HOCAuth';
+import TopBar from '../TopBar/TopBar';
 
 class Dashboard extends Component {
   state = {
@@ -36,43 +37,33 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
-        <Row>
-          <Col md="9">
-            <Breadcrumb>
-              <BreadcrumbItem>
-                <a href="/dashboard">Home</a>
-              </BreadcrumbItem>
-              <BreadcrumbItem active>Clients</BreadcrumbItem>
-            </Breadcrumb>
-          </Col>
-          <Col md="3">
-            <div onClick={() => this.props.logOut(this.props.history)}>
-              Sign out
-            </div>
-          </Col>
-        </Row>
+        <TopBar />
 
-        <Row>
+        <Main>
           <Col md="2">
             <StyledMenu>
               {this.props.userType === 'client' ? (
-                <Link to="/dashboard/clients">Vendors</Link>
+                <StyledLink to="/dashboard/clients">Vendors</StyledLink>
               ) : (
-                <Link to="/dashboard/clients">Clients</Link>
+                <StyledLink to="/dashboard/clients">Clients</StyledLink>
               )}
               {this.props.userType === 'client' ? null : (
                 <div>
-                  <Link to="/dashboard/billing">Billing</Link>
+                  <StyledLink to="/dashboard/billing">Billing</StyledLink>
                 </div>
               )}
               <div>
-                <Link to="/dashboard/settings">Settings</Link>
+                <StyledLink to="/dashboard/settings">Settings</StyledLink>
               </div>
               <div>
-                <Link to="/dashboard/clients/invoices/new">new invoice</Link>
+                <StyledLink to="/dashboard/clients/invoices/new">
+                  new invoice
+                </StyledLink>
               </div>
               <div>
-                <Link to="/dashboard/clients/invoices">Invoices</Link>
+                <StyledLink to="/dashboard/clients/invoices">
+                  Invoices
+                </StyledLink>
               </div>
             </StyledMenu>
           </Col>
@@ -112,7 +103,7 @@ class Dashboard extends Component {
               />
             </Switch>
           </Col>
-        </Row>
+        </Main>
       </div>
     );
   }
@@ -120,11 +111,26 @@ class Dashboard extends Component {
 
 const StyledMenu = styled.div`
   border: 1px black;
-  border-style: inset;
-  background-color: rgb(242, 242, 243);
+  border-color: none;
+  margin-top: 53px;
+  background-color: rgb(208, 207, 207, 0.25) !important;
   @media (min-width: 768px) {
     min-height: 60vh;
   }
+  styledlink: {
+    margin-top: 5px;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none !important;
+  color: #4c4b63;
+`;
+
+const Main = styled(Row)`
+  min-height: 100vh;
+  padding-top: 35px;
+  background-color: rgb(208, 207, 207, 0.25) !important;
 `;
 
 const mapStateToProps = state => {
