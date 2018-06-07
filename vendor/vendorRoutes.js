@@ -8,8 +8,8 @@ const sgMail = require('@sendgrid/mail');
 const stripe = require('stripe')('sk_test_BVZDGnQFiI1u0yPwvGXpOfEZ');
 const authenticate = require('../utils/middlewares');
 
-const { SENDGRID_API_KEY } = require('../sgconfig');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || SENDGRID_API_KEY);
+// const { SENDGRID_API_KEY } = require('../sgconfig');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //Create new vendor
 //TODO encrypt password pre save in the vendor schema
