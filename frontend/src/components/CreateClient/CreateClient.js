@@ -58,22 +58,22 @@ class CreateClient extends Component {
 
   render() {
     return (
-      <Row>
+      <StyledRow>
         <Col md="4" />
         <Col>
           <StyledForm onSubmit={this.onSubmitHandler}>
-            <StyledFormText>Client Name</StyledFormText>
+            <h4>Client's Email</h4>
             <FormGroup>
               <Input
                 type="email"
                 name="email"
                 id="emial"
-                placeholder="Client Email"
+                placeholder="Email"
                 value={this.state.email}
                 onChange={this.inputChangeHandler}
               />
             </FormGroup>
-            <Button>Submit</Button>
+            <Button style={{ backgroundColor: '#4C4B63' }}>Submit</Button>
           </StyledForm>
         </Col>
         <Col md="4" />
@@ -102,7 +102,7 @@ class CreateClient extends Component {
             </Button>
           </ModalFooter>
         </Modal>
-      </Row>
+      </StyledRow>
     );
   }
 }
@@ -115,6 +115,10 @@ const StyledForm = styled(Form)`
 
 const StyledFormText = styled(FormText)`
   font-size: 2em;
+`;
+
+const StyledRow = styled(Row)`
+  margin-top: 52px;
 `;
 
 const mapStateToProps = state => {
