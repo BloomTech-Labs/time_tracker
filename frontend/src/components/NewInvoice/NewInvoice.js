@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import fileDownload from 'js-file-download';
 import moment from 'moment';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';

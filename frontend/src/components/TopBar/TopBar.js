@@ -7,11 +7,7 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  NavLink
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -42,16 +38,6 @@ class TopBar extends Component {
               time tracker
             </NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
-            {/*
-            <Dropdown isOpen={this.state.isOpen} toggle={this.toggle}>
-              <StyledToggle caret>clients</StyledToggle>
-              <StyledDropdownMenu>
-                {this.props.clients.map(client => {
-                  return <DropdownItem>{client.name}</DropdownItem>;
-                })}
-              </StyledDropdownMenu>
-            </Dropdown> */}
-
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
                 <NavItem>
@@ -74,14 +60,13 @@ class TopBar extends Component {
                     about us
                   </NavLink>
                 </NavItem>
-
-                <NavItem>
+                <StyledNavItem>
                   <NavLink
                     onClick={() => this.props.logOut(this.props.history)}
                   >
                     log out
                   </NavLink>
-                </NavItem>
+                </StyledNavItem>
               </Nav>
             </Collapse>
           </StyledNavbar>
@@ -120,14 +105,10 @@ const StyledNavbar = styled(Navbar)`
   font-family: 'Roboto Mono';
 `;
 
-const StyledToggle = styled(DropdownToggle)`
-  background-color: transparent;
-`;
-
-const StyledDropdownMenu = styled(DropdownMenu)`
-  -webkit-transition: none;
-  transition: none;
-  display: none;
+const StyledNavItem = styled(NavItem)`
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const mapStateToProps = state => {

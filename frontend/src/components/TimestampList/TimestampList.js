@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
 import { addToInvoice } from '../../store/action/invoiceActions';
-import {
-  Col,
-  Row,
-  Collapse,
-  Card,
-  CardBody,
-  Button,
-  Input,
-  CardTitle
-} from 'reactstrap';
+import { Col, Row, Collapse, Card, CardBody, Button, Input } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import styled from 'styled-components';
+import FaClock from 'react-icons/lib/fa/clock-o';
 
 class TimestampList extends Component {
   constructor(props) {
@@ -38,7 +30,13 @@ class TimestampList extends Component {
             <span>
               {moment(this.props.hour.startTime).format('MM/DD/YYYY')}
             </span>
-            <span>{this.props.hour.duration}</span>
+            <span>
+              {this.props.hour.duration ? (
+                this.props.hour.duration
+              ) : (
+                <FaClock />
+              )}
+            </span>
           </StyledCardTitle>
           <Collapse isOpen={this.state.collapse}>
             <CardBody>

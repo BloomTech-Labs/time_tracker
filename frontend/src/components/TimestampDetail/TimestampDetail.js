@@ -200,10 +200,8 @@ class TimestampDetail extends Component {
                   </Button>
                 </ModalFooter>
               </Modal>
-              {/* <SuccesModal open={this.state.successModal} /> */}
             </Form>
             <br />
-            {/* <br /> @TODO margin this */}
             <Button
               onClick={this.toggleDelete}
               style={{ backgroundColor: '#e3170a' }}
@@ -215,7 +213,9 @@ class TimestampDetail extends Component {
               toggle={this.toggleDelete}
               className={this.props.className}
             >
-              <ModalHeader toggle={this.toggleDelete}>Modal title</ModalHeader>
+              <ModalHeader toggle={this.toggleDelete}>
+                Delete timestamp?
+              </ModalHeader>
               <ModalBody>
                 Are you sure you want to delete this timestamp?
               </ModalBody>

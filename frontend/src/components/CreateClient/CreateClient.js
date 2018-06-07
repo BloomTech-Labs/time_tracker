@@ -4,7 +4,6 @@ import {
   Form,
   FormGroup,
   Input,
-  FormText,
   Row,
   Col,
   Modal,
@@ -111,10 +110,6 @@ const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-`;
-
-const StyledFormText = styled(FormText)`
-  font-size: 2em;
 `;
 
 const StyledRow = styled(Row)`

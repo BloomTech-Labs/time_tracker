@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, CardText, CardBody, CardTitle, Button } from 'reactstrap';
+import { Card, CardBody, CardTitle, Button } from 'reactstrap';
 import FaPlus from 'react-icons/lib/fa/plus';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
