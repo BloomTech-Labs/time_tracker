@@ -39,7 +39,6 @@ export const stopActiveTimer = timestampId => {
         }
       )
       .then(({ data }) => {
-        console.log(data);
         dispatch({ type: STOP_TIMER, payload: data });
       })
       .catch(err => {

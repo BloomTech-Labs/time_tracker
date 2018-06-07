@@ -9,8 +9,7 @@ import {
   PAYMENT_SUCCESS,
   LOGOUT,
   LOGIN_ERROR,
-  ADD_CLIENT_ERR,
-  ADDED_CLIENT
+  ADD_CLIENT_ERR
 } from '../action/userActions';
 
 const initialState = {
@@ -88,8 +87,6 @@ export const userReducer = (state = initialState, action) => {
       return { ...state, loginError: true };
     case ADD_CLIENT_ERR:
       return { ...state, addClientErr: true };
-    // case RESET_CLIENT:
-    //   return { ...state, addedClient: false, addClientErr: false };
     default:
       return state;
   }

@@ -48,10 +48,10 @@ class VendorClientPage extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props !== prevProps && this.props.activeTimer) {
+    if (prevProps !== this.props && this.props.activeTimer) {
       this.setState({
         ...this.state,
-        avtiveTimerId: this.props.activeTimerId
+        activeTimerId: this.props.activeTimerId
       });
     }
     if (prevProps.activeTimer && !this.props.activeTimer) {
@@ -101,7 +101,6 @@ class VendorClientPage extends Component {
               activeTimerId: active[0]._id,
               startTime: active[0].startTime
             });
-            console.log(active);
             this.tick = setInterval(this.setNow, 1000);
           }
           this.setState({
@@ -129,20 +128,13 @@ class VendorClientPage extends Component {
   stopTimer = () => {
     clearInterval(this.tick);
     this.props.stopActiveTimer(this.state.activeTimerId);
+    this.setState({
+      ...this.state,
+      activeTimer: false,
+      startTime: ''
+    });
     setTimeout(() => this.getClient(), 1000);
   };
-
-  // setTimer = () => {
-  //   const formattedStart = moment(this.props.startTime);
-  //   const formattedNow = moment(Date.now());
-  //   const duration = moment.duration(formattedNow.diff(formattedStart));
-  //   const timer = moment(duration._data).format('HH:mm:ss');
-  //
-  //   this.setState({
-  //     ...this.state,
-  //     timer
-  //   });
-  // };
 
   setNow = () => {
     this.setState({

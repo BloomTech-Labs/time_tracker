@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import {
   Card,
   CardImg,
-  CardText,
   CardBody,
   CardTitle,
   CardSubtitle,
@@ -15,9 +14,6 @@ import moment from 'moment';
 import styled from 'styled-components';
 
 class Invoice extends Component {
-  componentDidMount() {
-    console.log(this.props.invoices);
-  }
   render() {
     return (
       <StyledRow>

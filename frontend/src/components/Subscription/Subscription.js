@@ -18,7 +18,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const backend =
   process.env.NODE_ENV === 'production'
