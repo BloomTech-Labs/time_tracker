@@ -86,7 +86,6 @@ const StyledButton = styled(Button)`
   display: flex;
   justify-content: space-between;
   min-width: 20vw;
-  align-items: center;
   margin-bottom: 2vh;
   background-color: #4c4b63 !important;
 `;

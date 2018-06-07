@@ -186,9 +186,8 @@ const StyledLi = styled.li`
 
 const StyledButton = styled(Button)`
   display: flex;
-  justify-content: flex-end;
-  align-self: center;
-  background-color: #4c4b63;
+  justify-content: center;
+  margin: auto;
 `;
 
 const mapStateToProps = state => {
