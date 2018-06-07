@@ -33,11 +33,17 @@ class Invoice extends Component {
                 />
                 <CardBody>
                   <CardTitle>{invoice.clientNum.name}</CardTitle>
-                  <CardSubtitle>
+                  <CardSubtitle style={{ marginBottom: 10 }}>
                     {moment(invoice.dateCreated).format('MM/DD/YYYY')}
                   </CardSubtitle>
-                  <CardSubtitle>Total: {invoice.total}</CardSubtitle>
-                  <Button href={invoice.url} target="_blank">
+                  <CardSubtitle style={{ marginBottom: 10 }}>
+                    Total: {invoice.total}
+                  </CardSubtitle>
+                  <Button
+                    href={invoice.url}
+                    target="_blank"
+                    style={{ backgroundColor: '#4c4b63' }}
+                  >
                     Open Invoice
                   </Button>
                 </CardBody>

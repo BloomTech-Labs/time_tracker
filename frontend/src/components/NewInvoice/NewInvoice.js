@@ -107,8 +107,11 @@ class NewInvoice extends Component {
       this.props.history.push('/dashboard/billing');
     }
     return (
-      <div>
-        {this.props.timestamps ? (
+      <div style={{ marginTop: 52 }}>
+        <div style={{ fontSize: 30, marginBottom: 10 }}>
+          Double check your hours and provide a rate
+        </div>
+        {this.props.timestamps.length ? (
           this.props.timestamps.map(timestamp => {
             return (
               <Row key={timestamp._id}>
@@ -120,7 +123,7 @@ class NewInvoice extends Component {
             );
           })
         ) : (
-          <div>Add timestamps to invoice</div>
+          <div style={{ color: '#e3170a' }}>Add timestamps to invoice</div>
         )}
         <h3>
           Total time: {this.state.totalHours} :{' '}
@@ -131,7 +134,17 @@ class NewInvoice extends Component {
         <div>
           <h4>total: {this.state.total}</h4>
         </div>
-        <button onClick={this.generatePDF}>Click</button>
+        <Row>
+          <Col>
+            <Button
+              onClick={this.generatePDF}
+              style={{ backgroundColor: '#4c4b63' }}
+            >
+              Generate invoice
+            </Button>
+          </Col>
+        </Row>
+
         <Modal
           isOpen={this.state.loadingModal}
           toggle={this.toggleSuccess}
@@ -139,8 +152,8 @@ class NewInvoice extends Component {
             this.props.history.push('/dashboard/clients/invoices')
           }
         >
-          <ModalHeader toggle={this.toggleSuccess}>Changes Saved</ModalHeader>
-          <ModalBody>Changed Successfully</ModalBody>
+          <ModalHeader toggle={this.toggleSuccess}>Invoice Created</ModalHeader>
+          <ModalBody>Download your invoice on the next page</ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.toggleSuccess}>
               Close
