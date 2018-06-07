@@ -184,7 +184,7 @@ class TimestampDetail extends Component {
                   rows={3}
                 />
               </FormGroup>
-              <Button>Submit</Button>
+              <Button style={{ backgroundColor: '#4c4b63' }}>Submit</Button>
               <Modal
                 isOpen={this.state.successModal}
                 toggle={this.toggleSuccess}
@@ -204,7 +204,12 @@ class TimestampDetail extends Component {
             </Form>
             <br />
             {/* <br /> @TODO margin this */}
-            <Button onClick={this.toggleDelete}>Delete Timestamp</Button>
+            <Button
+              onClick={this.toggleDelete}
+              style={{ backgroundColor: '#e3170a' }}
+            >
+              Delete Timestamp
+            </Button>
             <Modal
               isOpen={this.state.deleteModal}
               toggle={this.toggleDelete}
