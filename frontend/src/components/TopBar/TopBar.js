@@ -42,7 +42,7 @@ class TopBar extends Component {
               time tracker
             </NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
-            {/* 
+            {/*
             <Dropdown isOpen={this.state.isOpen} toggle={this.toggle}>
               <StyledToggle caret>clients</StyledToggle>
               <StyledDropdownMenu>
@@ -99,9 +99,6 @@ class TopBar extends Component {
                 <NavLink tag={Link} to="/aboutus">
                   About Us
                 </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="#">Pricing</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} to="/login">

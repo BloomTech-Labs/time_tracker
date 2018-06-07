@@ -28,19 +28,31 @@ class VendorClientPage extends Component {
     activeTimer: false,
     activeTimerId: '',
     timer: '',
-    userType: ''
+    userType: '',
+    startTime: '',
+    now: ''
   };
 
   componentDidMount() {
     this.getClient();
   }
 
+  componentWillUnmount() {
+    clearInterval(this.tick);
+    this.setState({
+      activeTimerId: '',
+      startTime: '',
+      now: '',
+      activeTimer: false
+    });
+  }
+
   componentDidUpdate(prevProps) {
-    if (
-      this.props.activeTimer !== prevProps.activeTimer &&
-      this.props.activeTimer === true
-    ) {
-      this.tick();
+    if (this.props !== prevProps && this.props.activeTimer) {
+      this.setState({
+        ...this.state,
+        avtiveTimerId: this.props.activeTimerId
+      });
     }
     if (prevProps.activeTimer && !this.props.activeTimer) {
       this.props.getUserInfo(this.props.user, this.props.userType);
@@ -79,6 +91,19 @@ class VendorClientPage extends Component {
           const sortedTStamps = data.hoursLogged.sort((a, b) => {
             return new Date(b.startTime) - new Date(a.startTime);
           });
+          const active = sortedTStamps.filter(timestamp => {
+            return timestamp.active === true;
+          });
+          if (active.length) {
+            this.setState({
+              ...this.state,
+              activeTimer: true,
+              activeTimerId: active[0]._id,
+              startTime: active[0].startTime
+            });
+            console.log(active);
+            this.tick = setInterval(this.setNow, 1000);
+          }
           this.setState({
             name: data.name,
             hoursLogged: sortedTStamps,
@@ -93,30 +118,43 @@ class VendorClientPage extends Component {
 
   startTimer = () => {
     this.props.startNewTimer(this.props.user, this.props.match.params.id);
+    this.setState({
+      ...this.state,
+      activeTimer: true,
+      startTime: Date.now()
+    });
+    this.tick = setInterval(this.setNow, 1000);
   };
 
   stopTimer = () => {
-    this.props.stopActiveTimer(this.props.activeTimerId);
+    clearInterval(this.tick);
+    this.props.stopActiveTimer(this.state.activeTimerId);
     setTimeout(() => this.getClient(), 1000);
   };
 
-  tick = () => {
-    setInterval(() => this.setTimer(), 1000);
-  };
+  // setTimer = () => {
+  //   const formattedStart = moment(this.props.startTime);
+  //   const formattedNow = moment(Date.now());
+  //   const duration = moment.duration(formattedNow.diff(formattedStart));
+  //   const timer = moment(duration._data).format('HH:mm:ss');
+  //
+  //   this.setState({
+  //     ...this.state,
+  //     timer
+  //   });
+  // };
 
-  setTimer = () => {
-    const formattedStart = moment(this.props.startTime);
-    const formattedNow = moment(Date.now());
-    const duration = moment.duration(formattedNow.diff(formattedStart));
-    const timer = moment(duration._data).format('HH:mm:ss');
-
+  setNow = () => {
     this.setState({
       ...this.state,
-      timer
+      now: Date.now()
     });
   };
 
   render() {
+    const formattedStart = moment(this.state.startTime);
+    const formattedNow = moment(Date.now());
+    const duration = moment.duration(formattedNow.diff(formattedStart));
     return (
       <div>
         <Row>
@@ -136,16 +174,18 @@ class VendorClientPage extends Component {
         <Row>
           <Col md="4" />
           <Col md="4">
-            {this.props.activeTimer ? <h3>{this.state.timer}</h3> : null}
-            {this.props.activeTimer ? (
-              <StyledStop>
-                <StopIcon onClick={this.stopTimer} />
-                <div>Stop Timer</div>
+            {this.state.activeTimer ? (
+              <h3>{moment(duration._data).format('HH:mm:ss')} </h3>
+            ) : null}
+            {this.state.activeTimer ? (
+              <StyledStop onClick={this.stopTimer}>
+                <StopIcon />
+                <div>Stop</div>
               </StyledStop>
             ) : (
-              <StyledStart>
-                <PlayIcon onClick={this.startTimer} />
-                <div>Start Timer</div>
+              <StyledStart onClick={this.startTimer}>
+                <PlayIcon />
+                <div>Start</div>
               </StyledStart>
             )}
           </Col>
@@ -171,6 +211,10 @@ const StyledStart = styled.div`
 const StyledStop = styled.div`
   font-size: 3em;
   color: red;
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledButton = styled(Button)`

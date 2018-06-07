@@ -45,10 +45,11 @@ class Settings extends Component {
   };
 
   // @TODO: change to modal instead of alert
-  componentDidUpdate() {
-    if (this.props.changeSuccess) {
-      alert('Changed password/email successfully.');
-      this.props.history.push('/dashboard');
+  componentDidUpdate(prevProps) {
+    if (this.props.changeSuccess && !prevProps.changeSuccess) {
+      this.setState({
+        successModal: true
+      });
     }
   }
 
@@ -60,10 +61,10 @@ class Settings extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginTop: 52 }}>
         <Row>
-          <Col md="4" />
-          <Col>
+          <Col md="6">
+            <div style={{ marginBottom: 5 }}>Confirm account information</div>
             <Form onSubmit={e => this.onSubmitHandler(e)}>
               <FormGroup>
                 <Label for="email">Email</Label>
@@ -72,18 +73,7 @@ class Settings extends Component {
                   name="email"
                   id="email"
                   value={this.state.email}
-                  placeholder="with a placeholder"
-                  onChange={this.inputChangeHandler}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="newEmail">New Email</Label>
-                <Input
-                  type="email"
-                  name="newEmail"
-                  id="newEmail"
-                  value={this.state.newEmail}
-                  placeholder="with a placeholder"
+                  placeholder="current email"
                   onChange={this.inputChangeHandler}
                 />
               </FormGroup>
@@ -94,7 +84,23 @@ class Settings extends Component {
                   name="password"
                   id="password"
                   value={this.state.password}
-                  placeholder="password placeholder"
+                  placeholder="current password"
+                  onChange={this.inputChangeHandler}
+                />
+              </FormGroup>
+            </Form>
+          </Col>
+          <Col md="6">
+            <div style={{ marginBottom: 5 }}>Change one or both</div>
+            <Form>
+              <FormGroup>
+                <Label for="newEmail">New Email</Label>
+                <Input
+                  type="email"
+                  name="newEmail"
+                  id="newEmail"
+                  value={this.state.newEmail}
+                  placeholder="new email"
                   onChange={this.inputChangeHandler}
                 />
               </FormGroup>
@@ -105,21 +111,26 @@ class Settings extends Component {
                   name="newPassword"
                   id="newPassword"
                   value={this.state.newPassword}
-                  placeholder="new password placeholder"
+                  placeholder="new password"
                   onChange={this.inputChangeHandler}
                 />
               </FormGroup>
-              <Button>Submit</Button>
             </Form>
           </Col>
-          <Col md="4" />
+          <Col>
+            <Button
+              style={{ backgroundColor: '#4c4b63' }}
+              onClick={e => this.onSubmitHandler(e)}
+            >
+              Submit
+            </Button>
+          </Col>
         </Row>
+
         <Modal
           isOpen={this.state.successModal}
           toggle={this.toggleSuccess}
-          onClosed={() =>
-            this.props.history.push('/dashboard/clients/invoices')
-          }
+          onClosed={() => this.props.history.push('/dashboard')}
         >
           <ModalHeader toggle={this.toggleSuccess}>Changes Saved</ModalHeader>
           <ModalBody>Changed Successfully</ModalBody>
