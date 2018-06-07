@@ -24,6 +24,7 @@ class NewInvoice extends Component {
   };
 
   componentDidMount() {
+    this.sortTimestamps();
     if (this.props.timestamps.length > 0) {
       let totHours = this.props.timestamps.reduce((acc, timestamp) => {
         return acc + Number(timestamp.duration.split(':')[0]);
@@ -46,12 +47,23 @@ class NewInvoice extends Component {
   }
 
   setRate = ({ target }) => {
-    this.setState({
-      rate: target.value,
-      total:
-        target.value *
-        (Number(this.state.totalHours) + Number(this.state.totalMinutes / 60))
+    try {
+      this.setState({
+        rate: target.value,
+        total:
+          target.value *
+          (Number(this.state.totalHours) + Number(this.state.totalMinutes / 60))
+      });
+    } catch (err) {
+      return err;
+    }
+  };
+
+  sortTimestamps = async () => {
+    const timestamps = await this.props.timestamps.sort((a, b) => {
+      return new Date(b.startTime) - new Date(a.startTime);
     });
+    return timestamps;
   };
 
   generatePDF = () => {

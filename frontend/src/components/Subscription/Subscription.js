@@ -1,10 +1,24 @@
+import './Subscription.css';
 import React, { Component } from 'react';
 import StripeCheckout from 'react-stripe-checkout';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { paymentSuccess } from '../../store/action/userActions';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Row,
+  Col
+} from 'reactstrap';
+import styled, { css } from 'styled-components';
 
 const backend =
   process.env.NODE_ENV === 'production'
@@ -13,7 +27,9 @@ const backend =
 
 class Subscription extends Component {
   state = {
-    successModal: false
+    successModal: false,
+    monthly: false,
+    annually: false
   };
 
   onToken = token => {
@@ -48,21 +64,81 @@ class Subscription extends Component {
     });
   };
 
+  toggleAnnually = () => {
+    this.setState({
+      ...this.state,
+      monthly: false,
+      annually: true
+    });
+  };
+
+  toggleMonthly = () => {
+    this.setState({
+      ...this.state,
+      monthly: true,
+      annually: false
+    });
+  };
+
   render() {
     return (
-      <div>
-        Subscription component
-        <div>
-          <h3>pay monthly for only $5/month</h3>
-          <button>submit</button>
-        </div>
-        <div>
-          <h3>Pay for the year and save.</h3>
-          <button>submit</button>
-        </div>
+      <div style={{ marginTop: 52 }}>
+        <Row>
+          <Col md="2" />
+          <Col md="4">
+            <StyledCard
+              monthly="true"
+              onClick={this.toggleMonthly}
+              className={this.state.monthly ? 'monthly active' : 'monthly'}
+            >
+              <StyledCardTitle style={{ backgroundColor: '#5673B5' }}>
+                Monthly
+                <CardSubtitle style={{ marginTop: 3 }}>
+                  Testing the waters
+                </CardSubtitle>
+              </StyledCardTitle>
+              <CardBody>
+                <StyledUl style={{ textAlign: 'left' }}>
+                  <StyledLi>Monthly Cost: $5</StyledLi>
+                  <StyledLi>Annual Cost: $60</StyledLi>
+                  <StyledLi>
+                    Freedom to stop and start when workload increases
+                  </StyledLi>
+                </StyledUl>
+                <StyledButton outline>Select plan</StyledButton>
+              </CardBody>
+            </StyledCard>
+          </Col>
+          <Col md="4">
+            <StyledCard
+              onClick={this.toggleAnnually}
+              className={this.state.annually ? 'annually active' : 'annually'}
+            >
+              <StyledCardTitle style={{ backgroundColor: '#CDE7B0' }}>
+                Annually
+                <CardSubtitle style={{ marginTop: 3 }}>
+                  You know you want it
+                </CardSubtitle>
+              </StyledCardTitle>
+              <CardBody>
+                <StyledUl style={{ textAlign: 'left' }}>
+                  <StyledLi>Monthly Cost: $4.16</StyledLi>
+                  <StyledLi>Annual Cost: $50</StyledLi>
+                  <StyledLi>
+                    Save money and don't have to worry about keeping track of
+                    more expenses.
+                  </StyledLi>
+                </StyledUl>
+                <StyledButton outline>Select plan</StyledButton>
+              </CardBody>
+            </StyledCard>
+          </Col>
+          <Col md="2" />
+        </Row>
         <StripeCheckout
           stripeKey="pk_test_aJJUpO0Rhq6Y6bGqF88tjdMt"
           token={this.onToken}
+          style={{ marginTop: 20 }}
         />
         <Modal
           isOpen={this.state.successModal}
@@ -81,6 +157,39 @@ class Subscription extends Component {
     );
   }
 }
+
+const StyledCard = styled(Card)`
+  min-height: 275px;
+  :hover {
+    cursor: pointer;
+    border: solid 4px;
+    border-color: ${props => (props.monthly ? '#5673B5' : '#CDE7B0')};
+  }
+`;
+
+const StyledCardTitle = styled(CardTitle)`
+  min-height: 75px;
+  padding-top: 15px;
+  color: white;
+`;
+
+const StyledUl = styled.ul`
+  text-align: left;
+  margin-top: -25px !important;
+  min-height: 150px;
+`;
+
+const StyledLi = styled.li`
+  margin-bottom: 8px;
+  font-size: 0.8em;
+`;
+
+const StyledButton = styled(Button)`
+  display: flex;
+  justify-content: flex-end;
+  align-self: baseline;
+  background-color: #4c4b63;
+`;
 
 const mapStateToProps = state => {
   return {

@@ -38,22 +38,26 @@ class TopBar extends Component {
       return (
         <div>
           <StyledNavbar dark expand="md">
-            <NavbarBrand href="/">loggedin</NavbarBrand>
+            <NavbarBrand tag={Link} to="/dashboard/clients">
+              time tracker
+            </NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
+            {/* 
+            <Dropdown isOpen={this.state.isOpen} toggle={this.toggle}>
+              <StyledToggle caret>clients</StyledToggle>
+              <StyledDropdownMenu>
+                {this.props.clients.map(client => {
+                  return <DropdownItem>{client.name}</DropdownItem>;
+                })}
+              </StyledDropdownMenu>
+            </Dropdown> */}
+
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
                 <NavItem>
-                  <Dropdown isOpen={this.state.isOpen} toggle={this.toggle}>
-                    <StyledToggle caret>clients</StyledToggle>
-                    <DropdownMenu>
-                      {this.props.clients.map(client => {
-                        return <DropdownItem>{client.name}</DropdownItem>;
-                      })}
-                    </DropdownMenu>
-                  </Dropdown>
-                  {/* <NavLink tag={Link} to="/dashboard/clients">
+                  <NavLink tag={Link} to="/dashboard/clients">
                     clients
-                  </NavLink> */}
+                  </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink tag={Link} to="/dashboard/clients/invoices">
@@ -116,10 +120,17 @@ const StyledNavbar = styled(Navbar)`
   background: #e3170a;
   background-color: #e3170a;
   border-color: transparent;
+  font-family: 'Roboto Mono';
 `;
 
 const StyledToggle = styled(DropdownToggle)`
   background-color: transparent;
+`;
+
+const StyledDropdownMenu = styled(DropdownMenu)`
+  -webkit-transition: none;
+  transition: none;
+  display: none;
 `;
 
 const mapStateToProps = state => {

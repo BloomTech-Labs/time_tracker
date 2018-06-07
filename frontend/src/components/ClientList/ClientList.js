@@ -49,14 +49,11 @@ const ClientCard = props => {
     <Col sm="6" key={props.id}>
       <Link
         to={`/dashboard/clients/${props.id}`}
-        style={{ textDecoration: 'none' }}
+        style={{ textDecoration: 'none', fontFamily: 'Roboto Mono' }}
       >
         <StyledCard>
           <CardBody>
             <CardTitle>{props.name}</CardTitle>
-          </CardBody>
-          <CardBody>
-            <CardText>Add comments or description</CardText>
           </CardBody>
         </StyledCard>
       </Link>
@@ -73,9 +70,9 @@ const MainDash = props => {
         <AddText>
           <div>New Client</div>
           <div>
-            <Link to="/dashboard/clients/new">
+            <StyledLink to="/dashboard/clients/new">
               <FaCircle />
-            </Link>
+            </StyledLink>
           </div>
         </AddText>
       </div>
@@ -106,6 +103,11 @@ const StyledCard = styled(Card)`
   background-color: white;
   color: #4c4b63;
   margin-bottom: 3vh;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: #4c4b63;
 `;
 
 const mapStateToProps = state => {

@@ -43,28 +43,27 @@ class Dashboard extends Component {
           <Col md="2">
             <StyledMenu>
               {this.props.userType === 'client' ? (
-                <StyledLink to="/dashboard/clients">Vendors</StyledLink>
+                <StyledDiv>
+                  <StyledLink to="/dashboard/clients">Vendors</StyledLink>
+                </StyledDiv>
               ) : (
-                <StyledLink to="/dashboard/clients">Clients</StyledLink>
+                <StyledDiv>
+                  <StyledLink to="/dashboard/clients">Clients</StyledLink>
+                </StyledDiv>
               )}
               {this.props.userType === 'client' ? null : (
-                <div>
+                <StyledDiv>
                   <StyledLink to="/dashboard/billing">Billing</StyledLink>
-                </div>
+                </StyledDiv>
               )}
-              <div>
+              <StyledDiv>
                 <StyledLink to="/dashboard/settings">Settings</StyledLink>
-              </div>
-              <div>
-                <StyledLink to="/dashboard/clients/invoices/new">
-                  new invoice
-                </StyledLink>
-              </div>
-              <div>
+              </StyledDiv>
+              <StyledDiv>
                 <StyledLink to="/dashboard/clients/invoices">
                   Invoices
                 </StyledLink>
-              </div>
+              </StyledDiv>
             </StyledMenu>
           </Col>
           <Col>
@@ -117,20 +116,22 @@ const StyledMenu = styled.div`
   @media (min-width: 768px) {
     min-height: 60vh;
   }
-  styledlink: {
-    margin-top: 5px;
-  }
 `;
 
 const StyledLink = styled(Link)`
   text-decoration: none !important;
   color: #4c4b63;
+  margin-top: 5px;
 `;
 
 const Main = styled(Row)`
   min-height: 100vh;
   padding-top: 35px;
   background-color: rgb(208, 207, 207, 0.25) !important;
+`;
+
+const StyledDiv = styled.div`
+  margin-top: 20px;
 `;
 
 const mapStateToProps = state => {

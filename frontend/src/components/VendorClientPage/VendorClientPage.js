@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Col, Row } from 'reactstrap';
+import { Col, Row, Button } from 'reactstrap';
 import axios from 'axios';
 import PlayIcon from 'react-icons/lib/fa/play';
 import StopIcon from 'react-icons/lib/fa/stop';
@@ -76,9 +76,12 @@ class VendorClientPage extends Component {
           }
         })
         .then(({ data }) => {
+          const sortedTStamps = data.hoursLogged.sort((a, b) => {
+            return new Date(b.startTime) - new Date(a.startTime);
+          });
           this.setState({
             name: data.name,
-            hoursLogged: data.hoursLogged,
+            hoursLogged: sortedTStamps,
             invoices: data.invoices
           });
         })
@@ -120,6 +123,15 @@ class VendorClientPage extends Component {
           <Col>
             <h1>{this.state.name}</h1>
           </Col>
+          <Col>
+            <StyledButton
+              onClick={() =>
+                this.props.history.push('/dashboard/clients/invoices/new')
+              }
+            >
+              New Invoice
+            </StyledButton>
+          </Col>
         </Row>
         <Row>
           <Col md="4" />
@@ -128,17 +140,19 @@ class VendorClientPage extends Component {
             {this.props.activeTimer ? (
               <StyledStop>
                 <StopIcon onClick={this.stopTimer} />
+                <div>Stop Timer</div>
               </StyledStop>
             ) : (
               <StyledStart>
                 <PlayIcon onClick={this.startTimer} />
+                <div>Start Timer</div>
               </StyledStart>
             )}
           </Col>
           <Col md="4" />
         </Row>
         {this.state.hoursLogged.map((hour, i) => {
-          return <TimestampList key={hour._id} hour={hour} />;
+          return <TimestampList key={hour._id} hour={hour} id={i} />;
         })}
       </div>
     );
@@ -147,7 +161,7 @@ class VendorClientPage extends Component {
 
 const StyledStart = styled.div`
   font-size: 3em;
-  color: blue;
+  color: #315ca4;
 
   :hover {
     cursor: pointer;
@@ -157,6 +171,10 @@ const StyledStart = styled.div`
 const StyledStop = styled.div`
   font-size: 3em;
   color: red;
+`;
+
+const StyledButton = styled(Button)`
+  background-color: #4c4b63 !important;
 `;
 
 const mapStateToProps = state => {

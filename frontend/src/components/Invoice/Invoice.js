@@ -20,10 +20,10 @@ class Invoice extends Component {
   }
   render() {
     return (
-      <Row>
+      <StyledRow>
         {this.props.invoices.map(invoice => {
           return (
-            <Col key={invoice._id}>
+            <Col key={invoice._id} md="4">
               <Card style={{ marginBottom: 5 }}>
                 {/* remove .pdf and replace with .jpg */}
                 <StyledImage
@@ -45,7 +45,7 @@ class Invoice extends Component {
             </Col>
           );
         })}
-      </Row>
+      </StyledRow>
     );
   }
 }
@@ -53,6 +53,10 @@ class Invoice extends Component {
 const StyledImage = styled(CardImg)`
   max-width: 15vw;
   margin: auto;
+`;
+
+const StyledRow = styled(Row)`
+  margin-top: 52px;
 `;
 
 const mapStateToProps = state => {
