@@ -84,7 +84,8 @@ const MainDash = props => {
 
 const StyledButton = styled(Button)`
   display: flex;
-  justify-content: space-between;
+  margin: auto;
+  justify-content: space-around;
   min-width: 20vw;
   margin-bottom: 2vh;
   background-color: #4c4b63 !important;
