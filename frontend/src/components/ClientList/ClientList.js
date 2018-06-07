@@ -9,9 +9,6 @@ import { withRouter } from 'react-router-dom';
 import FaCircle from 'react-icons/lib/fa/plus-circle';
 
 class ClientList extends Component {
-  componentDidMount() {
-    console.log(this.props);
-  }
   render() {
     if (this.props.loading) {
       return <div> Loading... </div>;
@@ -22,17 +19,22 @@ class ClientList extends Component {
       if (this.props.clients.length) {
         return (
           <div>
-            <StyledButton
-              onClick={() => this.props.history.push('/dashboard/clients/new')}
-            >
-              Add New Client <StyledIcon />
-            </StyledButton>
+            <Row>
+              <Col>
+                <StyledButton
+                  onClick={() =>
+                    this.props.history.push('/dashboard/clients/new')
+                  }
+                >
+                  Add New Client <StyledIcon />
+                </StyledButton>
+              </Col>
+            </Row>
+
             <Row>
               {this.props.clients.map((client, i) => {
                 return (
-                  // <Link to={`/dashboard/clients/${client._id}`} key={i}>
                   <ClientCard tag={Link} id={client._id} name={client.name} />
-                  // {/* </Link> */}
                 );
               })}
             </Row>

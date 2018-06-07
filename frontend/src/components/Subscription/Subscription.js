@@ -105,7 +105,7 @@ class Subscription extends Component {
                     Freedom to stop and start when workload increases
                   </StyledLi>
                 </StyledUl>
-                <StyledButton outline>Select plan</StyledButton>
+                <StyledButton outline="true">Select plan</StyledButton>
               </CardBody>
             </StyledCard>
           </Col>
@@ -129,7 +129,7 @@ class Subscription extends Component {
                     more expenses.
                   </StyledLi>
                 </StyledUl>
-                <StyledButton outline>Select plan</StyledButton>
+                <StyledButton outline="true">Select plan</StyledButton>
               </CardBody>
             </StyledCard>
           </Col>
@@ -187,7 +187,7 @@ const StyledLi = styled.li`
 const StyledButton = styled(Button)`
   display: flex;
   justify-content: flex-end;
-  align-self: baseline;
+  align-self: center;
   background-color: #4c4b63;
 `;
 
