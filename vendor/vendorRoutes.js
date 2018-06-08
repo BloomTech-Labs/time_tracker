@@ -12,7 +12,6 @@ const authenticate = require('../utils/middlewares');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //Create new vendor
-//TODO encrypt password pre save in the vendor schema
 vendorRouter.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !password || !email) {
@@ -131,11 +130,9 @@ vendorRouter.put('/:id', (req, res) => {
 });
 
 // @TODO send email to new client, and check dups
-// @TODO should the vendor id also be set into client vendor list.
 // Add client to vendor array and populate client info array
 vendorRouter.put('/client/add', (req, res) => {
   const { _id, email } = req.body;
-  console.log({ email, _id });
   Client.findOneAndUpdate({ email }, { $push: { vendors: _id } })
     .then(client => {
       // if (client) {
@@ -143,7 +140,6 @@ vendorRouter.put('/client/add', (req, res) => {
         .populate('clients', { password: 0, invoices: 0 })
         .then(vendor => {
           const msg = {
-            // @TODO Create email template for adding clients
             to: `${email}`,
             from: 'cs6timetracker@gmail.com',
             templateId: '750dc23a-94f3-4841-8274-8f17891672eb'

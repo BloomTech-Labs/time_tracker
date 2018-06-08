@@ -18,8 +18,12 @@ server.use('/client', authenticate, clientRouter);
 server.use('/invoice', authenticate, invoiceRouter);
 server.use('/timestamp', authenticate, timestampRouter);
 
-server.use(express.static(path.join(__dirname, 'frontend/build')));
+server.use(express.static(path.join(__dirname, '/blimey')));
+server.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/blimey/index.html'));
+});
 
+server.use(express.static(path.join(__dirname, 'frontend/build')));
 server.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/frontend/build/index.html'));
 });
