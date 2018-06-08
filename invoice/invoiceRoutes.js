@@ -117,7 +117,7 @@ invoiceRouter.post('/new', (req, res) => {
         });
       },
       function(error) {
-        console.error(error);
+        res.send(error);
       }
     );
   });

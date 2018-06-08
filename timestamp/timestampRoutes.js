@@ -37,7 +37,6 @@ timestampRouter.post('/start', (req, res) => {
 // stop timer using timestamp id and push to clients hourslogged
 timestampRouter.put('/stop', (req, res) => {
   const { timestampId } = req.body;
-
   Timestamp.findOneAndUpdate(
     { _id: timestampId },
     { endTime: new Date(), active: false }
