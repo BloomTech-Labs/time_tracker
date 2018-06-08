@@ -20,7 +20,7 @@ server.use('/timestamp', authenticate, timestampRouter);
 
 server.use(express.static(path.join(__dirname, '/blimey')));
 server.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/blimey/index.html'));
+  res.sendFile(path.join(__dirname + '/Blimey/index.html'));
 });
 
 server.use(express.static(path.join(__dirname, 'frontend/build')));
